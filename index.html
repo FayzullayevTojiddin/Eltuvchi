@@ -1,0 +1,14 @@
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script>
+    const initData = window.Telegram.WebApp.initData;
+    
+    fetch("http://127.0.0.1:8000/api/auth", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ initData })
+    })
+    .then(r => r.json())
+    .then(console.log);
+</script>
