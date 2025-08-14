@@ -11,6 +11,55 @@ use Illuminate\Support\Facades\Auth;
 
 class OrderReviewController extends Controller
 {
+    /**
+     * @OA\Post(
+     *     path="/api/client/orders/{order}/review",
+     *     summary="Submit a review for a completed order",
+     *     tags={"Client Orders"},
+     *     security={{"sanctum": {}}},
+     *     @OA\Parameter(
+     *         name="order",
+     *         in="path",
+     *         required=true,
+     *         description="Order ID to review",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="rating", type="integer", minimum=1, maximum=5, example=5, description="Rating for the order"),
+     *             @OA\Property(property="comment", type="string", example="Great driver!", description="Optional comment for the review")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Review created successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Review created successfully."),
+     *             @OA\Property(property="data", ref="#/components/schemas/OrderReview")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Forbidden action",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="You are not allowed to review this order.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="Review already exists",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="You have already reviewed this order."),
+     *             @OA\Property(property="data", ref="#/components/schemas/OrderReview")
+     *         )
+     *     )
+     * )
+     */
     public function client_review(Request $request, Order $order)
     {
         $validated = $request->validate([
@@ -20,22 +69,18 @@ class OrderReviewController extends Controller
 
         $client = Auth::user()->client;
 
-        // 1) Ownership: faqat order egasi yozishi mumkin
         if ($order->client_id !== $client->id) {
             return $this->error([], 403, 'You are not allowed to review this order.');
         }
 
-        // 2) Status: faqat COMPLETED bo'lganda ruxsat
         if ($order->status !== OrderStatus::Completed) {
             return $this->error([], 403, 'Order is not completed yet.');
         }
 
-        // 3) Driver tayinlangan bo'lishi kerak
         if (empty($order->driver_id)) {
             return $this->error([], 403, 'Driver is not assigned yet.');
         }
 
-        // 4) Dublikatni tekshirish
         $existingReview = OrderReview::where('order_id', $order->id)
             ->where('client_id', $client->id)
             ->first();
@@ -44,7 +89,6 @@ class OrderReviewController extends Controller
             return $this->error(new OrderReviewResource($existingReview), 409, 'You have already reviewed this order.');
         }
 
-        // 5) Yaratish (requestdagi rating -> modeldagi score)
         $review = OrderReview::create([
             'order_id' => $order->id,
             'client_id' => $client->id,

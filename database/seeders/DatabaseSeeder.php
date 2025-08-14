@@ -12,7 +12,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RegionSeeder::class,
             TaxoParkSeeder::class,
-            RouteSeeder::class
+            RouteSeeder::class,
+            ClientSeeder::class,
+            DriverSeeder::class,
+            DiscountSeeder::class,
         ]);
     }
 }

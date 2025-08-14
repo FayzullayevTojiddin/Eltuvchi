@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Region;
 use App\Models\TaxoPark;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class TaxoParkSeeder extends Seeder
@@ -13,7 +12,7 @@ class TaxoParkSeeder extends Seeder
     {
         $regions = Region::all();
         foreach($regions as $region) {
-            TaxoPark::factory(random_int(1, 5))->create([
+            TaxoPark::factory(random_int(1, 2))->create([
                 'region_id' => $region->id,
             ]);
         }

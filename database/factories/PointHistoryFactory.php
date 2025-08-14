@@ -12,8 +12,6 @@ class PointHistoryFactory extends Factory
     public function definition()
     {
         return [
-            'pointable_id' => 1,
-            'pointable_type' => 'App\\Models\\User',
             'points' => $this->faker->numberBetween(1, 100),
             'type' => $this->faker->randomElement(['plus', 'minus']),
             'points_after' => $this->faker->numberBetween(1, 100),

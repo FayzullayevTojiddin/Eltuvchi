@@ -21,7 +21,6 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 
-
 Route::post('/auth', [AuthController::class, 'telegramAuth']);
 
 Route::get('/regions', [RegionController::class, 'index']);
@@ -29,6 +28,7 @@ Route::get('/regions/{region_id}', [RegionController::class, 'show']);
 Route::get('/routes/check/{from}/{to}', [RouteController::class, 'check']);
 Route::get('/referrals', [ReferralController::class, 'index'])->middleware('auth:sanctum');
 Route::post('/referrals', [ReferralController::class, 'referred'])->middleware('auth:sanctum');
+Route::get('/balance-history', [BalanceHistoryController::class, 'balance_history'])->middleware('auth:sanctum');
 
 Route::prefix('/client')->middleware('auth:sanctum')->group(function (){
     Route::get('/dashboard', [ClientController::class, 'dashboard']);
@@ -38,7 +38,6 @@ Route::prefix('/client')->middleware('auth:sanctum')->group(function (){
     Route::get('/orders', [ClientOrderController::class, 'index']);
     Route::get('/orders/{order}', [ClientOrderController::class, 'show']);
     Route::delete('/orders/{order}', [ClientCancelOrderController::class, 'cancel']);
-    Route::get('/histories', [BalanceHistoryController::class, 'client_balance_history']);
     Route::get('/me', [ClientProfileController::class, 'me']);
     Route::put('/me', [ClientProfileController::class, 'edit']);
     Route::get('/market', [ClientMarketController::class, 'index']);
@@ -46,7 +45,6 @@ Route::prefix('/client')->middleware('auth:sanctum')->group(function (){
 });
 
 Route::prefix('/driver')->middleware('auth:sanctum')->group(function() {
-    Route::get('/histories', [BalanceHistoryController::class, 'driver_balance_history']);
     Route::get('/dashboard', [DriverController::class, 'dashboard']);
     Route::get('/my_orders', [DriverOrderController::class, 'my_orders']);
     Route::delete('/orders/{order}', [DriverCancelOrderController::class, 'cancel_order']);

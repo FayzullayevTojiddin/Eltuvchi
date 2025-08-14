@@ -10,6 +10,53 @@ use Illuminate\Http\Request;
 
 class ReferralController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/api/referrals",
+     *     summary="Get referral statistics and points",
+     *     tags={"Referrals"},
+     *     security={{"sanctum": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Referral statistics retrieved successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Referral statistics and points retrieved successfully."),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="statistics",
+     *                     type="object",
+     *                     @OA\Property(property="total", type="integer", example=10),
+     *                     @OA\Property(property="this_month", type="integer", example=3),
+     *                     @OA\Property(property="this_week", type="integer", example=1)
+     *                 ),
+     *                 @OA\Property(
+     *                     property="referrers",
+     *                     type="array",
+     *                     @OA\Items(ref="#/components/schemas/Referral")
+     *                 ),
+     *                 @OA\Property(property="points", type="integer", example=100),
+     *                    @OA\Property(
+     *                         property="point_histories",
+     *                         type="array",
+     *                         @OA\Items(ref="#/components/schemas/PointHistory")
+     *                    )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthorized")
+     *         )
+     *     )
+     * )
+     */
     public function index(Request $request)
     {
         $user = $request->user();
@@ -40,13 +87,49 @@ class ReferralController extends Controller
         $pointHistories = $connected ? $connected->pointHistories()->latest()->get() : collect();
 
         return $this->success([
-            'statistics'     => $statistics,
-            'referrers'      => $referrers,
-            'points'         => $points,
-            'point_histories'=> $pointHistories,
+            'statistics'      => $statistics,
+            'referrers'       => $referrers,
+            'points'          => $points,
+            'point_histories' => $pointHistories,
         ], 200, 'Referral statistics and points retrieved successfully.');
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/referrals",
+     *     summary="Add a referral using a promo code",
+     *     tags={"Referrals"},
+     *     security={{"sanctum": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="promo_code", type="string", example="PROMO123")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Referral added successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Referral added successfully")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid promo code",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Invalid promo code")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="User already referred",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="You have already been referred")
+     *         )
+     *     )
+     * )
+     */
     public function referred(Request $request)
     {
         $user = $request->user();

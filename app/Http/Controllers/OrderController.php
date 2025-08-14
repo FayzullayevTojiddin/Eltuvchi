@@ -14,6 +14,69 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
+    /**
+     * @OA\Post(
+     *     path="/api/client/orders",
+     *     summary="Create a new order",
+     *     tags={"Client Orders"},
+     *     security={{"sanctum": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="route_id", type="integer", example=1),
+     *             @OA\Property(property="passengers", type="integer", example=3),
+     *             @OA\Property(property="date", type="string", format="date", example="2025-08-15"),
+     *             @OA\Property(property="time", type="string", format="time", example="14:30"),
+     *             @OA\Property(property="client_deposit", type="number", example=50000),
+     *             @OA\Property(property="discount_id", type="integer", nullable=true, example=2),
+     *             @OA\Property(property="phone", type="string", example="+998901234567"),
+     *             @OA\Property(property="optional_phone", type="string", nullable=true, example="+998935551122"),
+     *             @OA\Property(property="note", type="string", nullable=true, example="Please call on arrival")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Order created successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Order created successfully."),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=111),
+     *                 @OA\Property(property="status", type="string", example="created"),
+     *                 @OA\Property(property="scheduled_at", type="string", format="date-time", nullable=true, example=null),
+     *                 @OA\Property(property="passengers", type="integer", example=3),
+     *                 @OA\Property(property="phone", type="string", example="+998901234567"),
+     *                 @OA\Property(property="optional_phone", type="string", nullable=true, example="+998901234568"),
+     *                 @OA\Property(property="note", type="string", nullable=true, example="Please call on arrival"),
+     *                 @OA\Property(property="price_order", type="string", example="1107231.00"),
+     *                 @OA\Property(property="client_deposit", type="string", example="50000.00"),
+     *                 @OA\Property(property="discount_percent", type="integer", example=0),
+     *                 @OA\Property(property="discount_summ", type="string", example="0.00"),
+     *                 @OA\Property(property="discount", type="string", nullable=true, example=null),
+     *                 @OA\Property(property="created_at", type="string", format="date-time", example="2025-08-14 11:43:28")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Insufficient balance",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Balance is insufficient for deposit payment.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Failed to create order",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Failed to create order.")
+     *         )
+     *     )
+     * )
+     */
     public function store(StoreOrderRequest $request): JsonResponse
     {
         $user = Auth::user();

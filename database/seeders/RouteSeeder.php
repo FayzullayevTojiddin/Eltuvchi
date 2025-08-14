@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\RouteStatus;
 use App\Models\Route;
 use App\Models\TaxoPark;
 use Exception;
@@ -24,13 +25,10 @@ class RouteSeeder extends Seeder
                     if ($exists) {
                         continue;
                     }
-                    Route::create([
+                    Route::factory()->create([
                         'taxopark_from_id' => $from->id,
                         'taxopark_to_id' => $to->id,
-                        'status' => 'active',
-                        'deposit_client' => rand(50000, 150000),
-                        'distance_km' => rand(10, 100),
-                        'price_in' => rand(10000, 20000),
+                        'status' => RouteStatus::ACTIVE->value
                     ]);
                 } catch (Exception $e) {
                     continue;

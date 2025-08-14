@@ -1,0 +1,2286 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Eltuvchi API",
+        "description": "Eltuvchi platformasi uchun API hujjatlari",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": "Local server"
+        }
+    ],
+    "paths": {
+        "/api/auth": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Telegram orqali autentifikatsiya",
+                "description": "Telegram WebApp orqali olingan initData ni yuborib foydalanuvchini autentifikatsiya qiladi. \n     *                  Agar foydalanuvchi mavjud bo'lmasa — yangi client sifatida yaratiladi.",
+                "operationId": "7f46f80c3e564da009dbe7e94e76450a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "initData"
+                                ],
+                                "properties": {
+                                    "initData": {
+                                        "type": "string",
+                                        "example": "query_id=AAE...&user=%7B%22id%22%3A123456%2C%22first_name%22%3A%22John%22%7D&hash=..."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Muvaffaqiyatli autentifikatsiya",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "1|vZ6J3D..."
+                                        },
+                                        "role": {
+                                            "type": "string",
+                                            "example": "client"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Noto‘g‘ri initData",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "invalid initData"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/balance-history": {
+            "get": {
+                "tags": [
+                    "Balance History"
+                ],
+                "summary": "Get balance history for authenticated user (client or driver)",
+                "operationId": "caebb335428fe98750837b0ba44ae507",
+                "responses": {
+                    "200": {
+                        "description": "List of balance history",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/BalanceHistory"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/client/orders/{orderId}": {
+            "delete": {
+                "tags": [
+                    "Client Orders"
+                ],
+                "summary": "Cancel an order by the authenticated client",
+                "operationId": "1ccf1e6c55317839f8d77f49bc7afffe",
+                "parameters": [
+                    {
+                        "name": "orderId",
+                        "in": "path",
+                        "description": "ID of the order to cancel",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 111
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Order cancelled successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Order cancelled successfully."
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Order"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Order already cancelled",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Order already cancelled."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Order not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Order not found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Cancellation failed: Internal server error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/client/dashboard": {
+            "get": {
+                "tags": [
+                    "Client"
+                ],
+                "summary": "Get client dashboard info",
+                "operationId": "ab10082500ddf7caf01b72f380dcf03b",
+                "responses": {
+                    "200": {
+                        "description": "Client dashboard retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "orders_count": {
+                                                    "type": "integer",
+                                                    "example": 0
+                                                },
+                                                "balance": {
+                                                    "type": "number",
+                                                    "example": 0
+                                                },
+                                                "points": {
+                                                    "type": "integer",
+                                                    "example": 0
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/client/my_discounts": {
+            "get": {
+                "tags": [
+                    "Client"
+                ],
+                "summary": "Get client's active discounts",
+                "operationId": "bd1030a51aeee5105015d051333f4e2d",
+                "responses": {
+                    "200": {
+                        "description": "List of client's discounts",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ClientDiscount"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/client/market": {
+            "get": {
+                "tags": [
+                    "Client Market"
+                ],
+                "summary": "List active discounts in the market",
+                "operationId": "8ec021422d089e3c5a60beccc9c4a8ff",
+                "responses": {
+                    "200": {
+                        "description": "Active discounts retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Active discounts retrieved successfully."
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Discount"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Client Market"
+                ],
+                "summary": "Purchase a discount using client points",
+                "operationId": "40b8eb8b9fde514567419620aaf84eea",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "discount_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Discount purchased successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Discount purchased successfully."
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Discount"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Not enough points",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "You do not have enough points to purchase this discount."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Discount not found or inactive",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Discount not found or inactive."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/client/orders": {
+            "get": {
+                "tags": [
+                    "Client Orders"
+                ],
+                "summary": "Get all orders of the authenticated client",
+                "operationId": "6a9e9425c7e9cc7f5c3181102530faa5",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter orders by status",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "created"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of client orders retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Order"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Client Orders"
+                ],
+                "summary": "Create a new order",
+                "operationId": "f7e34a98aa3b4e8bede9ca9fe55dc466",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "route_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "passengers": {
+                                        "type": "integer",
+                                        "example": 3
+                                    },
+                                    "date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-08-15"
+                                    },
+                                    "time": {
+                                        "type": "string",
+                                        "format": "time",
+                                        "example": "14:30"
+                                    },
+                                    "client_deposit": {
+                                        "type": "number",
+                                        "example": 50000
+                                    },
+                                    "discount_id": {
+                                        "type": "integer",
+                                        "example": 2,
+                                        "nullable": true
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "+998901234567"
+                                    },
+                                    "optional_phone": {
+                                        "type": "string",
+                                        "example": "+998935551122",
+                                        "nullable": true
+                                    },
+                                    "note": {
+                                        "type": "string",
+                                        "example": "Please call on arrival",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Order created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Order created successfully."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 111
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "created"
+                                                },
+                                                "scheduled_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": null,
+                                                    "nullable": true
+                                                },
+                                                "passengers": {
+                                                    "type": "integer",
+                                                    "example": 3
+                                                },
+                                                "phone": {
+                                                    "type": "string",
+                                                    "example": "+998901234567"
+                                                },
+                                                "optional_phone": {
+                                                    "type": "string",
+                                                    "example": "+998901234568",
+                                                    "nullable": true
+                                                },
+                                                "note": {
+                                                    "type": "string",
+                                                    "example": "Please call on arrival",
+                                                    "nullable": true
+                                                },
+                                                "price_order": {
+                                                    "type": "string",
+                                                    "example": "1107231.00"
+                                                },
+                                                "client_deposit": {
+                                                    "type": "string",
+                                                    "example": "50000.00"
+                                                },
+                                                "discount_percent": {
+                                                    "type": "integer",
+                                                    "example": 0
+                                                },
+                                                "discount_summ": {
+                                                    "type": "string",
+                                                    "example": "0.00"
+                                                },
+                                                "discount": {
+                                                    "type": "string",
+                                                    "example": null,
+                                                    "nullable": true
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-08-14 11:43:28"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Insufficient balance",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Balance is insufficient for deposit payment."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to create order",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Failed to create order."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/client/orders/{order_id}": {
+            "get": {
+                "tags": [
+                    "Client Orders"
+                ],
+                "summary": "Get a specific order of the authenticated client",
+                "operationId": "1756ef3e31be927e131f5c7fec169950",
+                "parameters": [
+                    {
+                        "name": "order_id",
+                        "in": "path",
+                        "description": "ID of the order to retrieve",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 111
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Order retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Order retrieved successfully."
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Order"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Order not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Order not found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/client/me": {
+            "get": {
+                "tags": [
+                    "Client"
+                ],
+                "summary": "Get authenticated client profile",
+                "operationId": "9820f33299c93837caaec587d3a50d32",
+                "responses": {
+                    "200": {
+                        "description": "Client profile retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Client profile retrieved successfully."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 45
+                                                },
+                                                "role": {
+                                                    "type": "string",
+                                                    "example": "client"
+                                                },
+                                                "telegram_id": {
+                                                    "type": "string",
+                                                    "example": "123456789"
+                                                },
+                                                "settings": {
+                                                    "properties": {
+                                                        "notifications": {
+                                                            "type": "boolean",
+                                                            "example": true
+                                                        },
+                                                        "night_mode": {
+                                                            "type": "boolean",
+                                                            "example": false
+                                                        },
+                                                        "language": {
+                                                            "type": "string",
+                                                            "example": "uz"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Client not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Client not found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Client"
+                ],
+                "summary": "Update authenticated client profile",
+                "operationId": "3d56c436da3fb1c519bf6a5eb26edc63",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "full_name": {
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "phone_number": {
+                                        "type": "string",
+                                        "example": "+998901234567"
+                                    },
+                                    "notifications": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "night_mode": {
+                                        "type": "boolean",
+                                        "example": false
+                                    },
+                                    "language": {
+                                        "type": "string",
+                                        "example": "uz"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Client profile updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Client profile updated successfully."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 45
+                                                },
+                                                "role": {
+                                                    "type": "string",
+                                                    "example": "client"
+                                                },
+                                                "telegram_id": {
+                                                    "type": "string",
+                                                    "example": "123456789"
+                                                },
+                                                "settings": {
+                                                    "properties": {
+                                                        "notifications": {
+                                                            "type": "boolean",
+                                                            "example": true
+                                                        },
+                                                        "night_mode": {
+                                                            "type": "boolean",
+                                                            "example": false
+                                                        },
+                                                        "language": {
+                                                            "type": "string",
+                                                            "example": "uz"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Client not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Client not found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/client/orders/{order}/review": {
+            "post": {
+                "tags": [
+                    "Client Orders"
+                ],
+                "summary": "Submit a review for a completed order",
+                "operationId": "428e6e3c68116f54451d9f398796360a",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "description": "Order ID to review",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "rating": {
+                                        "description": "Rating for the order",
+                                        "type": "integer",
+                                        "maximum": 5,
+                                        "minimum": 1,
+                                        "example": 5
+                                    },
+                                    "comment": {
+                                        "description": "Optional comment for the review",
+                                        "type": "string",
+                                        "example": "Great driver!"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Review created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Review created successfully."
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/OrderReview"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden action",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "You are not allowed to review this order."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Review already exists",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "You have already reviewed this order."
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/OrderReview"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/referrals": {
+            "get": {
+                "tags": [
+                    "Referrals"
+                ],
+                "summary": "Get referral statistics and points",
+                "operationId": "7c04bdefab0f0132b8f4877fa59e7312",
+                "responses": {
+                    "200": {
+                        "description": "Referral statistics retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Referral statistics and points retrieved successfully."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "statistics": {
+                                                    "properties": {
+                                                        "total": {
+                                                            "type": "integer",
+                                                            "example": 10
+                                                        },
+                                                        "this_month": {
+                                                            "type": "integer",
+                                                            "example": 3
+                                                        },
+                                                        "this_week": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "referrers": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Referral"
+                                                    }
+                                                },
+                                                "points": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                },
+                                                "point_histories": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/PointHistory"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Referrals"
+                ],
+                "summary": "Add a referral using a promo code",
+                "operationId": "d24cf571a21653487c7b9a32d93861ee",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "promo_code": {
+                                        "type": "string",
+                                        "example": "PROMO123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Referral added successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Referral added successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid promo code",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid promo code"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "User already referred",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "You have already been referred"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/regions": {
+            "get": {
+                "tags": [
+                    "Regions"
+                ],
+                "summary": "Get list of regions",
+                "operationId": "2ea4e3f793fcf34f100e4d8b03ede681",
+                "responses": {
+                    "200": {
+                        "description": "Regions list retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Region"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/regions/{region_id}": {
+            "get": {
+                "tags": [
+                    "Regions"
+                ],
+                "summary": "Get region with associated taxoparks",
+                "operationId": "85cc1f9d1a3e6cd06ce69ba70ce85579",
+                "parameters": [
+                    {
+                        "name": "region_id",
+                        "in": "path",
+                        "description": "ID of the region",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Region and its taxoparks retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "region": {
+                                                    "$ref": "#/components/schemas/Region"
+                                                },
+                                                "taxoparks": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Taxopark"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Region not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Region not found."
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {}
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/routes/check/{from}/{to}": {
+            "get": {
+                "tags": [
+                    "Routes"
+                ],
+                "summary": "Check for an active route between two taxoparks",
+                "operationId": "1a7ec40c5b308bb677425d7496d9d1d8",
+                "parameters": [
+                    {
+                        "name": "from",
+                        "in": "path",
+                        "description": "ID of the starting taxopark",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "path",
+                        "description": "ID of the destination taxopark",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 2
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Route found successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Route"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Route not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Route not found."
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {}
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "BalanceHistory": {
+                "title": "Balance History Resource",
+                "description": "Balance history entry representation",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "amount": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 150000
+                    },
+                    "type": {
+                        "description": "Transaction type (deposit, withdrawal, etc.)",
+                        "type": "string",
+                        "example": "deposit"
+                    },
+                    "balance_after": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 350000
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Deposit from bank",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-14 12:34:56"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-14 12:34:56"
+                    }
+                },
+                "type": "object"
+            },
+            "ClientDiscount": {
+                "title": "Client Discount Resource",
+                "description": "Discount information for a client",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Summer Sale"
+                    },
+                    "type": {
+                        "description": "Discount type (percentage or fixed)",
+                        "type": "string",
+                        "example": "percentage"
+                    },
+                    "value": {
+                        "description": "Discount value in percent or currency",
+                        "type": "number",
+                        "format": "float",
+                        "example": 10
+                    },
+                    "icon": {
+                        "type": "string",
+                        "example": "https://example.com/icons/discount.png",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "ClientOrder": {
+                "title": "Client Order Resource",
+                "description": "Order details for a client",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 102
+                    },
+                    "status": {
+                        "description": "Order status",
+                        "type": "string",
+                        "example": "pending"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2025-08-15"
+                    },
+                    "time": {
+                        "type": "string",
+                        "example": "14:30"
+                    },
+                    "passengers": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "+998901234567"
+                    },
+                    "optional_phone": {
+                        "type": "string",
+                        "example": "+998935551122",
+                        "nullable": true
+                    },
+                    "note": {
+                        "type": "string",
+                        "example": "Please arrive 10 minutes early",
+                        "nullable": true
+                    },
+                    "price_order": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 250000
+                    },
+                    "client_deposit": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 50000
+                    },
+                    "discount_percent": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 10
+                    },
+                    "discount_summ": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 25000
+                    },
+                    "driver": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/Driver"
+                            }
+                        ],
+                        "nullable": true
+                    },
+                    "route": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/Route"
+                            }
+                        ],
+                        "nullable": true
+                    },
+                    "review": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/Review"
+                            }
+                        ],
+                        "nullable": true
+                    },
+                    "histories": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/OrderHistory"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Client": {
+                "title": "Client Resource",
+                "description": "Client details with balance, points, and status",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 12
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 101
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "active"
+                    },
+                    "balance": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 150000
+                    },
+                    "points": {
+                        "type": "integer",
+                        "example": 300
+                    },
+                    "settings": {
+                        "type": "object",
+                        "example": {
+                            "notifications": true,
+                            "language": "uz"
+                        },
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-14 12:00:00"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-14 13:45:00"
+                    },
+                    "user": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        ],
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "Discount": {
+                "title": "Discount Resource",
+                "description": "Discount details",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 7
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Loyalty Program"
+                    },
+                    "type": {
+                        "description": "Discount type (percentage or fixed)",
+                        "type": "string",
+                        "example": "percentage"
+                    },
+                    "value": {
+                        "description": "Discount value in percent or currency",
+                        "type": "number",
+                        "format": "float",
+                        "example": 15
+                    },
+                    "points": {
+                        "description": "Points needed to get this discount",
+                        "type": "integer",
+                        "example": 100
+                    },
+                    "icon": {
+                        "type": "string",
+                        "example": "https://example.com/icons/discount.png",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "DriverDashboard": {
+                "title": "Driver Dashboard Resource",
+                "description": "Driver dashboard statistics and recent orders",
+                "properties": {
+                    "total_income": {
+                        "description": "Total income earned by driver",
+                        "type": "number",
+                        "format": "float",
+                        "example": 1200000
+                    },
+                    "completed_orders_count": {
+                        "description": "Number of completed orders",
+                        "type": "integer",
+                        "example": 154
+                    },
+                    "average_rating": {
+                        "description": "Average rating of driver",
+                        "type": "number",
+                        "format": "float",
+                        "example": 4.8
+                    },
+                    "recent_orders": {
+                        "description": "List of recent orders",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Order"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Driver": {
+                "title": "Driver Resource",
+                "description": "Driver model resource representation",
+                "properties": {
+                    "id": {
+                        "description": "Driver ID",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "description": "Related user ID",
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "status": {
+                        "description": "Driver status",
+                        "type": "string",
+                        "example": "active"
+                    },
+                    "balance": {
+                        "description": "Driver balance",
+                        "type": "number",
+                        "format": "float",
+                        "example": 150000
+                    },
+                    "points": {
+                        "description": "Driver reward points",
+                        "type": "integer",
+                        "example": 250
+                    },
+                    "details": {
+                        "description": "Additional driver details",
+                        "type": "object",
+                        "nullable": true
+                    },
+                    "settings": {
+                        "description": "Driver settings",
+                        "type": "object",
+                        "nullable": true
+                    },
+                    "taxopark_id": {
+                        "description": "Taxopark ID",
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "created_at": {
+                        "description": "Creation timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-14T10:20:30"
+                    },
+                    "updated_at": {
+                        "description": "Last update timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-14T11:20:30"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "taxopark": {
+                        "$ref": "#/components/schemas/Taxopark"
+                    },
+                    "orders": {
+                        "description": "List of driver's orders",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Order"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "OrderHistory": {
+                "title": "Order History Resource",
+                "description": "Order status changes history",
+                "properties": {
+                    "id": {
+                        "description": "History record ID",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "status": {
+                        "description": "Order status at this history record",
+                        "type": "string",
+                        "example": "pending"
+                    },
+                    "description": {
+                        "description": "Reason or note for the status change",
+                        "type": "string",
+                        "example": "Order created by client"
+                    },
+                    "changed_by_type": {
+                        "description": "Who changed the status (client, driver, admin)",
+                        "type": "string",
+                        "example": "client"
+                    },
+                    "changed_by_id": {
+                        "description": "ID of the user who changed the status",
+                        "type": "integer",
+                        "example": 42
+                    },
+                    "created_at": {
+                        "description": "When this history record was created",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-14 12:30:45"
+                    }
+                },
+                "type": "object"
+            },
+            "Order": {
+                "title": "Order Resource",
+                "description": "Detailed order information",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 101
+                    },
+                    "Client": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/Client"
+                            }
+                        ],
+                        "nullable": true
+                    },
+                    "driver": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/Driver"
+                            }
+                        ],
+                        "nullable": true
+                    },
+                    "route": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/Route"
+                            }
+                        ],
+                        "nullable": true
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "pending"
+                    },
+                    "scheduled_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-15T14:30:00Z"
+                    },
+                    "passengers": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "+998901234567"
+                    },
+                    "optional_phone": {
+                        "type": "string",
+                        "example": "+998935551122",
+                        "nullable": true
+                    },
+                    "note": {
+                        "type": "string",
+                        "example": "Please arrive 10 minutes early",
+                        "nullable": true
+                    },
+                    "price_order": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 250000
+                    },
+                    "client_deposit": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 50000
+                    },
+                    "discount_percent": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 10
+                    },
+                    "discount_summ": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 25000
+                    },
+                    "discount": {
+                        "type": "string",
+                        "example": null,
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-14T12:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "OrderReview": {
+                "title": "Order Review Resource",
+                "description": "Order review details",
+                "properties": {
+                    "id": {
+                        "description": "Review ID",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "order_id": {
+                        "description": "Related order ID",
+                        "type": "integer",
+                        "example": 15
+                    },
+                    "client_id": {
+                        "description": "Client ID who left the review",
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "score": {
+                        "description": "Review score from 1 to 5",
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "comment": {
+                        "description": "Review comment",
+                        "type": "string",
+                        "example": "Very satisfied with the service"
+                    },
+                    "created_at": {
+                        "description": "When the review was created",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-14 14:32:00"
+                    },
+                    "updated_at": {
+                        "description": "When the review was last updated",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-14 14:35:00"
+                    }
+                },
+                "type": "object"
+            },
+            "PointHistory": {
+                "title": "Point History Resource",
+                "description": "Foydalanuvchi point tarixini qaytaradi",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "points": {
+                        "type": "integer",
+                        "example": 50
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Referral bonus"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-14 16:00:00"
+                    }
+                },
+                "type": "object"
+            },
+            "Referral": {
+                "title": "Referral Resource",
+                "description": "Referral ma'lumotlarini qaytaruvchi resource",
+                "properties": {
+                    "id": {
+                        "description": "Referral egasining ID raqami",
+                        "type": "integer",
+                        "example": 12
+                    },
+                    "full_name": {
+                        "description": "Referral bo‘yicha bog‘langan foydalanuvchi to‘liq ismi",
+                        "type": "string",
+                        "example": "John Doe",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "description": "Referral yaratilgan vaqt",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-14 15:45:12"
+                    }
+                },
+                "type": "object"
+            },
+            "Region": {
+                "title": "Region Resource",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Tashkent"
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "active"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-14T10:00:00Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-14T10:30:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "Review": {
+                "title": "Review Resource",
+                "description": "Review details for orders or items",
+                "properties": {
+                    "rating": {
+                        "description": "Rating given, e.g., from 1 to 5",
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "comment": {
+                        "description": "Optional comment for the review",
+                        "type": "string",
+                        "example": "Great service!",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "Route": {
+                "title": "Route Resource",
+                "description": "Route details including taxopark, pricing and status",
+                "properties": {
+                    "id": {
+                        "description": "Route ID",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "from": {
+                        "$ref": "#/components/schemas/Taxopark"
+                    },
+                    "to": {
+                        "$ref": "#/components/schemas/Taxopark"
+                    },
+                    "status": {
+                        "description": "Route status",
+                        "type": "string",
+                        "example": "active"
+                    },
+                    "deposit_client": {
+                        "description": "Client deposit amount for this route",
+                        "type": "number",
+                        "format": "float",
+                        "example": 50000
+                    },
+                    "distance_km": {
+                        "description": "Distance in kilometers",
+                        "type": "number",
+                        "format": "float",
+                        "example": 12.5
+                    },
+                    "price_in": {
+                        "description": "Price for the route",
+                        "type": "number",
+                        "format": "float",
+                        "example": 120000
+                    },
+                    "fee_per_client": {
+                        "description": "Fee per client",
+                        "type": "number",
+                        "format": "float",
+                        "example": 10000
+                    }
+                },
+                "type": "object"
+            },
+            "Taxopark": {
+                "title": "TaxoPark",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "region": {
+                        "$ref": "#/components/schemas/Region"
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "active"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Toshkent Taxi"
+                    }
+                },
+                "type": "object"
+            },
+            "User": {
+                "title": "User Resource",
+                "description": "Authenticated user information",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 45
+                    },
+                    "role": {
+                        "description": "User role (client, driver, admin, etc.)",
+                        "type": "string",
+                        "example": "client"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "user@example.com",
+                        "nullable": true
+                    },
+                    "telegram_id": {
+                        "type": "string",
+                        "example": "123456789",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-14 12:00:00"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-14 12:30:00"
+                    },
+                    "client": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/Client"
+                            }
+                        ],
+                        "nullable": true
+                    },
+                    "driver": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/Driver"
+                            }
+                        ],
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "responses": {
+            "401": {
+                "description": "Unauthorized",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Unauthorized"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "sanctum": {
+                "type": "http",
+                "description": "Sanctum authentication using Bearer token",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Authentication",
+            "description": "Authentication"
+        },
+        {
+            "name": "Balance History",
+            "description": "Balance History"
+        },
+        {
+            "name": "Client Orders",
+            "description": "Client Orders"
+        },
+        {
+            "name": "Client",
+            "description": "Client"
+        },
+        {
+            "name": "Client Market",
+            "description": "Client Market"
+        },
+        {
+            "name": "Referrals",
+            "description": "Referrals"
+        },
+        {
+            "name": "Regions",
+            "description": "Regions"
+        },
+        {
+            "name": "Routes",
+            "description": "Routes"
+        }
+    ]
+}

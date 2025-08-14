@@ -15,7 +15,7 @@ class BalanceHistoryControllerTest extends TestCase
 
     public function test_client_balance_history_returns_data()
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'client']);
         $client = Client::factory()->create(['user_id' => $user->id]);
 
         BalanceHistory::factory()->count(3)->create([
@@ -26,7 +26,7 @@ class BalanceHistoryControllerTest extends TestCase
         /** @var \App\Models\User $user */
         $this->actingAs($user, 'sanctum');
 
-        $response = $this->getJson('/api/client/histories');
+        $response = $this->getJson('/api/balance-history');
 
         $response->assertStatus(200);
         $response->assertJsonStructure([
@@ -48,7 +48,7 @@ class BalanceHistoryControllerTest extends TestCase
 
     public function test_driver_balance_history_returns_data()
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'driver']);
         $driver = Driver::factory()->create(['user_id' => $user->id]);
 
         BalanceHistory::factory()->count(2)->create([
@@ -59,7 +59,7 @@ class BalanceHistoryControllerTest extends TestCase
         /** @var \App\Models\User $user */
         $this->actingAs($user, 'sanctum');
 
-        $response = $this->getJson('/api/driver/histories');
+        $response = $this->getJson('/api/balance-history');
 
         $response->assertStatus(200);
         $response->assertJsonStructure([

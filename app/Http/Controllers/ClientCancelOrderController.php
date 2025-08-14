@@ -10,6 +10,59 @@ use Illuminate\Support\Facades\DB;
 
 class ClientCancelOrderController extends Controller
 {
+    /**
+     * @OA\Delete(
+     *     path="/api/client/orders/{orderId}",
+     *     summary="Cancel an order by the authenticated client",
+     *     tags={"Client Orders"},
+     *     security={{"sanctum": {}}},
+     *     @OA\Parameter(
+     *         name="orderId",
+     *         in="path",
+     *         description="ID of the order to cancel",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=111)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Order cancelled successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Order cancelled successfully."),
+     *             @OA\Property(property="data", ref="#/components/schemas/Order")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Order already cancelled",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Order already cancelled.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthorized.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Order not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Order not found.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Cancellation failed: Internal server error")
+     *         )
+     *     )
+     * )
+     */
     public function cancel(Request $request, int $orderId)
     {
         $user = $request->user();

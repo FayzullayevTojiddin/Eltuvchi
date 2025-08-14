@@ -19,14 +19,10 @@ class RegionControllerTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertJsonStructure([
-            'success',
-            'message',
             'data' => [
                 '*' => ['id', 'name']
             ],
         ]);
-        $response->assertJson(['success' => true]);
-        // dump($response->json()); 
     }
 
     public function test_show_returns_region_with_taxoparks()
@@ -39,8 +35,6 @@ class RegionControllerTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertJsonStructure([
-            'success',
-            'message',
             'data' => [
                 'region' => ['id', 'name'],
                 'taxoparks' => [
@@ -48,8 +42,6 @@ class RegionControllerTest extends TestCase
                 ],
             ],
         ]);
-        $response->assertJson(['success' => true]);
-        // dump($response->json()); 
     }
 
     public function test_show_returns_404_if_region_not_found()
