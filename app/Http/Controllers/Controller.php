@@ -9,17 +9,15 @@ abstract class Controller
     public function success($data = [], $status = 200, $message = ''): JsonResponse
     {
         return response()->json([
-            'status' => "success",
+            'success' => true,
             'message' => $message,
             'data' => $data
         ], $status);
     }
 
-    public function response($data = [], int $status = 200, string $message = ''): JsonResponse
+    public function response($data = [], int $status = 200): JsonResponse
     {
         return response()->json([
-            'status' => $status < 300 ? 'success' : 'error',
-            'message' => $message,
             'data' => $data,
         ], $status);
     }

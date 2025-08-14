@@ -19,13 +19,13 @@ class RegionControllerTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertJsonStructure([
-            'status',
+            'success',
             'message',
             'data' => [
                 '*' => ['id', 'name']
             ],
         ]);
-        $response->assertJson(['status' => 'success']);
+        $response->assertJson(['success' => true]);
         // dump($response->json()); 
     }
 
@@ -39,7 +39,7 @@ class RegionControllerTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertJsonStructure([
-            'status',
+            'success',
             'message',
             'data' => [
                 'region' => ['id', 'name'],
@@ -48,7 +48,7 @@ class RegionControllerTest extends TestCase
                 ],
             ],
         ]);
-        $response->assertJson(['status' => 'success']);
+        $response->assertJson(['success' => true]);
         // dump($response->json()); 
     }
 

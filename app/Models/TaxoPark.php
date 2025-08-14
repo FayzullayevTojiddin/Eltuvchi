@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property int $id
@@ -35,8 +37,28 @@ class TaxoPark extends Model
         'status',
     ];
 
-    public function region()
+    public function region(): BelongsTo
     {
         return $this->belongsTo(Region::class);
+    }
+
+    public function drivers(): HasMany
+    {
+        return $this->hasMany(Driver::class);
+    }
+
+    public function routesFrom()
+    {
+        return $this->hasMany(Route::class, 'taxopark_from_id');
+    }
+
+    public function routesTo()
+    {
+        return $this->hasMany(Route::class, 'taxopark_to_id');
+    }
+
+    public function routes()
+    {
+        return $this->routesFrom->merge($this->routesTo);
     }
 }

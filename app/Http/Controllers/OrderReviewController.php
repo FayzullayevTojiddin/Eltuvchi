@@ -52,6 +52,6 @@ class OrderReviewController extends Controller
             'comment' => $validated['comment'] ?? null,
         ]);
 
-        return $this->response(new OrderReviewResource($review), 201, 'Review created successfully.');
+        return $this->success(new OrderReviewResource($review), 201, 'Review created successfully.');
     }
 }

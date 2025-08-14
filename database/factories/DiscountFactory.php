@@ -12,11 +12,20 @@ class DiscountFactory extends Factory
     public function definition(): array
     {
         return [
-            'type' => $this->faker->randomElement(['percent', 'fixed']),
-            'value' => $this->faker->numberBetween(5, 50),
-            'points' => $this->faker->numberBetween(0, 100),
-            'title' => $this->faker->words(2, true),
-            'icon' => $this->faker->randomElement(['percent', 'gift', 'cash', 'star']),
+            'type' => 'fixed',
+            'value' => $this->faker->numberBetween(10, 100),
+            'points' => $this->faker->numberBetween(10, 100),
+            'title' => $this->faker->sentence(3),
+            'icon' => null,
+            'percent' => null,
+            'status' => Discount::STATUS_ACTIVE,
         ];
+    }
+
+    public function inactive()
+    {
+        return $this->state(fn () => [
+            'status' => 'inactive',
+        ]);
     }
 }

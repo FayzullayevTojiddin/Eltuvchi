@@ -36,6 +36,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Discount extends Model
 {
     use HasFactory;
+
+    const STATUS_ACTIVE = 'active';
+    const STATUS_INACTIVE = 'inactive';
+    const STATUS_ARCHIVED = 'archived';
     
     protected $fillable = [
         'type',
@@ -44,6 +48,7 @@ class Discount extends Model
         'title',
         'icon',
         'percent',
+        'active',
     ];
 
     public function orders(): HasMany
@@ -59,5 +64,10 @@ class Discount extends Model
     public function isFixed(): bool
     {
         return $this->type === 'fixed';
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status === self::STATUS_ACTIVE;
     }
 }

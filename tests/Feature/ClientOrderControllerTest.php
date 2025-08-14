@@ -100,7 +100,7 @@ class ClientOrderControllerTest extends TestCase
         $response->assertOk();
 
         $response->assertJsonStructure([
-            'status',
+            'success',
             'data' => [
                 'id',
                 'status',

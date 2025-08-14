@@ -21,7 +21,9 @@ class AuthController extends Controller
 
         $tgUser = is_array($data['user']) ? $data['user'] : json_decode($data['user'], true);
         $telegramId = $tgUser['id'];
+
         $user = User::where('telegram_id', $telegramId)->first();
+
         if (!$user) {
             $user = User::create([
                 'name'        => $tgUser['first_name'] ?? 'Telegram User',
@@ -32,12 +34,20 @@ class AuthController extends Controller
                 'password'    => Hash::make(uniqid()),
             ]);
 
-            $client = Client::create([
+            $settings = [
+                'full_name'     => trim(($tgUser['first_name'] ?? '') . ' ' . ($tgUser['last_name'] ?? '')),
+                'phone_number'  => null,
+                'notifications' => true,
+                'night_mode'    => false,
+                'language'      => $tgUser['language_code'] ?? 'uz',
+            ];
+
+            Client::create([
                 'user_id' => $user->id,
-                'status' => "active",
+                'status'  => "active",
                 'balance' => 0,
-                'points' => 0,
-                'settings' => []
+                'points'  => 0,
+                'settings'=> $settings,
             ]);
         }
 
@@ -45,8 +55,8 @@ class AuthController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'token' => $token,
-            'role' => $user->role,
+            'token'  => $token,
+            'role'   => $user->role,
         ]);
     }
 }

@@ -43,5 +43,6 @@ class ClientDiscountControllerTest extends TestCase
             'id' => $discount1->id,
             'title' => $discount1->title,
         ]);
+        // $response->dump();
     }
 }

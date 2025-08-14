@@ -8,7 +8,7 @@ use App\Models\User;
 use App\Models\Client;
 use App\Models\Order;
 use App\Models\OrderReview;
-use App\Models\Driver; // agar mavjud bo'lsa
+use App\Models\Driver;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class OrderReviewTest extends TestCase
@@ -19,17 +19,15 @@ class OrderReviewTest extends TestCase
     {
         $user = User::factory()->create();
         $client = Client::factory()->create(['user_id' => $user->id]);
-
-        // driver yaratamiz (agar Driver factory mavjud bo'lsa)
         $driver = Driver::factory()->create();
 
-        // Order: clientga tegishli, driver tayinlangan, status COMPLETED
         $order = Order::factory()->create([
             'client_id' => $client->id,
             'driver_id' => $driver->id,
             'status' => OrderStatus::Completed->value,
         ]);
 
+        /** @var \App\Models\User $user */
         $this->actingAs($user);
 
         $response = $this->postJson(route('orders.client_review', $order), [
@@ -39,6 +37,8 @@ class OrderReviewTest extends TestCase
 
         $response->assertStatus(201)
                  ->assertJsonStructure([
+                    'success',
+                    'message',
                     'data' => [
                         'id',
                         'order_id',
@@ -48,8 +48,10 @@ class OrderReviewTest extends TestCase
                         'created_at',
                         'updated_at',
                     ],
-                    'message',
-                    'status',
+                 ])
+                 ->assertJson([
+                    'success' => true,
+                    'message' => 'Review created successfully.',
                  ]);
 
         $this->assertDatabaseHas('order_reviews', [
@@ -70,13 +72,13 @@ class OrderReviewTest extends TestCase
 
         $driver = Driver::factory()->create();
 
-        // Order otherClientga tegishli va COMPLETED
         $order = Order::factory()->create([
             'client_id' => $otherClient->id,
             'driver_id' => $driver->id,
             'status' => OrderStatus::Completed->value,
         ]);
 
+        /** @var \App\Models\User $user */
         $this->actingAs($user);
 
         $response = $this->postJson(route('orders.client_review', $order), [
@@ -84,7 +86,12 @@ class OrderReviewTest extends TestCase
             'comment' => 'Nice',
         ]);
 
-        $response->assertStatus(403);
+        $response->assertStatus(403)
+                 ->assertJson([
+                     'success' => false,
+                     'error' => 'You are not allowed to review this order.',
+                     'data' => [],
+                 ]);
     }
 
     public function test_cannot_review_twice_for_same_order()
@@ -99,7 +106,6 @@ class OrderReviewTest extends TestCase
             'status' => OrderStatus::Completed->value,
         ]);
 
-        // Allaqachon review mavjud
         OrderReview::factory()->create([
             'order_id' => $order->id,
             'client_id' => $client->id,
@@ -107,6 +113,7 @@ class OrderReviewTest extends TestCase
             'comment' => 'First review',
         ]);
 
+        /** @var \App\Models\User $user */
         $this->actingAs($user);
 
         $response = $this->postJson(route('orders.client_review', $order), [
@@ -115,7 +122,11 @@ class OrderReviewTest extends TestCase
         ]);
 
         $response->assertStatus(409)
-                 ->assertJsonFragment(['error' => 'You have already reviewed this order.']);
+                 ->assertJson([
+                    'success' => false,
+                    'error' => 'You have already reviewed this order.',
+                    'data' => [],
+                 ]);
     }
 
     public function test_validation_errors_for_invalid_input()
@@ -130,9 +141,9 @@ class OrderReviewTest extends TestCase
             'status' => OrderStatus::Completed->value,
         ]);
 
+        /** @var \App\Models\User $user */
         $this->actingAs($user);
 
-        // Missing rating
         $response = $this->postJson(route('orders.client_review', $order), [
             'comment' => 'No rating',
         ]);
@@ -165,13 +176,13 @@ class OrderReviewTest extends TestCase
         $client = Client::factory()->create(['user_id' => $user->id]);
         $driver = Driver::factory()->create();
 
-        // Order hali tugamagan (masalan Created)
         $order = Order::factory()->create([
             'client_id' => $client->id,
             'driver_id' => $driver->id,
             'status' => OrderStatus::Created->value,
         ]);
 
+        /** @var \App\Models\User $user */
         $this->actingAs($user);
 
         $response = $this->postJson(route('orders.client_review', $order), [
@@ -180,6 +191,10 @@ class OrderReviewTest extends TestCase
         ]);
 
         $response->assertStatus(403)
-                 ->assertJsonFragment(['error' => 'Order is not completed yet.']);
+                 ->assertJson([
+                    'success' => false,
+                    'error' => 'Order is not completed yet.',
+                    'data' => [],
+                 ]);
     }
 }

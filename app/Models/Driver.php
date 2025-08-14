@@ -6,6 +6,8 @@ use App\Traits\HasBalance;
 use App\Traits\HasPoint;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property int $id
@@ -48,6 +50,7 @@ class Driver extends Model
         'points',
         'details',
         'settings',
+        'taxopark_id'
     ];
 
     protected $casts = [
@@ -58,5 +61,15 @@ class Driver extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function taxopark(): BelongsTo
+    {
+        return $this->belongsTo(TaxoPark::class, 'taxopark_id');
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
     }
 }

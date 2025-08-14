@@ -22,7 +22,6 @@ class ClientOrderResource extends JsonResource
             'client_deposit' => $this->client_deposit,
             'discount_percent' => $this->discount_percent,
             'discount_summ' => $this->discount_summ,
-
             'driver' => new DriverResource($this->whenLoaded('driver')),
             'route' => new RouteResource($this->whenLoaded('route')),
             'review' => new ReviewResource($this->whenLoaded('review')),

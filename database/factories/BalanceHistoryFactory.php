@@ -13,8 +13,6 @@ class BalanceHistoryFactory extends Factory
     public function definition()
     {
         return [
-            'balanceable_id' => null,
-            'balanceable_type' => Client::class,
             'amount' => $this->faker->numberBetween(1000, 100000),
             'type' => $this->faker->randomElement(['plus', 'minus']),
             'balance_after' => $this->faker->numberBetween(10000, 200000),

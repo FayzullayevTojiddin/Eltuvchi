@@ -71,4 +71,32 @@ class User extends Authenticatable
     {
         return $this->hasOne(Driver::class);
     }
+
+    public function referral()
+    {
+        return $this->hasOne(Referral::class);
+    }
+
+    public function referralsMade()
+    {
+        return $this->hasMany(Referral::class, 'referred_by');
+    }
+
+    protected static function booted()
+    {
+        static::creating(function ($user) {
+            if (empty($user->promo_code)) {
+                $user->promo_code = strtoupper(substr(md5(uniqid()), 0, 8));
+            }
+        });
+    }
+
+    public function connected()
+    {
+        return match($this->role) {
+            'client' => $this->client,
+            'driver' => $this->driver,
+            default => null,
+        };
+    }
 }

@@ -10,8 +10,9 @@ return new class extends Migration
     {
         Schema::create('drivers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')
-                ->constrained()
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('taxopark_id')
+                ->constrained('taxo_parks')
                 ->onDelete('cascade');
             $table->string('status')->default('inactive');
             $table->integer('balance')->default(0);

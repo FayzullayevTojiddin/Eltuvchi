@@ -14,9 +14,9 @@ class ClientDiscountResource extends JsonResource
             'title' => $this->discount->title,
             'type' => $this->discount->type,
             'value' => $this->discount->value,
-            'points' => $this->discount->points,
+            // 'points' => $this->discount->points,
             'icon' => $this->discount->icon,
-            'used' => $this->used,
+            // 'used' => $this->used,
         ];
     }
 }

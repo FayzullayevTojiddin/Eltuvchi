@@ -3,3 +3,9 @@ OrderReviewni faqatgina completed bo'lganidan so'nggina yaratsa bo'ladigan qilis
 Order uchun points umumiy bir xil bo'ladi hozircha keyinchalik qo'shiladi har bir route uchun boshqa boshqa qilib
 
 Client Deposit haqida bir tekshirib ko'rilishi kerak yana bir bor
+
+
+Balance va Payments User modeli orqali bo'lgani ma'qul ikkisi birda bo'ladi
+
+Online soat kerak emas adashmasam
+

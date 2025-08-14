@@ -15,8 +15,10 @@ return new class extends Migration {
             $table->string('title')->nullable();
             $table->string('icon')->nullable();
             $table->integer('percent')->nullable();
+            $table->string('status')->default('active');
             $table->timestamps();
         });
+
     }
 
     public function down(): void

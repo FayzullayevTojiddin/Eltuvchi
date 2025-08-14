@@ -66,4 +66,9 @@ class Route extends Model
     {
         return $this->price_in * $passengers;
     }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }
