@@ -668,11 +668,11 @@
                                                 },
                                                 "discount_percent": {
                                                     "type": "integer",
-                                                    "example": 0
+                                                    "example": 10
                                                 },
                                                 "discount_summ": {
                                                     "type": "string",
-                                                    "example": "0.00"
+                                                    "example": "110723.10"
                                                 },
                                                 "discount": {
                                                     "type": "string",
@@ -702,6 +702,22 @@
                                         "message": {
                                             "type": "string",
                                             "example": "Balance is insufficient for deposit payment."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "501": {
+                        "description": "Discount not found for this client",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Not found this discount"
                                         }
                                     },
                                     "type": "object"

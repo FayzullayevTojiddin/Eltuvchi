@@ -54,9 +54,8 @@ class OrderController extends Controller
      *                 @OA\Property(property="note", type="string", nullable=true, example="Please call on arrival"),
      *                 @OA\Property(property="price_order", type="string", example="1107231.00"),
      *                 @OA\Property(property="client_deposit", type="string", example="50000.00"),
-     *                 @OA\Property(property="discount_percent", type="integer", example=0),
-     *                 @OA\Property(property="discount_summ", type="string", example="0.00"),
-     *                 @OA\Property(property="discount", type="string", nullable=true, example=null),
+     *                 @OA\Property(property="discount_percent", type="integer", example=10),
+     *                 @OA\Property(property="discount_summ", type="string", example="110723.10"),
      *                 @OA\Property(property="created_at", type="string", format="date-time", example="2025-08-14 11:43:28")
      *             )
      *         )
@@ -66,6 +65,13 @@ class OrderController extends Controller
      *         description="Insufficient balance",
      *         @OA\JsonContent(
      *             @OA\Property(property="message", type="string", example="Balance is insufficient for deposit payment.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=501,
+     *         description="Discount not found for this client",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Not found this discount")
      *         )
      *     ),
      *     @OA\Response(
@@ -91,6 +97,10 @@ class OrderController extends Controller
                 ->where('used', false)
                 ->with('discount')
                 ->first();
+
+            if(!$clientDiscount){
+                return $this->error([], 501, 'Not found this discount');
+            }
 
             if ($clientDiscount && $clientDiscount->discount) {
                 if ($clientDiscount->discount->type === 'percent') {

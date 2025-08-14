@@ -73,4 +73,9 @@ class Client extends Model
     {
         return $this->subtractBalance($amount, 'Order deposit payment');
     }
+
+    public function discounts()
+    {
+        return $this->hasMany(ClientDiscount::class);
+    }
 }

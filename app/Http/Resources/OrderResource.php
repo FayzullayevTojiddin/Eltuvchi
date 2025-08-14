@@ -48,7 +48,6 @@ class OrderResource extends JsonResource
             'client_deposit' => $this->client_deposit,
             'discount_percent' => $this->discount_percent ?? 0,
             'discount_summ' => $this->discount_summ ?? '0.00',
-            'discount' => $this->discount ?? null,
             'created_at' => $this->created_at ? $this->created_at->toDateTimeString() : null,
         ];
     }

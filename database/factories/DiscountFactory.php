@@ -12,7 +12,7 @@ class DiscountFactory extends Factory
     public function definition(): array
     {
         return [
-            'type' => 'fixed',
+            'type' => 'percent',
             'value' => $this->faker->numberBetween(10, 100),
             'points' => $this->faker->numberBetween(10, 100),
             'title' => $this->faker->sentence(3),
