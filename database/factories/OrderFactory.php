@@ -15,7 +15,7 @@ class OrderFactory extends Factory
 
     public function definition(): array
     {
-        $passengers = $this->faker->numberBetween(1, 5);
+        $passengers = $this->faker->numberBetween(1, 4);
         $priceIn = 100000;
         $total = $priceIn * $passengers;
         $discount = $this->faker->numberBetween(0, min(50000, $total));
@@ -25,11 +25,12 @@ class OrderFactory extends Factory
             'client_id' => Client::factory(),
             'driver_id' => Driver::factory(),
             'route_id' => Route::factory(),
-            'passengers' => 1,
+            'driver_payment' => $total * 0.1,
+            'passengers' => $passengers,
             'date' => now()->format('Y-m-d'),
             'time' => now()->format('H:i'),
-            'price_order' => 100000,
-            'client_deposit' => 50000,
+            'price_order' => $total,
+            'client_deposit' => $total * 0.2,
             'discount_percent' => 0,
             'discount_summ' => 0,
             'phone' => '998901234567',

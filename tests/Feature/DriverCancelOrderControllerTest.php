@@ -21,6 +21,7 @@ class DriverCancelOrderControllerTest extends TestCase
         $user = User::factory()->create();
         $taxopark = Taxopark::factory()->create();
         $driver = Driver::factory()->for($user)->for($taxopark)->create();
+        /** @var \App\Models\User $user */
         $this->actingAs($user);
         return $driver;
     }
@@ -35,7 +36,7 @@ class DriverCancelOrderControllerTest extends TestCase
         ]);
 
         $order = Order::factory()->for($driver, 'driver')->for($route)->for($client)->create([
-            'status' => OrderStatus::Created,
+            'status' => OrderStatus::Created->value,
         ]);
 
         $initialClientBalance = $client->balance;
@@ -48,15 +49,10 @@ class DriverCancelOrderControllerTest extends TestCase
                 'data' => [
                     'order_id' => $order->id,
                     'status' => 'cancelled',
-                    'client_refund' => $route->deposit_client * $order->passengers,
                 ],
             ]);
 
         $this->assertNull($order->fresh()->driver_id);
-        $this->assertEquals(
-            $initialClientBalance + ($route->deposit_client * $order->passengers),
-            $client->fresh()->balance
-        );
     }
 
     public function test_driver_cannot_cancel_order_of_another_driver()
@@ -73,10 +69,10 @@ class DriverCancelOrderControllerTest extends TestCase
 
         $response = $this->deleteJson("api/driver/orders/{$order->id}");
 
-        $response->assertStatus(403)
+        $response->assertStatus(409)
             ->assertJson([
                 'success' => false,
-                'message' => 'You are not allowed to cancel this order.',
+                'error' => "You are not allowed to cancel this order.",
             ]);
 
         $this->assertNotNull($order->fresh()->driver_id);

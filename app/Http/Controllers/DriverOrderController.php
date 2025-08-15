@@ -8,6 +8,27 @@ use Illuminate\Support\Facades\Auth;
 
 class DriverOrderController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/api/driver/orders",
+     *     summary="Get all orders for driver's taxopark",
+     *     description="Returns all orders related to the driver's taxopark",
+     *     tags={"Driver Orders"},
+     *     security={{"sanctum": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of orders",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/ClientOrder")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated"
+     *     )
+     * )
+     */
     public function index()
     {
         $driver = Auth::user()->driver;
@@ -23,6 +44,34 @@ class DriverOrderController extends Controller
         return $this->response(ClientOrderResource::collection($orders));
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/driver/my_orders",
+     *     summary="Get driver's orders",
+     *     description="Returns orders assigned to the driver, optionally filtered by status",
+     *     tags={"Driver Orders"},
+     *     security={{"sanctum": {}}},
+     *     @OA\Parameter(
+     *         name="status",
+     *         in="query",
+     *         description="Filter orders by status",
+     *         required=false,
+     *         @OA\Schema(type="string", example="Completed")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of driver's orders",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/ClientOrder")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated"
+     *     )
+     * )
+     */
     public function my_orders()
     {
         $driver = Auth::user()->driver;

@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Driver;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -29,5 +30,10 @@ class UserFactory extends Factory
     public function asDriver(): static
     {
         return $this->state(fn () => ['role' => 'driver']);
+    }
+
+    public function driver()
+    {
+        return $this->has(Driver::factory());
     }
 }

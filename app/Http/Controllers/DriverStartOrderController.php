@@ -4,28 +4,27 @@ namespace App\Http\Controllers;
 
 use App\Enums\OrderStatus;
 use App\Models\Order;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class DriverCancelOrderController extends Controller
+class DriverStartOrderController extends Controller
 {
     /**
-     * @OA\Delete(
-     *     path="/api/driver/orders/{order}",
-     *     operationId="DriverCancelOrder",
+     * @OA\Post(
+     *     path="/api/driver/orders/{order}/start",
+     *     operationId="DriverStartOrder",
      *     tags={"Driver Orders"},
-     *     summary="Driver cancels an order",
-     *     description="Allows a driver to cancel their assigned order. Completed orders cannot be canceled.",
+     *     summary="Start an order by driver",
+     *     description="Allows a driver to start their assigned order. Order must have status 'Accepted'.",
      *     @OA\Parameter(
      *         name="order",
      *         in="path",
-     *         description="ID of the order to cancel",
+     *         description="ID of the order to start",
      *         required=true,
      *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Order successfully cancelled",
+     *         description="Order successfully started",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(property="success", type="boolean", example=true),
@@ -33,27 +32,27 @@ class DriverCancelOrderController extends Controller
      *                 property="data",
      *                 type="object",
      *                 @OA\Property(property="order_id", type="integer", example=123),
-     *                 @OA\Property(property="status", type="string", example="cancelled")
+     *                 @OA\Property(property="status", type="string", example="started")
      *             ),
-     *             @OA\Property(property="message", type="string", example="Order successfully cancelled.")
+     *             @OA\Property(property="message", type="string", example="Order successfully started.")
      *         )
      *     ),
      *     @OA\Response(
-     *         response=409,
-     *         description="Forbidden / Not allowed (other driver tries to cancel)",
+     *         response=400,
+     *         description="Order cannot be started because it's not accepted",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="error", type="string", example="You are not allowed to cancel this order.")
+     *             @OA\Property(property="error", type="string", example="Only accepted orders can be started.")
      *         )
      *     ),
      *     @OA\Response(
      *         response=403,
-     *         description="Forbidden / Completed order cannot be canceled",
+     *         description="Driver not allowed to start this order",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="error", type="string", example="You cannot cancel a completed order.")
+     *             @OA\Property(property="error", type="string", example="You are not allowed to start this order.")
      *         )
      *     ),
      *     @OA\Response(
@@ -68,29 +67,25 @@ class DriverCancelOrderController extends Controller
      *     security={{"sanctum":{}}}
      * )
      */
-    public function cancel_order(Order $order)
+    public function start_order(Order $order)
     {
         $driver = Auth::user()->driver;
-
         if ($order->driver_id !== $driver->id) {
-            return $this->error([], 409, 'You are not allowed to cancel this order.');
+            return $this->error(data: [], error_message: 'You are not allowed to start this order.', status: 403);
         }
 
-        if($order->status == OrderStatus::Completed->value){
-            return $this->error(data: [], status: 403, error_message: "You cannot cancel a completed order.");
+        if ($order->status !== OrderStatus::Accepted) {
+            return $this->error(error_message: 'Only accepted orders can be started.', status: 400);
         }
 
-        $order->driver_id = null;
-        $order->status = OrderStatus::Created->value;
+        $order->status = OrderStatus::Started->value;
         $order->save();
 
-        $driverPayment = $order->driver_payment ?? 0;
-        $order->client->addBalance($driverPayment, "Driver #{$order->driver_id} canceled order #{$order->id}");
-        
-        $order->logStatusChange(OrderStatus::Created->value, $driver, 'Driver removed from the order');
+        $order->logStatusChange(status: OrderStatus::Started->value, user: $driver, description: 'Order started by driver');
+
         return $this->success(data: [
             'order_id' => $order->id,
-            'status' => 'cancelled',
-        ],message: 'Order successfully cancelled.');
+            'status' => 'started',
+        ], message: 'Order successfully started.');
     }
 }
