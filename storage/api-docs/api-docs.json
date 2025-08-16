@@ -12,6 +12,557 @@
         }
     ],
     "paths": {
+        "/api/super-admin/clients": {
+            "get": {
+                "tags": [
+                    "Admin Clients"
+                ],
+                "summary": "Get paginated list of clients",
+                "operationId": "a37da3d9212585eabb6f7ad8bcad6653",
+                "responses": {
+                    "200": {
+                        "description": "Paginated list of clients",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/AdminClient"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/super-admin/clients/{client}": {
+            "get": {
+                "tags": [
+                    "Admin Clients"
+                ],
+                "summary": "Get a single client",
+                "operationId": "3902a52061ca05b2940488e6325107ae",
+                "parameters": [
+                    {
+                        "name": "client",
+                        "in": "path",
+                        "description": "Client ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Client details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AdminClient"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Client not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Admin Clients"
+                ],
+                "summary": "Update a client",
+                "operationId": "ae54ddbbcfcc9d5d83f9d048fb2d9218",
+                "parameters": [
+                    {
+                        "name": "client",
+                        "in": "path",
+                        "description": "Client ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "status": {
+                                        "type": "string"
+                                    },
+                                    "balance": {
+                                        "type": "integer"
+                                    },
+                                    "points": {
+                                        "type": "integer"
+                                    },
+                                    "settings": {
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Client updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AdminClient"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Client not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Admin Clients"
+                ],
+                "summary": "Mark client as inactive",
+                "operationId": "e2224ff2d87c90d2aa8d033b7a9c75d0",
+                "parameters": [
+                    {
+                        "name": "client",
+                        "in": "path",
+                        "description": "Client ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Client marked as inactive",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AdminClient"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Client not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/super-admin/dashboard": {
+            "get": {
+                "tags": [
+                    "Admin Dashboard"
+                ],
+                "summary": "Get admin dashboard statistics",
+                "description": "Returns counts, orders and revenue statistics for the dashboard.",
+                "operationId": "966a4ca21ac3b3cdec22aeb6b765a06e",
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": null,
+                                            "nullable": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "counts": {
+                                                    "properties": {
+                                                        "drivers": {
+                                                            "type": "integer",
+                                                            "example": 12
+                                                        },
+                                                        "clients": {
+                                                            "type": "integer",
+                                                            "example": 100
+                                                        },
+                                                        "dispatchers": {
+                                                            "type": "integer",
+                                                            "example": 5
+                                                        },
+                                                        "admins": {
+                                                            "type": "integer",
+                                                            "example": 2
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "orders": {
+                                                    "properties": {
+                                                        "today": {
+                                                            "type": "integer",
+                                                            "example": 15
+                                                        },
+                                                        "week": {
+                                                            "type": "integer",
+                                                            "example": 120
+                                                        },
+                                                        "month": {
+                                                            "type": "integer",
+                                                            "example": 450
+                                                        },
+                                                        "total": {
+                                                            "type": "integer",
+                                                            "example": 1200
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "revenue": {
+                                                    "properties": {
+                                                        "today": {
+                                                            "type": "number",
+                                                            "format": "float",
+                                                            "example": 250000.5
+                                                        },
+                                                        "week": {
+                                                            "type": "number",
+                                                            "format": "float",
+                                                            "example": 1200000
+                                                        },
+                                                        "month": {
+                                                            "type": "number",
+                                                            "format": "float",
+                                                            "example": 4000000
+                                                        },
+                                                        "total": {
+                                                            "type": "number",
+                                                            "format": "float",
+                                                            "example": 15000000
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/super-admin/drivers": {
+            "get": {
+                "tags": [
+                    "Admin Drivers"
+                ],
+                "summary": "Get paginated list of drivers",
+                "operationId": "1a7efeb46368c80dd58fda2377a45c5e",
+                "responses": {
+                    "200": {
+                        "description": "Paginated list of drivers",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/AdminDriverResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Admin Drivers"
+                ],
+                "summary": "Create a new driver",
+                "operationId": "05e1037936256c29e5474f7ac783d22f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer"
+                                    },
+                                    "status": {
+                                        "type": "string"
+                                    },
+                                    "balance": {
+                                        "type": "integer"
+                                    },
+                                    "points": {
+                                        "type": "integer"
+                                    },
+                                    "details": {
+                                        "type": "object"
+                                    },
+                                    "settings": {
+                                        "type": "object"
+                                    },
+                                    "taxopark_id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Driver created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AdminDriverResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/super-admin/drivers/{driver}": {
+            "get": {
+                "tags": [
+                    "Admin Drivers"
+                ],
+                "summary": "Get a single driver",
+                "operationId": "2a40015edc545ae9a8f51bb42def1fd5",
+                "parameters": [
+                    {
+                        "name": "driver",
+                        "in": "path",
+                        "description": "Driver ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Driver details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AdminDriverResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Driver not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Admin Drivers"
+                ],
+                "summary": "Update a driver",
+                "operationId": "cf3e76113df16e600dcd6a421be80880",
+                "parameters": [
+                    {
+                        "name": "driver",
+                        "in": "path",
+                        "description": "Driver ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "status": {
+                                        "type": "string"
+                                    },
+                                    "balance": {
+                                        "type": "integer"
+                                    },
+                                    "points": {
+                                        "type": "integer"
+                                    },
+                                    "details": {
+                                        "type": "object"
+                                    },
+                                    "settings": {
+                                        "type": "object"
+                                    },
+                                    "taxopark_id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Driver updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AdminDriverResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Driver not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Admin Drivers"
+                ],
+                "summary": "Mark driver as inactive",
+                "operationId": "879eed17c16571def4ed93df347045ff",
+                "parameters": [
+                    {
+                        "name": "driver",
+                        "in": "path",
+                        "description": "Driver ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Driver marked as inactive",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AdminDriverResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Driver not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/auth": {
             "post": {
                 "tags": [
@@ -1471,6 +2022,121 @@
                 ]
             }
         },
+        "/api/driver/market": {
+            "get": {
+                "tags": [
+                    "Driver Market"
+                ],
+                "summary": "List available products",
+                "description": "Retrieve all active products that can be purchased by drivers.",
+                "operationId": "6b05620c1d00c1165315c4298a74558f",
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Product"
+                                            }
+                                        },
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Success"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/driver/market/products/{product}": {
+            "post": {
+                "tags": [
+                    "Driver Market"
+                ],
+                "summary": "Purchase a product",
+                "description": "Driver purchases a product using points. Points will be deducted if sufficient balance exists.",
+                "operationId": "5974133d2902ba82144b83f787742f40",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product purchased successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Product successfully purchased."
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Product"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Insufficient points or product unavailable."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/driver/orders": {
             "get": {
                 "tags": [
@@ -2117,6 +2783,82 @@
     },
     "components": {
         "schemas": {
+            "AdminClient": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "balance": {
+                        "type": "integer"
+                    },
+                    "points": {
+                        "type": "integer"
+                    },
+                    "settings": {
+                        "type": "object"
+                    },
+                    "user": {
+                        "type": "object"
+                    },
+                    "discounts": {
+                        "type": "array",
+                        "items": {
+                            "type": "object"
+                        }
+                    },
+                    "orders_count": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "AdminDriverResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "balance": {
+                        "type": "integer"
+                    },
+                    "points": {
+                        "type": "integer"
+                    },
+                    "details": {
+                        "type": "object"
+                    },
+                    "settings": {
+                        "type": "object"
+                    },
+                    "user": {
+                        "type": "object"
+                    },
+                    "taxopark": {
+                        "type": "object"
+                    },
+                    "orders_count": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
             "BalanceHistory": {
                 "title": "Balance History Resource",
                 "description": "Balance history entry representation",
@@ -2674,6 +3416,42 @@
                 },
                 "type": "object"
             },
+            "Product": {
+                "title": "Product Resource",
+                "description": "Product resource representation",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "status": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "icon_type": {
+                        "type": "string",
+                        "example": "gift"
+                    },
+                    "points": {
+                        "type": "integer",
+                        "example": 150
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Free Wash"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "One free car wash at partner stations."
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-16 12:30:00"
+                    }
+                },
+                "type": "object"
+            },
             "Referral": {
                 "title": "Referral Resource",
                 "description": "Referral ma'lumotlarini qaytaruvchi resource",
@@ -2895,6 +3673,18 @@
     },
     "tags": [
         {
+            "name": "Admin Clients",
+            "description": "Admin Clients"
+        },
+        {
+            "name": "Admin Dashboard",
+            "description": "Admin Dashboard"
+        },
+        {
+            "name": "Admin Drivers",
+            "description": "Admin Drivers"
+        },
+        {
             "name": "Authentication",
             "description": "Authentication"
         },
@@ -2921,6 +3711,10 @@
         {
             "name": "Driver",
             "description": "Driver"
+        },
+        {
+            "name": "Driver Market",
+            "description": "Driver Market"
         },
         {
             "name": "Referrals",

@@ -44,15 +44,15 @@ class TaxoPark extends Model
 
     public function drivers(): HasMany
     {
-        return $this->hasMany(Driver::class);
+        return $this->hasMany(Driver::class, 'taxopark_id');
     }
 
-    public function routesFrom()
+    public function routesFrom(): HasMany
     {
         return $this->hasMany(Route::class, 'taxopark_from_id');
     }
 
-    public function routesTo()
+    public function routesTo(): HasMany
     {
         return $this->hasMany(Route::class, 'taxopark_to_id');
     }
@@ -60,5 +60,10 @@ class TaxoPark extends Model
     public function routes()
     {
         return $this->routesFrom->merge($this->routesTo);
+    }
+
+    public function dispatchers(): HasMany
+    {
+        return $this->hasMany(Dispatcher::class, 'taxopark_id');
     }
 }

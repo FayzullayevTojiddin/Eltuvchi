@@ -1,5 +1,12 @@
 <?php
 
+use App\Http\Controllers\AdminClientController;
+use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\AdminDriverController;
+use App\Http\Controllers\AdminMarketController;
+use App\Http\Controllers\AdminOrderController;
+use App\Http\Controllers\AdminPaymentController;
+use App\Http\Controllers\AdminTaxoParkController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BalanceHistoryController;
 use App\Http\Controllers\ClientCancelOrderController;
@@ -20,6 +27,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderReviewController;
 use App\Http\Controllers\ReferralController;
 use App\Http\Controllers\RegionController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RouteController;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
@@ -61,5 +69,16 @@ Route::prefix('/driver')->middleware('auth:sanctum')->group(function() {
     Route::post('/market/{product}', [DriverMarketController::class, 'get_product']);
 });
 
-Route::prefix('/super-admin')->group(function() {});
-Route::prefix('/dispatcher')->group(function() {});
+Route::prefix('/super-admin')->middleware('auth:sanctum')->group(function() {
+    Route::get('/dashboard', [AdminDashboardController::class, 'dashboard']);
+    Route::get('/reports/download', [ReportController::class, 'download']); // Hozircha emas keyinroq yozamiz
+    Route::apiResources([
+        'clients' => AdminClientController::class,
+        'drivers' => AdminDriverController::class,
+        'taxoparks' => AdminTaxoParkController::class,
+        'payments' => AdminPaymentController::class,
+        'orders' => AdminOrderController::class,
+        'markets' => AdminMarketController::class,
+    ]);
+});
+Route::prefix('/dispatcher')->middleware('auth:sanctum')->group(function() {});

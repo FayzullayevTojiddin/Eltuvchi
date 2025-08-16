@@ -87,6 +87,12 @@ class ClientCompletedOrderController extends Controller
             $driver->addBalance($deposit, "Deposit from order #{$order->id} completed by client");
         }
 
+        $points = config('services.order_complete_points', 10);
+        if ($driver) {
+            $driver->addPoints($points, "Order #{$order->id} completed by client");
+        }
+        $client->addPoints($points, "Order #{$order->id} completed");
+        
         $order->status = OrderStatus::Completed;
         $order->save();
 

@@ -18,12 +18,16 @@ class ClientCompletedOrderControllerTest extends TestCase
     use RefreshDatabase;
 
     #[Test]
-    public function client_can_complete_own_stopped_order()
+    public function client_can_complete_own_stopped_order_and_awards_points()
     {
         Event::fake();
-        $client = Client::factory()->create();
+
+        config(['services.order_complete_points' => 10]);
+
+        $client = Client::factory()->create(['points' => 0, 'balance' => 0]);
         $driver = Driver::factory()->create([
-            'balance' => 0
+            'balance' => 0,
+            'points' => 0,
         ]);
         $route = Route::factory()->create();
 
@@ -43,12 +47,16 @@ class ClientCompletedOrderControllerTest extends TestCase
                     'order_id' => $order->id,
                     'status' => 'completed',
                     'driver_credited' => 20000,
+                    // 'points_awarded' => 10,
                 ],
                 'message' => 'Order successfully completed.',
             ]);
 
         $this->assertEquals(OrderStatus::Completed, $order->fresh()->status);
         $this->assertEquals(20000, $driver->fresh()->balance);
+
+        $this->assertEquals(10, $driver->fresh()->points);
+        $this->assertEquals(10, $client->fresh()->points);
 
         Event::assertDispatched(OrderChangedSendMessageEvent::class, function ($event) use ($driver, $order) {
             return $event->user->id === $driver->user->id
@@ -59,9 +67,9 @@ class ClientCompletedOrderControllerTest extends TestCase
     #[Test]
     public function client_cannot_complete_order_of_another_client()
     {
-        $client = Client::factory()->create();
-        $otherClient = Client::factory()->create();
-        $driver = Driver::factory()->create();
+        $client = Client::factory()->create(['points' => 0, 'balance' => 0]);
+        $otherClient = Client::factory()->create(['points' => 0, 'balance' => 0]);
+        $driver = Driver::factory()->create(['points' => 0, 'balance' => 0]);
         $route = Route::factory()->create();
 
         $order = Order::factory()->for($otherClient)->for($driver)->for($route)->create([
@@ -77,13 +85,16 @@ class ClientCompletedOrderControllerTest extends TestCase
                 'success' => false,
                 'error' => 'You are not allowed to complete this order.',
             ]);
+
+        $this->assertEquals(0, $client->fresh()->points);
+        $this->assertEquals(0, $driver->fresh()->points);
     }
 
     #[Test]
     public function client_cannot_complete_order_that_is_not_stopped()
     {
-        $client = Client::factory()->create();
-        $driver = Driver::factory()->create();
+        $client = Client::factory()->create(['points' => 0, 'balance' => 0]);
+        $driver = Driver::factory()->create(['points' => 0, 'balance' => 0]);
         $route = Route::factory()->create();
 
         $order = Order::factory()->for($client)->for($driver)->for($route)->create([
@@ -99,5 +110,8 @@ class ClientCompletedOrderControllerTest extends TestCase
                 'success' => false,
                 'error' => 'Only stopped orders can be completed.',
             ]);
+
+        $this->assertEquals(0, $client->fresh()->points);
+        $this->assertEquals(0, $driver->fresh()->points);
     }
 }

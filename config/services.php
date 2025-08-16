@@ -36,5 +36,6 @@ return [
     ],
     'telegram' => [
         'bot_token' => env('TELEGRAM_BOT_TOKEN')
-    ]
+    ],
+    'order_complete_points' => env('ORDER_COMPLETE_POINTS', 10),
 ];
