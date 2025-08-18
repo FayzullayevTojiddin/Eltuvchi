@@ -99,4 +99,9 @@ class User extends Authenticatable
             default => null,
         };
     }
+
+    public function dispatcher(): HasOne
+    {
+        return $this->hasOne(Dispatcher::class);
+    }
 }

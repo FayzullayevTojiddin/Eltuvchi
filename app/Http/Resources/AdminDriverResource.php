@@ -9,7 +9,7 @@ class AdminDriverResource extends JsonResource
 {
     /**
      * @OA\Schema(
-     *     schema="AdminDriverResource",
+     *     schema="AdminDriver",
      *     type="object",
      *     @OA\Property(property="id", type="integer"),
      *     @OA\Property(property="status", type="string"),

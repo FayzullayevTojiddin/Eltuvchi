@@ -19,7 +19,8 @@ class DriverDashboardTest extends TestCase
         Carbon::setTestNow(Carbon::parse('2025-08-12 12:00:00'));
 
         $driver = Driver::factory()->create();
-
+        $driver->user->role = 'driver';
+        $driver->save();
         $this->actingAs($driver->user, 'sanctum');
 
         $route = Route::factory()->create([

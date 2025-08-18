@@ -16,7 +16,7 @@ class DriverMarketControllerTest extends TestCase
 
     protected function authenticateDriver(int $points = 100): Driver
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'driver']);
         $driver = Driver::factory()->create([
             'user_id' => $user->id,
             'points'  => $points,

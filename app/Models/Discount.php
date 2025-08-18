@@ -48,7 +48,7 @@ class Discount extends Model
         'title',
         'icon',
         'percent',
-        'active',
+        'status',
     ];
 
     public function orders(): HasMany

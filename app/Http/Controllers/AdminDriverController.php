@@ -19,7 +19,7 @@ class AdminDriverController extends Controller
      *         description="Paginated list of drivers",
      *         @OA\JsonContent(
      *             type="object",
-     *             @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/AdminDriverResource"))
+     *             @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/AdminDriver"))
      *         )
      *     ),
      *     @OA\Response(response=401, description="Unauthenticated")
@@ -47,7 +47,7 @@ class AdminDriverController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="Driver details",
-     *         @OA\JsonContent(ref="#/components/schemas/AdminDriverResource")
+     *         @OA\JsonContent(ref="#/components/schemas/AdminDriver")
      *     ),
      *     @OA\Response(response=401, description="Unauthenticated"),
      *     @OA\Response(response=404, description="Driver not found")
@@ -87,7 +87,7 @@ class AdminDriverController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="Driver updated",
-     *         @OA\JsonContent(ref="#/components/schemas/AdminDriverResource")
+     *         @OA\JsonContent(ref="#/components/schemas/AdminDriver")
      *     ),
      *     @OA\Response(response=401, description="Unauthenticated"),
      *     @OA\Response(response=404, description="Driver not found")
@@ -116,7 +116,7 @@ class AdminDriverController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="Driver marked as inactive",
-     *         @OA\JsonContent(ref="#/components/schemas/AdminDriverResource")
+     *         @OA\JsonContent(ref="#/components/schemas/AdminDriver")
      *     ),
      *     @OA\Response(response=401, description="Unauthenticated"),
      *     @OA\Response(response=404, description="Driver not found")
@@ -149,7 +149,7 @@ class AdminDriverController extends Controller
      *         )
      *     ),
      *     @OA\Response(response=200, description="Driver created",
-     *         @OA\JsonContent(ref="#/components/schemas/AdminDriverResource")
+     *         @OA\JsonContent(ref="#/components/schemas/AdminDriver")
      *     ),
      *     @OA\Response(response=401, description="Unauthenticated")
      * )

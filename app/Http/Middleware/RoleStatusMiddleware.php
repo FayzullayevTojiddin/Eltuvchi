@@ -1,0 +1,29 @@
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class RoleStatusMiddleware
+{
+    public function handle(Request $request, Closure $next, ...$roles)
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['message' => 'Unauthenticated'], 401);
+        }
+
+        if (!in_array($user->role, $roles)) {
+            return response()->json(['message' => 'Forbidden: wrong role'], 403);
+        }
+
+        if (isset($user->status) && $user->status !== 'active') {
+            return response()->json(['message' => 'Your account is not active'], 403);
+        }
+
+        return $next($request);
+    }
+}

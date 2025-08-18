@@ -17,7 +17,7 @@ class DriverGetOrderControllerTest extends TestCase
 
     public function test_driver_cannot_accept_order_if_already_assigned()
     {
-        $user = User::factory()->driver()->create();
+        $user = User::factory()->driver()->create(['role' => 'driver']);
         $driver = $user->driver;
 
         $route = Route::factory()->create();
@@ -38,7 +38,7 @@ class DriverGetOrderControllerTest extends TestCase
 
     public function test_driver_cannot_accept_order_if_route_mismatch()
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'driver']);
         $driver = Driver::factory()->create([
             'user_id' => $user->id,
             'taxopark_id' => TaxoPark::factory()->create()->id,
@@ -68,7 +68,7 @@ class DriverGetOrderControllerTest extends TestCase
     }
     public function test_driver_cannot_accept_order_if_insufficient_balance()
     {
-        $user = User::factory()->driver()->create();
+        $user = User::factory()->driver()->create(['role' => 'driver']);
         $driver = $user->driver;
         $driver->update(['balance' => 500]);
 
@@ -95,7 +95,7 @@ class DriverGetOrderControllerTest extends TestCase
 
     public function test_driver_can_accept_order_successfully()
     {
-        $user = User::factory()->driver()->create();
+        $user = User::factory()->driver()->create(['role' => 'driver']);
         $driver = $user->driver;
         $driver->update(['balance' => 5000]);
 

@@ -32,6 +32,9 @@ class DriverStoppedOrderControllerTest extends TestCase
             'status' => OrderStatus::Started,
         ]);
 
+        $driver->user->role = 'driver';
+        $driver->save();
+
         $this->actingAs($driver->user, 'sanctum');
 
         $response = $this->postJson("/api/driver/orders/{$order->id}/stop");
@@ -65,6 +68,10 @@ class DriverStoppedOrderControllerTest extends TestCase
         $client = Client::factory()->create();
         $route = Route::factory()->create();
 
+        
+        $driver->user->role = 'driver';
+        $driver->save();
+
         $order = Order::factory()->create([
             'driver_id' => $otherDriver->id,
             'client_id' => $client->id,
@@ -89,18 +96,16 @@ class DriverStoppedOrderControllerTest extends TestCase
         $driver = Driver::factory()->create();
         $client = Client::factory()->create();
         $route = Route::factory()->create();
-
         $order = Order::factory()->create([
             'driver_id' => $driver->id,
             'client_id' => $client->id,
             'route_id' => $route->id,
             'status' => OrderStatus::Accepted,
-        ]);
-
+        ]); 
+        $driver->user->role = 'driver';
+        $driver->save();
         $this->actingAs($driver->user, 'sanctum');
-
         $response = $this->postJson("/api/driver/orders/{$order->id}/stop");
-
         $response->assertStatus(400)
             ->assertJson([
                 'success' => false,

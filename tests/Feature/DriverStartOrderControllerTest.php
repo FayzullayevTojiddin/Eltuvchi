@@ -28,7 +28,8 @@ class DriverStartOrderControllerTest extends TestCase
             'route_id' => $route->id,
             'status' => OrderStatus::Accepted->value,
         ]);
-
+        $driver->user->role = 'driver';
+        $driver->save();
         $this->actingAs($driver->user, 'sanctum');
 
         $response = $this->postJson("/api/driver/orders/{$order->id}/start");
@@ -62,7 +63,8 @@ class DriverStartOrderControllerTest extends TestCase
             'route_id' => $route->id,
             'status' => OrderStatus::Accepted->value,
         ]);
-
+        $driver->user->role = 'driver';
+        $driver->save();
         $this->actingAs($driver->user, 'sanctum');
 
         $response = $this->postJson("/api/driver/orders/{$order->id}/start");
@@ -87,7 +89,8 @@ class DriverStartOrderControllerTest extends TestCase
             'route_id' => $route->id,
             'status' => OrderStatus::Created->value,
         ]);
-
+        $driver->user->role = 'driver';
+        $driver->save();
         $this->actingAs($driver->user, 'sanctum');
 
         $response = $this->postJson("/api/driver/orders/{$order->id}/start");

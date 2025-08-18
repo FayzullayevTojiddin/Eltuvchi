@@ -18,7 +18,7 @@ class DriverCancelOrderControllerTest extends TestCase
 
     protected function authenticateDriver()
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'driver']);
         $taxopark = Taxopark::factory()->create();
         $driver = Driver::factory()->for($user)->for($taxopark)->create();
         /** @var \App\Models\User $user */

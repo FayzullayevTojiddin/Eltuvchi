@@ -18,10 +18,10 @@ class DiscountSeeder extends Seeder
             'icon' => '🎁',
         ]);
         Discount::create([
-            'type' => 'fixed',
-            'value' => 100000,
+            'type' => 'percent',
+            'value' => 15,
             'points' => 500,
-            'title' => '100,000 so‘mlik chegirma',
+            'title' => '15% chegirma',
             'icon' => '💸',
         ]);
     }

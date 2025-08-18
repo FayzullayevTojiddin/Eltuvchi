@@ -311,6 +311,181 @@
                 ]
             }
         },
+        "/api/super-admin/dispatchers": {
+            "get": {
+                "tags": [
+                    "Admin Dispatcher"
+                ],
+                "summary": "Get list of all dispatchers",
+                "operationId": "401758a2543078161f5870bdee8b903d",
+                "responses": {
+                    "200": {
+                        "description": "List of dispatchers",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/AdminDispatcher"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Admin Dispatcher"
+                ],
+                "summary": "Create new dispatcher",
+                "operationId": "b95d3de4178835032b52aff6e3a63d13",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "user_id",
+                                    "taxopark_id",
+                                    "full_name"
+                                ],
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer"
+                                    },
+                                    "taxopark_id": {
+                                        "type": "integer"
+                                    },
+                                    "full_name": {
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "type": "boolean"
+                                    },
+                                    "details": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Dispatcher created"
+                    }
+                }
+            }
+        },
+        "/api/super-admin/dispatchers/{dispatcher}": {
+            "get": {
+                "tags": [
+                    "Admin Dispatcher"
+                ],
+                "summary": "Get single dispatcher",
+                "operationId": "756a548aaccc420b3d59f78d086dab0c",
+                "parameters": [
+                    {
+                        "name": "dispatcher",
+                        "in": "path",
+                        "description": "Dispatcher ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dispatcher details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AdminDispatcher"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Admin Dispatcher"
+                ],
+                "summary": "Update dispatcher",
+                "operationId": "69318ed80334831069cee5bbd92ca492",
+                "parameters": [
+                    {
+                        "name": "dispatcher",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "full_name": {
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "type": "boolean"
+                                    },
+                                    "details": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Dispatcher updated"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Admin Dispatcher"
+                ],
+                "summary": "Deactivate dispatcher (soft delete)",
+                "operationId": "614576d67cc43e41e7a3d24ea54ab5d1",
+                "parameters": [
+                    {
+                        "name": "dispatcher",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dispatcher deactivated"
+                    }
+                }
+            }
+        },
         "/api/super-admin/drivers": {
             "get": {
                 "tags": [
@@ -328,7 +503,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/AdminDriverResource"
+                                                "$ref": "#/components/schemas/AdminDriver"
                                             }
                                         }
                                     },
@@ -392,7 +567,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/AdminDriverResource"
+                                    "$ref": "#/components/schemas/AdminDriver"
                                 }
                             }
                         }
@@ -432,7 +607,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/AdminDriverResource"
+                                    "$ref": "#/components/schemas/AdminDriver"
                                 }
                             }
                         }
@@ -503,7 +678,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/AdminDriverResource"
+                                    "$ref": "#/components/schemas/AdminDriver"
                                 }
                             }
                         }
@@ -544,7 +719,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/AdminDriverResource"
+                                    "$ref": "#/components/schemas/AdminDriver"
                                 }
                             }
                         }
@@ -554,6 +729,515 @@
                     },
                     "404": {
                         "description": "Driver not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/super-admin/market": {
+            "get": {
+                "tags": [
+                    "Admin Market"
+                ],
+                "summary": "Get list of products or discounts",
+                "operationId": "b7219518189715726d0e87a8ebe8319f",
+                "parameters": [
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Type of items to fetch (product|discount)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "product",
+                                "discount"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of items"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Admin Market"
+                ],
+                "summary": "Create product or discount",
+                "operationId": "0ade1e3caa3b95536eb12cd1b34e920d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "type"
+                                ],
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "product",
+                                            "discount"
+                                        ]
+                                    },
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "type": "boolean"
+                                    },
+                                    "icon_type": {
+                                        "type": "string"
+                                    },
+                                    "points": {
+                                        "type": "integer"
+                                    },
+                                    "value": {
+                                        "type": "integer"
+                                    },
+                                    "percent": {
+                                        "type": "integer"
+                                    },
+                                    "icon": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created successfully"
+                    }
+                }
+            }
+        },
+        "/api/super-admin/market/{id}": {
+            "put": {
+                "tags": [
+                    "Admin Market"
+                ],
+                "summary": "Update product or discount (only title, description, status)",
+                "operationId": "5b80358e95dcb3db7e01b3fe30a18a4f",
+                "parameters": [
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Type of item (product|discount)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "product",
+                                "discount"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated successfully"
+                    }
+                }
+            }
+        },
+        "/api/admin/orders": {
+            "get": {
+                "tags": [
+                    "Admin Orders"
+                ],
+                "summary": "Get all orders",
+                "operationId": "3bd2889661cdab2ffdd9a3c26aee96c6",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter orders by status",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "pending",
+                                "accepted",
+                                "completed",
+                                "cancelled"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of orders",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/AdminOrder"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/orders/{id}": {
+            "get": {
+                "tags": [
+                    "Admin Orders"
+                ],
+                "summary": "Get single order by ID",
+                "operationId": "266192160779cd669287f02bb5b3b733",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Order ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Order details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AdminOrder"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Admin Orders"
+                ],
+                "summary": "Update order by ID",
+                "operationId": "b68bca16067b7073a1ae85e37d95b66b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Order ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "status": {
+                                        "type": "string",
+                                        "example": "completed"
+                                    },
+                                    "note": {
+                                        "type": "string",
+                                        "example": "Admin updated order"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated order",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AdminOrder"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Admin Orders"
+                ],
+                "summary": "Cancel order by ID",
+                "operationId": "1a202ce7b504d56699c0adc8305eb049",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Order ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Order cancelled successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Order cancelled successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/AdminOrder"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/super-admin/taxoparks": {
+            "get": {
+                "tags": [
+                    "Admin TaxoParks"
+                ],
+                "summary": "Get paginated list of taxoparks",
+                "operationId": "d862e51748a22049ad914684283c5410",
+                "responses": {
+                    "200": {
+                        "description": "Paginated list of taxoparks",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/AdminTaxoParkResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/super-admin/taxoparks/{taxopark}": {
+            "get": {
+                "tags": [
+                    "Admin TaxoParks"
+                ],
+                "summary": "Get a single taxopark",
+                "operationId": "01c40cb38647da4d17bc6d0f9878046d",
+                "parameters": [
+                    {
+                        "name": "taxopark",
+                        "in": "path",
+                        "description": "TaxoPark ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "TaxoPark details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AdminTaxoParkResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "TaxoPark not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Admin TaxoParks"
+                ],
+                "summary": "Update a taxopark",
+                "operationId": "84ba957fdf3fe2c4449f0724bc8cb473",
+                "parameters": [
+                    {
+                        "name": "taxopark",
+                        "in": "path",
+                        "description": "TaxoPark ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "type": "string"
+                                    },
+                                    "region_id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "TaxoPark updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AdminTaxoParkResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "TaxoPark not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Admin TaxoParks"
+                ],
+                "summary": "Mark taxopark as inactive",
+                "operationId": "49a23eeb13a93e466ff4682f28b80bdf",
+                "parameters": [
+                    {
+                        "name": "taxopark",
+                        "in": "path",
+                        "description": "TaxoPark ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "TaxoPark marked as inactive",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AdminTaxoParkResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "TaxoPark not found"
                     }
                 },
                 "security": [
@@ -1704,6 +2388,274 @@
                 ]
             }
         },
+        "/dispatcher/drivers": {
+            "get": {
+                "tags": [
+                    "Dispatcher Drivers"
+                ],
+                "summary": "Get list of drivers in your taxopark",
+                "operationId": "19290bb9b730a32259013e65390587c1",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter by driver status",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "active",
+                                "inactive",
+                                "archived"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of drivers",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/DispatcherDriver"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Dispatcher Drivers"
+                ],
+                "summary": "Create a new driver",
+                "operationId": "d8a5ff95264b070dbf74fd022b6b40c9",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "user_id"
+                                ],
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "active",
+                                            "inactive",
+                                            "archived"
+                                        ]
+                                    },
+                                    "balance": {
+                                        "type": "number",
+                                        "format": "float"
+                                    },
+                                    "points": {
+                                        "type": "number",
+                                        "format": "float"
+                                    },
+                                    "details": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "settings": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Driver created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DispatcherDriver"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/dispatcher/drivers/{driver}": {
+            "get": {
+                "tags": [
+                    "Dispatcher Drivers"
+                ],
+                "summary": "Get single driver details",
+                "operationId": "73d9692bcd7fe31a49f640430322013c",
+                "parameters": [
+                    {
+                        "name": "driver",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Driver details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DispatcherDriver"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Dispatcher Drivers"
+                ],
+                "summary": "Update driver",
+                "operationId": "ed62f404cb21ce6992e59347b107ff01",
+                "parameters": [
+                    {
+                        "name": "driver",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "active",
+                                            "inactive",
+                                            "archived"
+                                        ]
+                                    },
+                                    "balance": {
+                                        "type": "number",
+                                        "format": "float"
+                                    },
+                                    "points": {
+                                        "type": "number",
+                                        "format": "float"
+                                    },
+                                    "details": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "settings": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Driver updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DispatcherDriver"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Dispatcher Drivers"
+                ],
+                "summary": "Deactivate driver",
+                "operationId": "28afd5219d1f24f8104425821fab5d74",
+                "parameters": [
+                    {
+                        "name": "driver",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Driver deactivated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DispatcherDriver"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/driver/orders/{order}": {
             "post": {
                 "tags": [
@@ -2823,7 +3775,47 @@
                 },
                 "type": "object"
             },
-            "AdminDriverResource": {
+            "AdminDispatcher": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "user_id": {
+                        "type": "integer"
+                    },
+                    "taxopark_id": {
+                        "type": "integer"
+                    },
+                    "full_name": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "boolean"
+                    },
+                    "details": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "user": {
+                        "type": "object"
+                    },
+                    "taxopark": {
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "AdminDriver": {
                 "properties": {
                     "id": {
                         "type": "integer"
@@ -2851,6 +3843,154 @@
                     },
                     "orders_count": {
                         "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "AdminOrder": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "pending"
+                    },
+                    "scheduled_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-20 14:00:00"
+                    },
+                    "passengers": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "price_summ": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 150000
+                    },
+                    "client_deposit": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 50000
+                    },
+                    "price_order": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 200000
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "+998901234567"
+                    },
+                    "optional_phone": {
+                        "type": "string",
+                        "example": "+998931234567",
+                        "nullable": true
+                    },
+                    "note": {
+                        "type": "string",
+                        "example": "Urgent order",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-15T10:00:00Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-16T10:00:00Z"
+                    },
+                    "client": {
+                        "$ref": "#/components/schemas/AdminClient"
+                    },
+                    "driver": {
+                        "$ref": "#/components/schemas/AdminDriver"
+                    },
+                    "route": {
+                        "$ref": "#/components/schemas/Route"
+                    },
+                    "histories": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/OrderHistory"
+                        }
+                    },
+                    "review": {
+                        "$ref": "#/components/schemas/Review"
+                    }
+                },
+                "type": "object"
+            },
+            "AdminTaxoParkResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "region": {
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "name": {
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "drivers": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                },
+                                "status": {
+                                    "type": "string"
+                                },
+                                "balance": {
+                                    "type": "integer"
+                                },
+                                "points": {
+                                    "type": "integer"
+                                },
+                                "user": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "dispatchers": {
+                        "type": "array",
+                        "items": {
+                            "type": "object"
+                        }
                     },
                     "created_at": {
                         "type": "string",
@@ -3110,6 +4250,141 @@
                         "type": "string",
                         "example": "https://example.com/icons/discount.png",
                         "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "DispatcherDriver": {
+                "title": "Dispatcher Driver",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "user_id": {
+                        "type": "integer"
+                    },
+                    "taxopark_id": {
+                        "type": "integer"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "balance": {
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "points": {
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "details": {
+                        "type": "array",
+                        "items": {
+                            "type": "object"
+                        },
+                        "nullable": true
+                    },
+                    "settings": {
+                        "type": "array",
+                        "items": {
+                            "type": "object"
+                        },
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "user": {
+                        "type": "object",
+                        "nullable": true
+                    },
+                    "taxopark": {
+                        "type": "object",
+                        "nullable": true
+                    },
+                    "orders": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/DispatcherOrder"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "DispatcherOrder": {
+                "title": "Dispatcher Order",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "client_id": {
+                        "type": "integer"
+                    },
+                    "driver_id": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "route_id": {
+                        "type": "integer"
+                    },
+                    "passengers": {
+                        "type": "integer"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "time": {
+                        "type": "string"
+                    },
+                    "price_order": {
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "client_deposit": {
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "driver_payment": {
+                        "type": "number",
+                        "format": "float",
+                        "nullable": true
+                    },
+                    "discount_percent": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "discount_summ": {
+                        "type": "number",
+                        "format": "float",
+                        "nullable": true
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "optional_phone": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "note": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
                     }
                 },
                 "type": "object"
@@ -3681,8 +4956,24 @@
             "description": "Admin Dashboard"
         },
         {
+            "name": "Admin Dispatcher",
+            "description": "Admin Dispatcher"
+        },
+        {
             "name": "Admin Drivers",
             "description": "Admin Drivers"
+        },
+        {
+            "name": "Admin Market",
+            "description": "Admin Market"
+        },
+        {
+            "name": "Admin Orders",
+            "description": "Admin Orders"
+        },
+        {
+            "name": "Admin TaxoParks",
+            "description": "Admin TaxoParks"
         },
         {
             "name": "Authentication",
@@ -3703,6 +4994,10 @@
         {
             "name": "Client Market",
             "description": "Client Market"
+        },
+        {
+            "name": "Dispatcher Drivers",
+            "description": "Dispatcher Drivers"
         },
         {
             "name": "Driver Orders",
