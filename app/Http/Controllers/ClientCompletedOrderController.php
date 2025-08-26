@@ -103,10 +103,10 @@ class ClientCompletedOrderController extends Controller
         );
 
         if ($driver) {
-            event(new OrderChangedSendMessageEvent(
-                user: $driver->user,
-                message: "Order #{$order->id} has been completed by the client. Your deposit has been received."
-            ));
+            // event(new OrderChangedSendMessageEvent(
+            //     user: $driver->user,
+            //     message: "Order #{$order->id} has been completed by the client. Your deposit has been received."
+            // ));
         }
 
         return $this->success(

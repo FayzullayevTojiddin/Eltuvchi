@@ -38,7 +38,6 @@ class ClientOrderControllerTest extends TestCase
             'client_id' => $this->client->id,
         ]);
 
-        // Boshqa clientga tegishli order
         Order::factory()->create();
 
         $response = $this->actingAs($this->clientUser)

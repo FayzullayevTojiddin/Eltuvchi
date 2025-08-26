@@ -9,3 +9,8 @@ Balance va Payments User modeli orqali bo'lgani ma'qul ikkisi birda bo'ladi
 
 Online soat kerak emas adashmasam
 
+ClientCompletedOrderControllerTest va ClientCompletedOrderController ichida Event izohga olingan joyi bor shuni tuzatish kerak
+Xuddi shunday DriverStoppedOrderController va test ham
+
+
+Eventlarni sozlash kerak bo'ladi har bir clientning o'zining tiliga qarab bo'ladi

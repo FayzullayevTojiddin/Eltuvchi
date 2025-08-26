@@ -48,7 +48,7 @@ class ClientOrderController extends Controller
     {
         $client = Auth::user()->client;
 
-        $query = Order::where('client_id', $client->id);
+        $query = Order::with('route')->where('client_id', $client->id);
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);

@@ -7,7 +7,9 @@ use App\Enums\OrderStatus;
 use App\Models\Driver;
 use App\Models\Order;
 use App\Models\User;
+use Illuminate\Support\Facades\Broadcast;
 use Carbon\Carbon;
+use Event;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -18,6 +20,7 @@ class AdminDashboardControllerTest extends TestCase
     #[Test]
     public function it_returns_dashboard_statistics()
     {
+        Event::fake();
         /** @var \App\Models\User $admin */
         $admin = User::factory()->create(['role' => 'admin']);
         $this->actingAs($admin);

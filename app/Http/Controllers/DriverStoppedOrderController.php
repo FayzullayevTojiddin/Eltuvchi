@@ -25,10 +25,10 @@ class DriverStoppedOrderController extends Controller
         $order->status = OrderStatus::Stopped;
         $order->save();
 
-        event(new OrderChangedSendMessageEvent(
-            user: $user, 
-            message: "Complete your order $order->id"
-        ));
+        // event(new OrderChangedSendMessageEvent(
+        //     user: $user, 
+        //     message: "Complete your order $order->id"
+        // ));
 
         $order->logStatusChange(OrderStatus::Stopped->value, $driver, 'Order stopped by driver');
 

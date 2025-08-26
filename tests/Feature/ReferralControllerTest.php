@@ -65,19 +65,21 @@ class ReferralControllerTest extends TestCase
     #[Test]
     public function it_allows_authenticated_user_to_refer_with_valid_promo_code(): void
     {
-        $referrer = User::factory()->create(['promo_code' => 'PROMO1234']);
+        $referrer = User::factory()->create();
 
         Referral::factory()->create([
             'user_id' => $referrer->id,
-            'promo_code' => 'PROMO1234',
+            'promo_code' => $referrer->promo_code,
         ]);
 
         $user = User::factory()->create();
 
         /** @var \App\Models\User $user */
         $response = $this->actingAs($user)->postJson('/api/referrals', [
-            'promo_code' => 'PROMO1234',
+            'promo_code' => $referrer->promo_code,
         ]);
+
+        // $response->dump();
 
         $response->assertStatus(201)
             ->assertJson([
@@ -127,6 +129,8 @@ class ReferralControllerTest extends TestCase
         $response = $this->actingAs($user)->postJson('/api/referrals', [
             'promo_code' => 'PROMO1234',
         ]);
+
+        // $response->dump();
 
         $response->assertStatus(409)
             ->assertJson([
