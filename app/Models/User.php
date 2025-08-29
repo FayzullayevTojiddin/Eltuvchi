@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Traits\HasBalance;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -38,9 +40,23 @@ use Laravel\Sanctum\HasApiTokens;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     use HasFactory, Notifiable, HasApiTokens;
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return match ($panel->getId()) {
+            'superAdmin' => $this->role === 'superadmin',
+            'taxoParkAdmin' => $this->role === 'taxoparkadmin',
+            default => false,
+        };
+    }
+
+    public function getNameAttribute(): string
+    {
+        return $this->connected()?->full_name ?? $this->email ?? 'No name';
+    }
     
     protected $fillable = [
         'role',
@@ -72,6 +88,16 @@ class User extends Authenticatable
         return $this->hasOne(Driver::class);
     }
 
+    public function superAdmin(): HasOne
+    {
+        return $this->hasOne(SuperAdmin::class);
+    }
+
+    public function taxoparkadmin(): HasOne
+    {
+        return $this->hasOne(Dispatcher::class);
+    }
+
     public function referral()
     {
         return $this->hasOne(Referral::class);
@@ -96,6 +122,8 @@ class User extends Authenticatable
         return match($this->role) {
             'client' => $this->client,
             'driver' => $this->driver,
+            'superadmin' => $this->superAdmin,
+            'taxoparkadmin' => $this->taxoParkAdmin,
             default => null,
         };
     }

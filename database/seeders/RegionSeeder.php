@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Region;
+use DB;
 
 class RegionSeeder extends Seeder
 {
@@ -26,8 +27,8 @@ class RegionSeeder extends Seeder
             'Toshkent shahri',
         ];
 
-        foreach ($regions as $name) {
-            Region::firstOrCreate(['name' => $name]);
-        }
+        DB::table('regions')->insertOrIgnore(
+            collect($regions)->map(fn($name) => ['name' => $name])->toArray()
+        );
     }
 }

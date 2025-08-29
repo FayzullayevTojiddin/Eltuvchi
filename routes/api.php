@@ -71,21 +71,21 @@ Route::prefix('/driver')->middleware(['auth:sanctum', 'role_status:driver'])->gr
     Route::post('/market/{product}', [DriverMarketController::class, 'get_product']);
 });
 
-Route::prefix('/super-admin')->middleware(['auth:sanctum', 'role_status:admin'])->group(function() {
-    Route::get('/dashboard', [AdminDashboardController::class, 'dashboard']);
-    Route::get('/reports/download', [ReportController::class, 'download']); // Hozircha emas keyinroq yozamiz
-    Route::apiResources([
-        'clients' => AdminClientController::class,
-        'drivers' => AdminDriverController::class,
-        'taxoparks' => AdminTaxoParkController::class,
-        'payments' => AdminPaymentController::class, // Hali Paymentning o'zi yo'q
-        'orders' => AdminOrderController::class,
-        'market' => AdminMarketController::class,
-        'dispatchers' => AdminDispatcherController::class,
-    ]);
-});
-Route::prefix('/dispatcher')->middleware(['auth:sanctum', 'role_status:dispatcher'])->group(function() {
-    Route::apiResources([
-        'drivers' => DispatcherDriverController::class
-    ]);
-});
+// Route::prefix('/super-admin')->middleware(['auth:sanctum', 'role_status:admin'])->group(function() {
+//     Route::get('/dashboard', [AdminDashboardController::class, 'dashboard']);
+//     Route::get('/reports/download', [ReportController::class, 'download']); // Hozircha emas keyinroq yozamiz
+//     Route::apiResources([
+//         'clients' => AdminClientController::class,
+//         'drivers' => AdminDriverController::class,
+//         'taxoparks' => AdminTaxoParkController::class,
+//         'payments' => AdminPaymentController::class, // Hali Paymentning o'zi yo'q
+//         'orders' => AdminOrderController::class,
+//         'market' => AdminMarketController::class,
+//         'dispatchers' => AdminDispatcherController::class,
+//     ]);
+// });
+// Route::prefix('/dispatcher')->middleware(['auth:sanctum', 'role_status:dispatcher'])->group(function() {
+//     Route::apiResources([
+//         'drivers' => DispatcherDriverController::class
+//     ]);
+// });

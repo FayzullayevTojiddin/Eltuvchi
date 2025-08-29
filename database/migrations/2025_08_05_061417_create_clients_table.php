@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')
+                ->unique()
                 ->constrained()
                 ->onDelete('cascade');
             $table->string('status')->default('active');

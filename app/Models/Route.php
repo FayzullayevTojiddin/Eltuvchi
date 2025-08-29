@@ -71,4 +71,9 @@ class Route extends Model
     {
         return $this->hasMany(Order::class);
     }
+
+    public function getNameAttribute(): string
+    {
+        return ($this->fromTaxopark?->name ?? '') . ' → ' . ($this->toTaxopark?->name ?? '');
+    }
 }

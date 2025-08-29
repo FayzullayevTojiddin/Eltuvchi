@@ -20,7 +20,12 @@ class DriverFactory extends Factory
             'balance' => $this->faker->numberBetween(0, 100000),
             'points' => $this->faker->numberBetween(0, 1000),
             'details' => [
-                'vehicle' => $this->faker->word(),
+                'full_name' => $this->faker->name(),
+                'phone_number' => $this->faker->phoneNumber(),
+                'license_series' => strtoupper($this->faker->lexify('??')),
+                'license_number' => $this->faker->numerify('######'),
+                'vehicle_number'   => strtoupper($this->faker->bothify('##???##')),
+                'vehicle_name'     => $this->faker->randomElement(['Nexia', 'Cobalt', 'Malibu', 'Gentra', 'Spark', 'Damas']),
                 'experience_years' => $this->faker->numberBetween(1, 10),
             ],
             'settings' => [
