@@ -10,7 +10,7 @@ class SendMessageAction
 {
     use TelegramBotTrait;
 
-    public static function create($chatId): Action
+    public static function create($chatId = null): Action
     {
         return Action::make('sendMessage')
             ->label('Xabar Yuborish')
@@ -20,8 +20,8 @@ class SendMessageAction
                     ->label('Message')
                     ->required(),
             ])
-            ->action(function (array $data) use ($chatId) {
-                (new self())->sendTelegramMessage($chatId, $data['message']);
+            ->action(function ($record, array $data) use ($chatId) {
+                (new self())->sendTelegramMessage($record->user->telegram_id, $data['message']);
             });
     }
 }

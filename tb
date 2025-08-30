@@ -1,16 +1,1 @@
-OrderReviewni faqatgina completed bo'lganidan so'nggina yaratsa bo'ladigan qilish lozim
-
-Order uchun points umumiy bir xil bo'ladi hozircha keyinchalik qo'shiladi har bir route uchun boshqa boshqa qilib
-
-Client Deposit haqida bir tekshirib ko'rilishi kerak yana bir bor
-
-
-Balance va Payments User modeli orqali bo'lgani ma'qul ikkisi birda bo'ladi
-
-Online soat kerak emas adashmasam
-
-ClientCompletedOrderControllerTest va ClientCompletedOrderController ichida Event izohga olingan joyi bor shuni tuzatish kerak
-Xuddi shunday DriverStoppedOrderController va test ham
-
-
-Eventlarni sozlash kerak bo'ladi har bir clientning o'zining tiliga qarab bo'ladi
+1. Agar kerak bo'lsa har bir client yoki userda Qo'shish Action bo'ladi Balance yoki points qo'shishi mumkin bo'ladi

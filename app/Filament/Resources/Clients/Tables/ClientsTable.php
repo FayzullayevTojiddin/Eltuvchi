@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Clients\Tables;
 
+use App\Filament\Actions\DisActiveAction;
+use App\Filament\Actions\SendMessageAction;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -17,21 +19,40 @@ class ClientsTable
         return $table
             ->columns([
                 TextColumn::make('user.id')
-                    ->searchable(),
+                    ->label('User ID')
+                    ->searchable()
+                    ->sortable(),
+
                 TextColumn::make('status')
-                    ->searchable(),
+                    ->label('Status')
+                    ->searchable()
+                    ->sortable()
+                    ->formatStateUsing(fn ($state) => $state === 'active' ? 'Faol' : 'Bloklangan')
+                    ->colors([
+                        'success' => fn($state) => $state === 'active',
+                        'danger'  => fn($state) => $state === 'inactive',
+                    ]),
+
                 TextColumn::make('balance')
+                    ->label('Balance')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->money('USD', true),
+
                 TextColumn::make('points')
+                    ->label('Points')
                     ->numeric()
                     ->sortable(),
+
                 TextColumn::make('created_at')
-                    ->dateTime()
+                    ->label('Created At')
+                    ->dateTime('d-M-Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->label('Updated At')
+                    ->dateTime('d-M-Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
@@ -39,7 +60,9 @@ class ClientsTable
                 //
             ])
             ->recordActions([
-                EditAction::make(),
+                EditAction::make()->label("Tahrirlash"),
+                DisActiveAction::create(),
+                SendMessageAction::create(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

@@ -25,10 +25,10 @@ class ClientForm
                 Select::make('status')
                     ->label('Status')
                     ->options([
-                        'active' => 'Active',
-                        'inactive' => 'Inactive',
+                        'active' => 'Faol',
+                        'inactive' => 'Bloklangan',
                     ])
-                    ->required()
+                    ->disabled()
                     ->default('active'),
 
                 Section::make('Hisob')
