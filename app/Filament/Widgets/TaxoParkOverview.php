@@ -23,20 +23,12 @@ class TaxoParkOverview extends StatsOverviewWidget
             'drivers',
             'dispatchers',
         ]);
-        $taxopark->orders_count = DB::table('orders')
+        $taxopark->orders_count_all = DB::table('orders')
             ->join('routes', 'orders.route_id', '=', 'routes.id')
             ->where(function ($q) use ($taxopark) {
                 $q->where('routes.taxopark_from_id', $taxopark->id)
                 ->orWhere('routes.taxopark_to_id', $taxopark->id);
             })
-            ->count();
-        $taxopark->active_orders_count = DB::table('orders')
-            ->join('routes', 'orders.route_id', '=', 'routes.id')
-            ->where(function ($q) use ($taxopark) {
-                $q->where('routes.taxopark_from_id', $taxopark->id)
-                ->orWhere('routes.taxopark_to_id', $taxopark->id);
-            })
-            ->where('orders.status', 'active')
             ->count();
         $taxopark->completed_orders_count = DB::table('orders')
             ->join('routes', 'orders.route_id', '=', 'routes.id')
@@ -47,8 +39,19 @@ class TaxoParkOverview extends StatsOverviewWidget
             ->where('orders.status', 'completed')
             ->count();
 
+        $taxopark->cancelled_orders_count = DB::table('orders')
+            ->join('routes', 'orders.route_id', '=', 'routes.id')
+            ->where(function ($q) use ($taxopark) {
+                $q->where('routes.taxopark_from_id', $taxopark->id)
+                ->orWhere('routes.taxopark_to_id', $taxopark->id);
+            })
+            ->where('orders.status', 'cancelled')
+            ->count();
+
+        $taxopark->active_orders_count = $taxopark->orders_count_all - ($taxopark->completed_orders_count + $taxopark->cancelled_orders_count);
+
         return [
-            Stat::make('Jami Buyurtmalar', $taxopark->orders_count)
+            Stat::make('Jami Buyurtmalar', $taxopark->orders_count_all)
                 ->description('Ushbu taxopark buyurtmalari')
                 ->descriptionIcon('heroicon-o-clipboard-document')
                 ->color('primary'),

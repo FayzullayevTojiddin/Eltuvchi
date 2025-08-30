@@ -20,6 +20,7 @@ class ClientFactory extends Factory
             'settings' => [
                 'notifications' => true,
                 'language' => 'en',
+                'full_name' => $this->faker->firstName() + " " + $this->faker->lastName()
             ],
         ];
     }

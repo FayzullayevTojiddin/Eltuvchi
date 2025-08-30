@@ -2,11 +2,14 @@
 
 namespace App\Filament\Resources\TaxoParks\RelationManagers;
 
+use App\Filament\Resources\Orders\Schemas\OrderForm;
+use App\Filament\Resources\Orders\Tables\OrdersTable;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
@@ -17,38 +20,15 @@ class OrdersRelationManager extends RelationManager
 {
     protected static string $relationship = 'orders';
 
+    protected static ?string $title = 'Buyurtmalar';
+
     public function form(Schema $schema): Schema
     {
-        return $schema
-            ->components([
-                TextInput::make('route.name')
-                    ->required()
-                    ->maxLength(255),
-            ]);
+        return OrderForm::configure($schema);
     }
 
     public function table(Table $table): Table
     {
-        return $table
-            ->recordTitleAttribute('route.name')
-            ->columns([
-                TextColumn::make('route.name')
-                    ->searchable(),
-            ])
-            ->filters([
-                //
-            ])
-            ->headerActions([
-                CreateAction::make(),
-            ])
-            ->recordActions([
-                EditAction::make(),
-                DeleteAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+        return OrdersTable::configure($table);
     }
 }

@@ -6,6 +6,7 @@ use App\Traits\HasBalance;
 use App\Traits\HasPoint;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -54,7 +55,7 @@ class Client extends Model
         'settings' => 'array',
     ];
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
@@ -74,7 +75,7 @@ class Client extends Model
         return $this->subtractBalance($amount, 'Order deposit payment');
     }
 
-    public function discounts()
+    public function discounts(): HasMany
     {
         return $this->hasMany(ClientDiscount::class);
     }

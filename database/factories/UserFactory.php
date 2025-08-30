@@ -16,7 +16,7 @@ class UserFactory extends Factory
     {
         return [
             'role' => 'client',
-            'email' => $this->faker->unique()->safeEmail(),
+            'email' => $this->faker->unique()->userName() . '@eltuvchi.uz',
             'telegram_id' => $this->faker->unique()->randomNumber(9, true),
             'password' => Hash::make('password'),
         ];
