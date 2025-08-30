@@ -5,8 +5,10 @@ namespace App\Filament\Resources\Clients;
 use App\Filament\Resources\Clients\Pages\CreateClient;
 use App\Filament\Resources\Clients\Pages\EditClient;
 use App\Filament\Resources\Clients\Pages\ListClients;
+use App\Filament\Resources\Clients\RelationManagers\BalanceHistoriesRelationManager;
 use App\Filament\Resources\Clients\RelationManagers\DiscountsRelationManager;
 use App\Filament\Resources\Clients\RelationManagers\OrdersRelationManager;
+use App\Filament\Resources\Clients\RelationManagers\PointHistoriesRelationManager;
 use App\Filament\Resources\Clients\Schemas\ClientForm;
 use App\Filament\Resources\Clients\Tables\ClientsTable;
 use App\Models\Client;
@@ -36,7 +38,9 @@ class ClientResource extends Resource
     {
         return [
             OrdersRelationManager::class,
-            DiscountsRelationManager::class
+            DiscountsRelationManager::class,
+            BalanceHistoriesRelationManager::class,
+            PointHistoriesRelationManager::class
         ];
     }
 
