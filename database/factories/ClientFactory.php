@@ -13,15 +13,15 @@ class ClientFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory(), // Yangi user yaratiladi
-            'status' => 'active',         // Status default holatda
-            'balance' => $this->faker->numberBetween(0, 100000), // Tasodifiy balans
-            'points' => $this->faker->numberBetween(0, 1000),    // Ballar
+            'user_id' => User::factory(),
+            'status' => 'active',
+            'balance' => $this->faker->numberBetween(0, 100000),
+            'points' => $this->faker->numberBetween(0, 1000),
             'settings' => [
                 'notifications' => true,
                 'language' => 'en',
-                'full_name' => $this->faker->firstName() + " " + $this->faker->lastName()
-            ],
+                'full_name' => $this->faker->firstName() . " " . $this->faker->lastName()
+            ],  
         ];
     }
 }

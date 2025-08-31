@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             DriverSeeder::class,
             DiscountSeeder::class,
             OrderSeeder::class,
+            DispatcherSeeder::class
         ]);
 
         User::factory()->create(['role' => 'superadmin', 'email' => 'super@gmail.com', 'password' => bcrypt('1')]);

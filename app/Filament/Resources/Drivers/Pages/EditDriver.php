@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Drivers\Pages;
 
+use App\Filament\Actions\DisActiveAction;
+use App\Filament\Actions\SendMessageAction;
 use App\Filament\Resources\Drivers\DriverResource;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
@@ -14,8 +16,9 @@ class EditDriver extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            ViewAction::make(),
-            DeleteAction::make(),
+            DeleteAction::make()->label("O'chirish"),
+            DisActiveAction::create(),
+            SendMessageAction::create()
         ];
     }
 }

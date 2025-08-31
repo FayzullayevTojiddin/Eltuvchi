@@ -5,7 +5,9 @@ namespace App\Filament\Resources\Clients\Tables;
 use App\Filament\Actions\DisActiveAction;
 use App\Filament\Actions\SendMessageAction;
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Textarea;
@@ -17,6 +19,7 @@ class ClientsTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->striped()
             ->columns([
                 TextColumn::make('user.id')
                     ->label('User ID')
@@ -60,9 +63,12 @@ class ClientsTable
                 //
             ])
             ->recordActions([
-                EditAction::make()->label("Tahrirlash"),
-                DisActiveAction::create(),
                 SendMessageAction::create(),
+                ActionGroup::make([
+                    EditAction::make()->label("Tahrirlash")->button(),
+                    DisActiveAction::create(),
+                    DeleteAction::make()->label("O'chirish")->button()
+                ])
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

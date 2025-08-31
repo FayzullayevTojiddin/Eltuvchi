@@ -19,8 +19,7 @@ class BalanceHistoriesRelationManager extends RelationManager
     {
         return $schema
             ->components([
-                Select::make('discount_id')
-                    ->relationship('discount', 'title')
+                //
             ]);
     }
 

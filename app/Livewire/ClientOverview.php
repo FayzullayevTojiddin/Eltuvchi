@@ -5,7 +5,7 @@ namespace App\Livewire;
 use App\Models\Client;
 use App\Models\Order;
 use App\Models\BalanceHistory;
-use App\Enums\OrderStatus; // agar enum ishlatsangiz
+use App\Enums\OrderStatus;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -27,16 +27,17 @@ class ClientOverview extends StatsOverviewWidget
 
         $inProgressOrders = $allOrders - ($cancelledOrders + $completedOrders);
 
-        $balanceHistoryCount = BalanceHistory::where('client_id', $this->record->id)->count();
-        $balanceTotal = BalanceHistory::where('client_id', $this->record->id)->sum('amount');
+        $totalExpense = BalanceHistory::where('balanceable_id', $this->record->id)
+            ->where('balanceable_type', Client::class)
+            ->where('type', 'expense')
+            ->sum('amount');
 
         return [
-            Stat::make('Barcha buyurtmalari', $allOrders),
-            Stat::make('Bekor qilinganlari', $cancelledOrders),
-            Stat::make('Yakunlanganlari', $completedOrders),
-            Stat::make('Jarayondagilari', $inProgressOrders),
-            Stat::make('Balans tarixlari soni', $balanceHistoryCount),
-            Stat::make('Umumiy balans harakati', number_format($balanceTotal, 0, '.', ' ')),
+            Stat::make('Barcha buyurtmalar', $allOrders),
+            Stat::make('Bekor qilinganlar', $cancelledOrders),
+            Stat::make('Yakunlanganlar', $completedOrders),
+            Stat::make('Jarayondagilar', $inProgressOrders),
+            Stat::make('Umumiy Foydalangan Summasi', number_format($totalExpense, 0, '.', ' ') . ' so‘m'),
         ];
     }
 }

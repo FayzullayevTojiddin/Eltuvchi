@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Drivers\Tables;
 
+use App\Filament\Actions\DisActiveAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -15,25 +16,45 @@ class DriversTable
     {
         return $table
             ->columns([
-                TextColumn::make('user_id')
-                    ->numeric()
+                TextColumn::make('user.id')
+                    ->label('User ID')
+                    ->searchable()
                     ->sortable(),
-                TextColumn::make('taxopark.name')
+
+                TextColumn::make('details.full_name')
+                    ->label("To'liq nomi")
                     ->searchable(),
+
                 TextColumn::make('status')
-                    ->searchable(),
+                    ->label('Status')
+                    ->searchable()
+                    ->sortable()
+                    ->formatStateUsing(fn ($state) => $state === 'active' ? 'Faol' : 'Bloklangan')
+                    ->colors([
+                        'success' => fn($state) => $state === 'active',
+                        'danger'  => fn($state) => $state === 'inactive',
+                    ]),
+
                 TextColumn::make('balance')
+                    ->label('Balance')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->money('USD', true),
+
                 TextColumn::make('points')
+                    ->label('Points')
                     ->numeric()
                     ->sortable(),
+
                 TextColumn::make('created_at')
-                    ->dateTime()
+                    ->label('Created At')
+                    ->dateTime('d-M-Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->label('Updated At')
+                    ->dateTime('d-M-Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
@@ -41,8 +62,9 @@ class DriversTable
                 //
             ])
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
+                DisActiveAction::create()->button(),
+                ViewAction::make()->label("Ko'rish")->button(),
+                EditAction::make()->label("Tahrirlash")->button(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

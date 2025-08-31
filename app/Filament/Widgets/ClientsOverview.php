@@ -25,7 +25,7 @@ class ClientsOverview extends StatsOverviewWidget
                 ->icon('heroicon-o-user-circle')
                 ->color('success'),
 
-            Stat::make('NoFaol mijozlar soni', $stats->inactive)
+            Stat::make('Bloklangan mijozlar soni', $stats->inactive)
                 ->icon('heroicon-o-user-minus')
                 ->color('danger'),
         ];

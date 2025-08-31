@@ -10,10 +10,12 @@ class ListDispatchers extends ListRecords
 {
     protected static string $resource = DispatcherResource::class;
 
+    protected static ?string $title = "TaxoPark Adminlari";
+
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+            CreateAction::make()->label("Yangi Admin Yaratish"),
         ];
     }
 }

@@ -2,7 +2,11 @@
 
 namespace App\Filament\Resources\Dispatchers\Pages;
 
+use App\Filament\Actions\DisActiveAction;
+use App\Filament\Actions\SendMessageAction;
 use App\Filament\Resources\Dispatchers\DispatcherResource;
+use App\Filament\Resources\TaxoParks\TaxoParkResource;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
@@ -14,8 +18,16 @@ class EditDispatcher extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            ViewAction::make(),
-            DeleteAction::make(),
+            SendMessageAction::create(),
+            ViewAction::make()
+                ->label("TaxoParkga o'tish")
+                ->url(fn ($record) => TaxoParkResource::getUrl('edit', ['record' => $record->taxopark]))
+                ->openUrlInNewTab(),
+            ActionGroup::make([
+                ViewAction::make()->label('Tahrirlash')->button(),
+                DisActiveAction::create()->label("Bloklash"),
+                DeleteAction::make()->label("O'chirish")->button()->color('black'),
+            ]),
         ];
     }
 }

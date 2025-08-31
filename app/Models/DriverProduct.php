@@ -11,6 +11,10 @@ class DriverProduct extends Model
         'delivered',
     ];
 
+    protected $casts = [
+        'status' => 'boolean'
+    ];
+
     public function driver()
     {
         return $this->belongsTo(Driver::class);

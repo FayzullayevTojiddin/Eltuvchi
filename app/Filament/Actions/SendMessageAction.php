@@ -13,6 +13,7 @@ class SendMessageAction
     public static function create($chatId = null): Action
     {
         return Action::make('sendMessage')
+            ->button()
             ->label('Xabar Yuborish')
             ->icon('heroicon-o-paper-airplane')
             ->form([
@@ -20,8 +21,13 @@ class SendMessageAction
                     ->label('Message')
                     ->required(),
             ])
-            ->action(function ($record, array $data) use ($chatId) {
-                (new self())->sendTelegramMessage($record->user->telegram_id, $data['message']);
+            ->action(function ($record, array $data, Action $action) use ($chatId) {
+                $sent = (new self())->sendTelegramMessage($record->user->telegram_id, $data['message']);
+                if ($sent) {
+                    $action->successNotificationTitle('Xabar yuborildi ✅');
+                } else {
+                    $action->failureNotificationTitle('Xabar yuborilmadi ❌');
+                }
             });
     }
 }

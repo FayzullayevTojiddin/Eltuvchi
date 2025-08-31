@@ -58,7 +58,7 @@ class Driver extends Model
         'settings' => 'array',
     ];
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
@@ -71,5 +71,10 @@ class Driver extends Model
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function products(): HasMany
+    {
+        return $this->hasMany(DriverProduct::class);
     }
 }

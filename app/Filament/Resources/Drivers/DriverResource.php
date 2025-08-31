@@ -2,10 +2,14 @@
 
 namespace App\Filament\Resources\Drivers;
 
+use App\Filament\Resources\Clients\RelationManagers\BalanceHistoriesRelationManager;
+use App\Filament\Resources\Clients\RelationManagers\OrdersRelationManager;
+use App\Filament\Resources\Clients\RelationManagers\PointHistoriesRelationManager;
 use App\Filament\Resources\Drivers\Pages\CreateDriver;
 use App\Filament\Resources\Drivers\Pages\EditDriver;
 use App\Filament\Resources\Drivers\Pages\ListDrivers;
 use App\Filament\Resources\Drivers\Pages\ViewDriver;
+use App\Filament\Resources\Drivers\RelationManagers\ProductsRelationManager;
 use App\Filament\Resources\Drivers\Schemas\DriverForm;
 use App\Filament\Resources\Drivers\Schemas\DriverInfolist;
 use App\Filament\Resources\Drivers\Tables\DriversTable;
@@ -20,7 +24,9 @@ class DriverResource extends Resource
 {
     protected static ?string $model = Driver::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?string $navigationLabel = "Haydovchilar";
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTruck;
 
     public static function form(Schema $schema): Schema
     {
@@ -40,7 +46,10 @@ class DriverResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            OrdersRelationManager::class,
+            BalanceHistoriesRelationManager::class,
+            PointHistoriesRelationManager::class,
+            ProductsRelationManager::class
         ];
     }
 
@@ -49,7 +58,6 @@ class DriverResource extends Resource
         return [
             'index' => ListDrivers::route('/'),
             'create' => CreateDriver::route('/create'),
-            'view' => ViewDriver::route('/{record}'),
             'edit' => EditDriver::route('/{record}/edit'),
         ];
     }

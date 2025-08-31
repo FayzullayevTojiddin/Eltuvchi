@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Enums\OrderStatus;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property int $id
@@ -78,7 +79,7 @@ class Order extends Model
 
     protected $casts = [
         'date' => 'date',
-        // 'time' => 'time',
+        'time' => 'datetime:H:i',
         'price_order' => 'decimal:2',
         'client_deposit' => 'decimal:2',
         'driver_payment' => 'decimal:2',
@@ -138,7 +139,7 @@ class Order extends Model
         ]);
     }
 
-    public function review()
+    public function review(): HasOne
     {
         return $this->hasOne(OrderReview::class);
     }

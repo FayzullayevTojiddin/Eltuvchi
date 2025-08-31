@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Clients\Pages;
 use App\Filament\Actions\DisActiveAction;
 use App\Filament\Actions\SendMessageAction;
 use App\Filament\Resources\Clients\ClientResource;
+use App\Livewire\ClientOverview;
 use App\Traits\TelegramBotTrait;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
@@ -22,7 +23,14 @@ class EditClient extends EditRecord
         return [
             DeleteAction::make()->label("O'chirish"),
             DisActiveAction::create(),
-            SendMessageAction::create($this->record->user->telegram_id)
+            SendMessageAction::create()
+        ];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            ClientOverview::class
         ];
     }
 }
