@@ -1,8 +1,4 @@
-1. Agar kerak bo'lsa har bir client yoki userda Qo'shish Action bo'ladi Balance yoki points qo'shishi mumkin bo'ladi
-
 2. Login oynasini bitta qilib keyin undan tarqashi kerak !
-
-3. SendMessageActionida message qo'shish kerak ya'ni yetqazildi yoki yetqazilmadi deb message chiqadi
 
 4. DriverProductDeliveriedAction sozlash kerak
 
@@ -10,4 +6,6 @@
 
 6. Dispatcher uchun Details qilish kerak bo'aldi
 
-7. Balancesiga pul yoki ball qo'shish uchun Action bo'lsin. U Action orqali qo'shilsin sabab bu history uchun kerak bo'ladi
+8. To'g'ridan to'g'ri xabar yuborish ham bo'lsin ammo tayyor xabarlar ham bo'lsin SendMessageActionida
+
+9. Dispatcher bloklanganida panelga kira olmasin

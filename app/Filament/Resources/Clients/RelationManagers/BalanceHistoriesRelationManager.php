@@ -38,7 +38,7 @@ class BalanceHistoriesRelationManager extends RelationManager
                     ->label('Miqdor')
                     ->sortable(),
                 TextColumn::make('balance_after')
-                    ->label('Qolgan qoldiq'),
+                    ->label('Qolgan Pul'),
                 TextColumn::make('description')
                     ->label('Izoh')
                     ->limit(30),
@@ -49,6 +49,7 @@ class BalanceHistoriesRelationManager extends RelationManager
             ])
             ->filters([
                 //
-            ]);
+            ])
+            ->defaultSort('created_at', 'desc');
     }
 }

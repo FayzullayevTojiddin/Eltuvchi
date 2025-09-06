@@ -22,10 +22,17 @@ class ClientResource extends Resource
 {
     protected static ?string $model = Client::class;
 
-    protected static ?string $navigationLabel = "Foydalanuvchilar";
+    protected static ?string $navigationLabel = "Mijozlar";
+
+    protected static ?int $navigationSort = 1;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::UserGroup;
     
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Rollar';
+    }
+
     public static function form(Schema $schema): Schema
     {
         return ClientForm::configure($schema);

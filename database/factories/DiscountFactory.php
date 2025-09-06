@@ -17,7 +17,6 @@ class DiscountFactory extends Factory
             'points' => $this->faker->numberBetween(10, 100),
             'title' => $this->faker->sentence(3),
             'icon' => null,
-            'percent' => null,
             'status' => Discount::STATUS_ACTIVE,
         ];
     }

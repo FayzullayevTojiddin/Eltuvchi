@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Drivers;
 
+use App\Filament\Actions\DisActiveAction;
+use App\Filament\Actions\SendMessageAction;
 use App\Filament\Resources\Clients\RelationManagers\BalanceHistoriesRelationManager;
 use App\Filament\Resources\Clients\RelationManagers\OrdersRelationManager;
 use App\Filament\Resources\Clients\RelationManagers\PointHistoriesRelationManager;
@@ -15,6 +17,9 @@ use App\Filament\Resources\Drivers\Schemas\DriverInfolist;
 use App\Filament\Resources\Drivers\Tables\DriversTable;
 use App\Models\Driver;
 use BackedEnum;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -27,6 +32,11 @@ class DriverResource extends Resource
     protected static ?string $navigationLabel = "Haydovchilar";
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTruck;
+
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Rollar';
+    }
 
     public static function form(Schema $schema): Schema
     {

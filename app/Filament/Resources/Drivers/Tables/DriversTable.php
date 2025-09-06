@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\Drivers\Tables;
 
 use App\Filament\Actions\DisActiveAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
+use App\Filament\Actions\SendMessageAction;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
@@ -15,9 +15,10 @@ class DriversTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->striped()
             ->columns([
-                TextColumn::make('user.id')
-                    ->label('User ID')
+                TextColumn::make('id')
+                    ->label('ID')
                     ->searchable()
                     ->sortable(),
 
@@ -62,14 +63,15 @@ class DriversTable
                 //
             ])
             ->recordActions([
-                DisActiveAction::create()->button(),
                 ViewAction::make()->label("Ko'rish")->button(),
-                EditAction::make()->label("Tahrirlash")->button(),
+                ActionGroup::make([
+                    DisActiveAction::create()->button(),
+                    EditAction::make()->label("Tahrirlash")->button(),
+                    SendMessageAction::create()
+                ])
             ])
             ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
+                //
             ]);
     }
 }

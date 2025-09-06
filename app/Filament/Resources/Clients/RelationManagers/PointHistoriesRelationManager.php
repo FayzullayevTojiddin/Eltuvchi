@@ -49,7 +49,7 @@ class PointHistoriesRelationManager extends RelationManager
                     ->tooltip(fn (string $state): string => $state === 'plus' ? 'Kirim' : 'Chiqim'),
 
                 TextColumn::make('points_after')
-                    ->label('Qolgan Qoldiq')
+                    ->label('Qolgan Ball')
                     ->sortable(),
 
                 TextColumn::make('description')

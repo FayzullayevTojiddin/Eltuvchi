@@ -10,10 +10,12 @@ class ViewOrder extends ViewRecord
 {
     protected static string $resource = OrderResource::class;
 
+    protected static ?string $title = "Buyurtmani Ko'rish";
+
     protected function getHeaderActions(): array
     {
         return [
-            EditAction::make(),
+            EditAction::make()->label("Buyurtmani Tahrirlash"),
         ];
     }
 }

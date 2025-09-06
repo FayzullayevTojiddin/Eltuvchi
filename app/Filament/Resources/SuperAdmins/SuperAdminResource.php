@@ -20,7 +20,14 @@ class SuperAdminResource extends Resource
 {
     protected static ?string $model = SuperAdmin::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::ShieldCheck;
+
+    protected static ?string $navigationLabel = 'Super Adminlar';
+
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Rollar';
+    }
 
     public static function form(Schema $schema): Schema
     {

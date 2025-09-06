@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Drivers\RelationManagers;
 
 use App\Filament\Actions\DriverProductDeliveredAction;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\AssociateAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -31,6 +32,7 @@ class ProductsRelationManager extends RelationManager
             ->components([
                 Select::make('product_id')
                     ->relationship('product', 'title')
+                    ->label("Sov'ga")
                     ->searchable()
                     ->preload(10)
                     ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->id} - {$record->title}")
@@ -46,9 +48,10 @@ class ProductsRelationManager extends RelationManager
                 TextColumn::make('id')
                     ->searchable(),
                 TextColumn::make('product.title')
+                    ->label("Sovg'a Nomi")
                     ->searchable(),
                 BooleanColumn::make('delivered')
-                    ->label('Delivered')
+                    ->label('Yetqazildimi ?')
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-x-circle')
                     ->trueColor('success')
@@ -63,14 +66,13 @@ class ProductsRelationManager extends RelationManager
             ])
             ->recordActions([
                 DriverProductDeliveredAction::create(),
-                EditAction::make()->label("Tahrirlash"),
-                DeleteAction::make()->label("O'chirib Tashlash"),
+                ActionGroup::make([
+                    EditAction::make()->label("Tahrirlash"),
+                    DeleteAction::make()->label("O'chirib Tashlash"),
+                ])
             ])
             ->toolbarActions([
-                BulkActionGroup::make([
-                    DissociateBulkAction::make(),
-                    DeleteBulkAction::make(),
-                ]),
+                //
             ]);
     }
 }

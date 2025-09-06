@@ -79,4 +79,19 @@ class Client extends Model
     {
         return $this->hasMany(ClientDiscount::class);
     }
+
+    protected static function booted()
+    {
+        static::created(function (Client $client) {
+            $client->user->update([
+                'role' => 'client',
+            ]);
+        });
+
+        static::deleting(function ($model) {
+            if ($model->user) {
+                $model->user->delete();
+            }
+        });
+    }
 }

@@ -9,6 +9,9 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        User::factory()->create(['role' => 'superadmin', 'email' => 'super@gmail.com', 'password' => bcrypt('1')]);
+        User::factory()->create(['role' => 'taxoparkadmin', 'email' => 'taxopark@gmail.com', 'password' => bcrypt('1')]);
+        
         $this->call([
             RegionSeeder::class,
             TaxoParkSeeder::class,
@@ -17,10 +20,9 @@ class DatabaseSeeder extends Seeder
             DriverSeeder::class,
             DiscountSeeder::class,
             OrderSeeder::class,
-            DispatcherSeeder::class
+            DispatcherSeeder::class,
+            DriverProductSeeder::class,
+            ClientDiscountSeeder::class
         ]);
-
-        User::factory()->create(['role' => 'superadmin', 'email' => 'super@gmail.com', 'password' => bcrypt('1')]);
-        User::factory()->create(['role' => 'taxoparkadmin', 'email' => 'taxopakr@gmail.com', 'password' => bcrypt('1')]);
     }
 }

@@ -38,4 +38,18 @@ class SuperAdmin extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    protected static function booted()
+    {
+        static::created(function (SuperAdmin $SuperAdmin) {
+            $SuperAdmin->user->update([
+                'role' => 'superadmin',
+            ]);
+            static::deleting(function ($model) {
+            if ($model->user) {
+                $model->user->delete();
+            }
+        });
+        });
+    }
 }

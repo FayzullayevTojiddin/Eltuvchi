@@ -28,8 +28,7 @@ class TaxoParkAdminPanelProvider extends PanelProvider
             ->id('taxoParkAdmin')
             ->path('taxoParkAdmin')
             ->colors([
-                // 'primary' => Color::Amber,
-                'primary' => "white" // to'g'rilash k-k
+                'primary' => Color::Green,
             ])
             ->discoverResources(in: app_path('Filament/TaxoParkAdmin/Resources'), for: 'App\Filament\TaxoParkAdmin\Resources')
             ->discoverPages(in: app_path('Filament/TaxoParkAdmin/Pages'), for: 'App\Filament\TaxoParkAdmin\Pages')

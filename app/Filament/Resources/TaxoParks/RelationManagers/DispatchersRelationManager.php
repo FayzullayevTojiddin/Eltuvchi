@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\TaxoParks\RelationManagers;
 
+use App\Filament\Resources\Dispatchers\Schemas\DispatcherForm;
+use App\Filament\Resources\Dispatchers\Tables\DispatchersTable;
 use Filament\Actions\AssociateAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -20,41 +22,15 @@ class DispatchersRelationManager extends RelationManager
 {
     protected static string $relationship = 'dispatchers';
 
+    protected static ?string $title = "TaxoParkAdminlari";
+
     public function form(Schema $schema): Schema
     {
-        return $schema
-            ->components([
-                TextInput::make('dispatchers')
-                    ->required()
-                    ->maxLength(255),
-            ]);
+        return DispatcherForm::configure($schema);
     }
 
     public function table(Table $table): Table
     {
-        return $table
-            ->recordTitleAttribute('dispatchers')
-            ->columns([
-                TextColumn::make('dispatchers')
-                    ->searchable(),
-            ])
-            ->filters([
-                //
-            ])
-            ->headerActions([
-                CreateAction::make(),
-                AssociateAction::make(),
-            ])
-            ->recordActions([
-                EditAction::make(),
-                DissociateAction::make(),
-                DeleteAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DissociateBulkAction::make(),
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+        return DispatchersTable::configure($table);
     }
 }

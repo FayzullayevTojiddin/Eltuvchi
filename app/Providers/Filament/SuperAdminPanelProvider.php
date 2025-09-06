@@ -30,8 +30,7 @@ class SuperAdminPanelProvider extends PanelProvider
             ->path('superAdmin')
             ->login(Login::class)
             ->colors([
-                // 'primary' => Color::Amber,
-                'primary' => "amber"
+                'primary' => Color::Blue,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')

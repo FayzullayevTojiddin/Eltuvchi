@@ -50,7 +50,8 @@ class Driver extends Model
         'points',
         'details',
         'settings',
-        'taxopark_id'
+        'taxopark_id',
+        'full_name'
     ];
 
     protected $casts = [
@@ -76,5 +77,20 @@ class Driver extends Model
     public function products(): HasMany
     {
         return $this->hasMany(DriverProduct::class);
+    }
+
+    protected static function booted()
+    {
+        static::created(function (Driver $driver) {
+            $driver->user->update([
+                'role' => 'driver',
+            ]);
+        });
+
+        static::deleting(function ($model) {
+            if ($model->user) {
+                $model->user->delete();
+            }
+        });
     }
 }

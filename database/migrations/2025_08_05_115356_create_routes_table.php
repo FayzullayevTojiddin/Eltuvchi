@@ -20,12 +20,12 @@ return new class extends Migration
                 ->constrained('taxo_parks')
                 ->cascadeOnDelete();
 
-            $table->string('status')->default(RouteStatus::ACTIVE->value);
+            $table->string('status')->default('active');
 
-            $table->unsignedInteger('deposit_client')->default(0); // mijoz oldindan to‘lashi kerak
-            $table->unsignedInteger('distance_km');                // masofa
-            $table->unsignedInteger('price_in');                   // mijozdan olinadigan pul
-            $table->unsignedInteger('fee_per_client');             // taksidan olinadigan pul (1 mijoz uchun)
+            $table->unsignedInteger('deposit_client')->default(0);
+            $table->unsignedInteger('distance_km');
+            $table->unsignedInteger('price_in');
+            $table->unsignedInteger('fee_per_client');
 
             $table->timestamps();
 

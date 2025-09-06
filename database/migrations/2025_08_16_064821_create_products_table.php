@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->boolean('status')->default(true);
+            $table->string('status')->default('active');
             $table->string('icon_type')->nullable();
             $table->unsignedInteger('points');
             $table->string('title');

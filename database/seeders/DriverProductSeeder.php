@@ -14,14 +14,14 @@ class DriverProductSeeder extends Seeder
     {
         $drivers = Driver::all();
 
-        $products = Product::factory()->count($drivers->count())->create();
+        $products = Product::factory()->count(5)->create();
 
         $inserts = [];
 
         foreach ($drivers->values() as $index => $driver) {
             $inserts[] = [
                 'driver_id' => $driver->id,
-                'product_id' => $products[$index]->id,
+                'product_id' => $products->random()->value('id'),
                 'delivered' => false,
                 'created_at' => now(),
                 'updated_at' => now(),

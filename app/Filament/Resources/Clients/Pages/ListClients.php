@@ -16,7 +16,7 @@ class ListClients extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            //
+            CreateAction::make()->label("Yangi Mijoz Yaratish"),
         ];
     }
 

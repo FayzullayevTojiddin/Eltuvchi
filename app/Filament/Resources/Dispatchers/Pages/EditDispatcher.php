@@ -15,18 +15,21 @@ class EditDispatcher extends EditRecord
 {
     protected static string $resource = DispatcherResource::class;
 
+    protected static ?string $title = "TaxoPark Adminini tahrirlash";
+
     protected function getHeaderActions(): array
     {
         return [
             SendMessageAction::create(),
-            ViewAction::make()
-                ->label("TaxoParkga o'tish")
-                ->url(fn ($record) => TaxoParkResource::getUrl('edit', ['record' => $record->taxopark]))
-                ->openUrlInNewTab(),
             ActionGroup::make([
                 ViewAction::make()->label('Tahrirlash')->button(),
                 DisActiveAction::create()->label("Bloklash"),
                 DeleteAction::make()->label("O'chirish")->button()->color('black'),
+                ViewAction::make()
+                    ->button()
+                    ->label("TaxoParkga o'tish")
+                    ->url(fn ($record) => TaxoParkResource::getUrl('edit', ['record' => $record->taxopark]))
+                    ->openUrlInNewTab(),
             ]),
         ];
     }

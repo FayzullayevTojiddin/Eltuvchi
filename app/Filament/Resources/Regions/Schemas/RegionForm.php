@@ -12,15 +12,20 @@ class RegionForm
     {
         return $schema
             ->components([
+                TextInput::make('id')
+                    ->label("ID"),
+                
                 TextInput::make('name')
                     ->required(),
+
                 Select::make('status')
+                    ->label('Status')
                     ->options([
-                        'active' => 'Active',
-                        'disactive' => 'Disactive',
+                        'active' => 'Faol',
+                        'inactive' => 'Bloklangan',
                     ])
-                    ->default('active')
-                    ->required(),
-            ]);
+                    ->disabled()
+                    ->default('active'),
+            ])->columns(3);
     }
 }

@@ -2,9 +2,12 @@
 
 namespace App\Filament\Resources\TaxoParks\Tables;
 
+use App\Filament\Actions\DisActiveAction;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\BooleanColumn;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -37,7 +40,11 @@ class TaxoParksTable
                 //
             ])
             ->recordActions([
-                EditAction::make(),
+                ViewAction::make()->label("Ko'rish")->button(),
+                ActionGroup::make([
+                    EditAction::make()->label("Tahrirlash")->button(),
+                    DisActiveAction::create()
+                ])
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

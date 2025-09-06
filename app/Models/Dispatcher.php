@@ -54,4 +54,19 @@ class Dispatcher extends Model
     {
         return $this->belongsTo(TaxoPark::class);
     }
+
+    protected static function booted()
+    {
+        static::created(function (Dispatcher $dispatcher) {
+            $dispatcher->user->update([
+                'role' => 'taxoparkadmin',
+            ]);
+        });
+
+        static::deleting(function (Dispatcher $dispatcher) {
+            if ($dispatcher->user) {
+                $dispatcher->user->delete();
+            }
+        });
+    }
 }

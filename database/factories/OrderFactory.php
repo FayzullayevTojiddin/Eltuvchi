@@ -22,9 +22,9 @@ class OrderFactory extends Factory
         $deposit = (int) (($total - $discount) * 0.2);
 
         return [
-            'client_id' => Client::factory(),
-            'driver_id' => Driver::factory(),
-            'route_id' => Route::factory(),
+            'client_id' =>  Client::inRandomOrder()->value('id'),
+            'driver_id' =>  Driver::inRandomOrder()->value('id'),
+            'route_id' =>  Route::inRandomOrder()->value('id'),
             'driver_payment' => $total * 0.1,
             'passengers' => $passengers,
             'date' => now()->format('Y-m-d'),

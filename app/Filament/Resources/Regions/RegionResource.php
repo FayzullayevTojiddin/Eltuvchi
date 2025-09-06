@@ -5,34 +5,34 @@ namespace App\Filament\Resources\Regions;
 use App\Filament\Resources\Regions\Pages\CreateRegion;
 use App\Filament\Resources\Regions\Pages\EditRegion;
 use App\Filament\Resources\Regions\Pages\ListRegions;
-use App\Filament\Resources\Regions\Pages\ViewRegion;
 use App\Filament\Resources\Regions\RelationManagers\TaxoparksRelationManager;
 use App\Filament\Resources\Regions\Schemas\RegionForm;
-use App\Filament\Resources\Regions\Schemas\RegionInfolist;
 use App\Filament\Resources\Regions\Tables\RegionsTable;
-use App\Models\Region;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use App\Models\Region;
 
 class RegionResource extends Resource
 {
     protected static ?string $model = Region::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?string $navigationLabel = "Regionlar";
 
-    protected static ?string $recordTitleAttribute = 'Region';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::GlobeAlt;
+
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Boshqaruv';
+    }
+
+    protected static ?string $recordTitleAttribute = 'id';
 
     public static function form(Schema $schema): Schema
     {
         return RegionForm::configure($schema);
-    }
-
-    public static function infolist(Schema $schema): Schema
-    {
-        return RegionInfolist::configure($schema);
     }
 
     public static function table(Table $table): Table
@@ -52,7 +52,6 @@ class RegionResource extends Resource
         return [
             'index' => ListRegions::route('/'),
             'create' => CreateRegion::route('/create'),
-            'view' => ViewRegion::route('/{record}'),
             'edit' => EditRegion::route('/{record}/edit'),
         ];
     }

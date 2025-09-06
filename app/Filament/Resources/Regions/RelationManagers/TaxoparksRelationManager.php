@@ -3,17 +3,12 @@
 namespace App\Filament\Resources\Regions\RelationManagers;
 
 use App\Filament\Resources\TaxoParks\Schemas\TaxoParkForm;
-use App\Filament\Resources\TaxoParks\Tables\TaxoParksTable;
-use App\Filament\Resources\TaxoParks\TaxoParkResource;
-use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\BooleanColumn;
-use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use yes;
+use App\Filament\Resources\TaxoParks\Tables\TaxoParksTable;
 
 class TaxoparksRelationManager extends RelationManager
 {
@@ -24,20 +19,8 @@ class TaxoparksRelationManager extends RelationManager
         return TaxoParkForm::configure($schema);
     }
 
-    // public function infolist(Schema $schema): Schema
-    // {
-    //     return TaxoPark::configure($schema);
-    // }
-
     public function table(Table $table): Table
     {
-        return TaxoParksTable::configure($table)
-            ->actions([
-                Action::make('view')
-                    ->label('Details')
-                    ->icon('heroicon-o-eye')
-                    ->url(fn ($record) => TaxoParkResource::getUrl('edit', ['record' => $record]))
-                    ->openUrlInNewTab(false)
-            ]);
+        return TaxoParksTable::configure($table);
     }
 }

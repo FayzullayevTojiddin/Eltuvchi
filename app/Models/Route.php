@@ -48,10 +48,6 @@ class Route extends Model
         'fee_per_client',
     ];
 
-    protected $casts = [
-        'status' => RouteStatus::class,
-    ];
-
     public function fromTaxopark(): BelongsTo
     {
         return $this->belongsTo(TaxoPark::class, 'taxopark_from_id');

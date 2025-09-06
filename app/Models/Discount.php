@@ -47,14 +47,8 @@ class Discount extends Model
         'points',
         'title',
         'icon',
-        'percent',
         'status',
     ];
-
-    public function orders(): HasMany
-    {
-        return $this->hasMany(Order::class);
-    }
 
     public function isPercent(): bool
     {
@@ -69,5 +63,10 @@ class Discount extends Model
     public function isActive(): bool
     {
         return $this->status === self::STATUS_ACTIVE;
+    }
+
+    public function clients(): HasMany
+    {
+        return $this->hasMany(ClientDiscount::class);
     }
 }

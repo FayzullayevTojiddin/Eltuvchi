@@ -24,15 +24,20 @@ class DispatcherResource extends Resource
 
     protected static ?string $navigationLabel = 'TaxoPark Adminlari';
 
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Rollar';
+    }
+
     public static function form(Schema $schema): Schema
     {
         return DispatcherForm::configure($schema);
     }
 
-    public static function infolist(Schema $schema): Schema
-    {
-        return DispatcherInfolist::configure($schema);
-    }
+    // public static function infolist(Schema $schema): Schema
+    // {
+    //     return DispatcherInfolist::configure($schema);
+    // }
 
     public static function table(Table $table): Table
     {
@@ -51,7 +56,7 @@ class DispatcherResource extends Resource
         return [
             'index' => ListDispatchers::route('/'),
             'create' => CreateDispatcher::route('/create'),
-            'view' => ViewDispatcher::route('/{record}'),
+            // 'view' => ViewDispatcher::route('/{record}'),
             'edit' => EditDispatcher::route('/{record}/edit'),
         ];
     }

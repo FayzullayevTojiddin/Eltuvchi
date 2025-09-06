@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources\Dispatchers\Tables;
 
+use App\Filament\Actions\DisActiveAction;
 use App\Filament\Actions\SendMessageAction;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -15,6 +17,7 @@ class DispatchersTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->striped()
             ->columns([
                 TextColumn::make('id')
                     ->label('ID')
@@ -52,8 +55,11 @@ class DispatchersTable
             ])
             ->recordActions([
                 ViewAction::make()->label("Ko'rish")->button(),
-                EditAction::make()->label("Tahrirlash")->button(),
-                SendMessageAction::create()
+                ActionGroup::make([
+                    EditAction::make()->label("Tahrirlash")->button(),
+                    DisActiveAction::create(),
+                    SendMessageAction::create(),
+                ])
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

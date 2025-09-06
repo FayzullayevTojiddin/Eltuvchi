@@ -6,6 +6,7 @@ use App\Enums\OrderStatus;
 use App\Filament\Resources\Clients\ClientResource;
 use App\Filament\Resources\Drivers\DriverResource;
 use App\Filament\Resources\Orders\OrderResource;
+use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -27,7 +28,7 @@ class OrdersTable
                     ->sortable(),
 
                 TextColumn::make('route.name')
-                    ->label('Route')
+                    ->label("Yo'nalish")
                     ->limit(30)
                     ->tooltip(fn ($record) => $record->route->name)
                     ->searchable()
@@ -84,26 +85,28 @@ class OrdersTable
                     ->url(fn ($record) => OrderResource::getUrl('view', ['record' => $record->getKey()]))
                     ->button(),
                 ActionGroup::make([
-                    ViewAction::make()
+                    Action::make('client')
                         ->label("Mijozni Ko'rish")
                         ->url(fn ($record) => $record->client 
                             ? ClientResource::getUrl('edit', ['record' => $record->client]) 
                             : null,
                             shouldOpenInNewTab: true
                         )
-                        ->hidden(fn ($record) => blank($record->client)),
-                        ViewAction::make()
-                            ->label("Haydovchini Ko'rish")
-                            ->url(fn ($record) => $record->driver 
-                                ? DriverResource::getUrl('edit', ['record' => $record->driver]) 
-                                : null, 
-                                shouldOpenInNewTab: true
-                            )
-                            ->hidden(fn ($record) => blank($record->driver)),
-                        EditAction::make()
-                            ->label("Tahrirlash")
-                            ->url(fn ($record) => OrderResource::getUrl('edit', ['record' => $record->getKey()]))
-                            ->button(),
+                        ->hidden(fn ($record) => blank($record->client))
+                        ->button(),
+                    Action::make('driver')
+                        ->label("Haydovchini Ko'rish")
+                        ->url(fn ($record) => $record->driver 
+                            ? DriverResource::getUrl('edit', ['record' => $record->driver]) 
+                            : null, 
+                            shouldOpenInNewTab: true
+                        )
+                        ->hidden(fn ($record) => blank($record->driver))
+                        ->button(),
+                    EditAction::make()
+                        ->label("Tahrirlash")
+                        ->url(fn ($record) => OrderResource::getUrl('edit', ['record' => $record->getKey()]))
+                        ->button(),
                 ]),
             ])
             ->toolbarActions([

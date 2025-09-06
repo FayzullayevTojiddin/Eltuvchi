@@ -25,7 +25,14 @@ class TaxoParkResource extends Resource
 {
     protected static ?string $model = TaxoPark::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice;
+
+    protected static ?string $navigationLabel = "TaxoParklar";
+
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Boshqaruv';
+    }
 
     public static function form(Schema $schema): Schema
     {

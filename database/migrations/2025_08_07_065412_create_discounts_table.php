@@ -14,7 +14,6 @@ return new class extends Migration {
             $table->integer('points')->nullable();
             $table->string('title')->nullable();
             $table->string('icon')->nullable();
-            $table->integer('percent')->nullable();
             $table->string('status')->default('active');
             $table->timestamps();
         });

@@ -10,9 +10,9 @@ class SendMessageAction
 {
     use TelegramBotTrait;
 
-    public static function create($chatId = null): Action
+    public static function create($chatId = null, $name = 'sendMessage'): Action
     {
-        return Action::make('sendMessage')
+        return Action::make($name)
             ->button()
             ->label('Xabar Yuborish')
             ->icon('heroicon-o-paper-airplane')

@@ -12,7 +12,7 @@ class TaxoParksOverview extends StatsOverviewWidget
     {
         $total     = TaxoPark::count();
         $active    = TaxoPark::where('status', 'active')->count();
-        $disactive = TaxoPark::where('status', 'disactive')->count();
+        $disactive = TaxoPark::where('status', 'inactive')->count();
 
         return [
             Stat::make('Jami Taxoparklar', $total)

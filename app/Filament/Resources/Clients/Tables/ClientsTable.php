@@ -10,6 +10,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -63,11 +64,12 @@ class ClientsTable
                 //
             ])
             ->recordActions([
-                SendMessageAction::create(),
+                ViewAction::make()->label("Ko'rish")->button(),
                 ActionGroup::make([
                     EditAction::make()->label("Tahrirlash")->button(),
                     DisActiveAction::create(),
-                    DeleteAction::make()->label("O'chirish")->button()
+                    DeleteAction::make()->label("O'chirish")->button(),
+                    SendMessageAction::create(),
                 ])
             ])
             ->toolbarActions([

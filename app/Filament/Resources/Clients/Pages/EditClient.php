@@ -2,14 +2,14 @@
 
 namespace App\Filament\Resources\Clients\Pages;
 
+use App\Filament\Actions\ChangeBalanceAction;
 use App\Filament\Actions\DisActiveAction;
 use App\Filament\Actions\SendMessageAction;
 use App\Filament\Resources\Clients\ClientResource;
 use App\Livewire\ClientOverview;
 use App\Traits\TelegramBotTrait;
-use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
-use Filament\Forms\Components\Textarea;
 use Filament\Resources\Pages\EditRecord;
 
 class EditClient extends EditRecord
@@ -18,12 +18,17 @@ class EditClient extends EditRecord
 
     protected static string $resource = ClientResource::class;
 
+    protected static ?string $title = "Mijozni Tahrirlash";
+
     protected function getHeaderActions(): array
     {
         return [
             DeleteAction::make()->label("O'chirish"),
-            DisActiveAction::create(),
-            SendMessageAction::create()
+            ActionGroup::make([
+                DisActiveAction::create(),
+                SendMessageAction::create(),
+                ChangeBalanceAction::create()
+            ])
         ];
     }
 

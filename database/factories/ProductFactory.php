@@ -12,7 +12,7 @@ class ProductFactory extends Factory
     public function definition(): array
     {
         return [
-            'status'      => $this->faker->boolean(80),
+            'status'      => 'active',
             'icon_type'   => $this->faker->randomElement(['car', 'bonus', 'gift', 'star']),
             'points'      => $this->faker->numberBetween(5, 100),
             'title'       => $this->faker->words(3, true),

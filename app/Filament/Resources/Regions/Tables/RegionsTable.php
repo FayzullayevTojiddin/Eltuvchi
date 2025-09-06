@@ -2,11 +2,13 @@
 
 namespace App\Filament\Resources\Regions\Tables;
 
+use App\Filament\Actions\DisActiveAction;
+use Dom\Text;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -16,34 +18,40 @@ class RegionsTable
     {
         return $table
             ->columns([
+                TextColumn::make('id')
+                    ->label("ID")
+                    ->searchable()
+                    ->sortable(),
+
                 TextColumn::make('name')
-                    ->searchable(),
-                IconColumn::make('status')
-                        ->icon(fn (string $state): string => match ($state) {
-                            'active' => 'heroicon-o-check-circle',
-                            'disactive' => 'heroicon-o-x-circle',
-                            default => 'heroicon-o-question-mark-circle',
-                        })
-                        ->color(fn (string $state): string => match ($state) {
-                            'active' => 'success',
-                            'disactive' => 'danger',
-                            default => 'gray',
-                        }),
+                    ->label("Region Nomi")
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('status')
+                    ->label('Status')
+                    ->searchable()
+                    ->sortable()
+                    ->formatStateUsing(fn ($state) => $state === 'active' ? 'Faol' : 'Bloklangan')
+                    ->colors([
+                        'success' => fn($state) => $state === 'active',
+                        'danger'  => fn($state) => $state === 'inactive',
+                    ]),
+
                 TextColumn::make('created_at')
+                    ->label("Dan Beri:")
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                
             ])
             ->filters([
                 //
             ])
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
+                ViewAction::make()->label("Ko'rish")->button(),
+                ActionGroup::make([
+                    EditAction::make()->label("Tahrirlash")->button(),
+                    DisActiveAction::create()
+                ])
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

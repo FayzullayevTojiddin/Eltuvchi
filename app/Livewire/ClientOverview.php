@@ -14,7 +14,7 @@ class ClientOverview extends StatsOverviewWidget
     public ?Client $record = null;
 
     protected ?string $pollingInterval = '10s';
-    
+
     protected function getStats(): array
     {
         $allOrders = Order::where('client_id', $this->record->id)->count();
@@ -27,9 +27,14 @@ class ClientOverview extends StatsOverviewWidget
 
         $inProgressOrders = $allOrders - ($cancelledOrders + $completedOrders);
 
-        $totalExpense = BalanceHistory::where('balanceable_id', $this->record->id)
+        $totalMinus = BalanceHistory::where('balanceable_id', $this->record->id)
             ->where('balanceable_type', Client::class)
-            ->where('type', 'expense')
+            ->where('type', 'minus')
+            ->sum('amount');
+
+        $totalPlus = BalanceHistory::where('balanceable_id', $this->record->id)
+            ->where('balanceable_type', Client::class)
+            ->where('type', 'plus')
             ->sum('amount');
 
         return [
@@ -37,7 +42,8 @@ class ClientOverview extends StatsOverviewWidget
             Stat::make('Bekor qilinganlar', $cancelledOrders),
             Stat::make('Yakunlanganlar', $completedOrders),
             Stat::make('Jarayondagilar', $inProgressOrders),
-            Stat::make('Umumiy Foydalangan Summasi', number_format($totalExpense, 0, '.', ' ') . ' so‘m'),
+            Stat::make('Umumiy Foydalangan Summasi', number_format($totalMinus, 0, '.', ' ') . ' so‘m'),
+            Stat::make('Umumiy Tushurilgan Summasi', number_format($totalPlus, 0, '.', ' ') . ' so‘m')
         ];
     }
 }

@@ -67,18 +67,12 @@ class TaxoPark extends Model
         return $this->hasMany(Dispatcher::class, 'taxopark_id');
     }
 
-    public function orders()
+    public function orders(): HasMany
     {
-        return $this->hasManyThrough(
-            Order::class,
-            Route::class,
-            'taxopark_from_id',
-            'route_id',
-            'id',
-            'id'
-        )->where(function ($query) {
-            $query->where('routes.taxopark_from_id', $this->id)
-                ->orWhere('routes.taxopark_to_id', $this->id);
-        });
+        return $this->hasMany(Order::class, 'id', 'id')
+            ->whereHas('route', function ($q) {
+                $q->where('taxopark_from_id', $this->id)
+                  ->orWhere('taxopark_to_id', $this->id);
+            });
     }
 }
