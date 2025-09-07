@@ -25,13 +25,12 @@ class LoginController extends Controller
 
             $user = Auth::user();
 
-            // Role bo‘yicha qaysi panelga yo‘naltiramiz
             if ($user->role === 'superadmin') {
                 return redirect()->route('filament.superAdmin.pages.dashboard');
             }
 
             if ($user->role === 'taxoparkadmin') {
-                return redirect()->route('filament.taxoParkAdmin.pages.dashboard');
+                return url('https://youtube.com');
             }
 
             Auth::logout();

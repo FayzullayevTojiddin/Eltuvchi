@@ -14,7 +14,7 @@ return new class extends Migration
             $table->foreignId('taxopark_id')
                 ->constrained('taxo_parks')
                 ->onDelete('cascade');
-            $table->string('status')->default('inactive');
+            $table->string('status')->default('active');
             $table->integer('balance')->default(0);
             $table->integer('points')->default(0);
             $table->json('details')->nullable();

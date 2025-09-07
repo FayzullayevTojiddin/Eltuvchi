@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\Orders\Pages;
 
 use App\Filament\Resources\Orders\OrderResource;
-use App\Filament\Widgets\OrdersReview;
+use App\Filament\Widgets\OrdersOverview;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
@@ -16,7 +16,7 @@ class ListOrders extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return [
-            OrdersReview::class
+            OrdersOverview::class
         ];
     }
 

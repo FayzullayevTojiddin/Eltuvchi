@@ -11,11 +11,9 @@ class Login extends BaseAuthLogin
     {
         $user = Auth::user();
 
-        dd($user->role);
-
         return match ($user->role) {
-            'superadmin' => route('filament.superAdmin.pages.dashboard'),
-            'taxoparkadmin' => route('filament.taxoParkAdmin.pages.dashboard'),
+            'superadmin' => url('/superAdmin/dashboard'),
+            'taxoparkadmin' => url('/taxoParkAdmin/dashboard'),
             default => url('/'),
         };
     }

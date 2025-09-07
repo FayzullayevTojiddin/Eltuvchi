@@ -8,7 +8,7 @@ use App\Enums\OrderStatus;
 use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
 
-class OrdersReview extends StatsOverviewWidget
+class OrdersOverview extends StatsOverviewWidget
 {
     protected ?string $pollingInterval = '10s';
 
@@ -17,8 +17,8 @@ class OrdersReview extends StatsOverviewWidget
         $taxoparkId = Auth::user()->dispatcher->taxopark_id;
 
         $query = Order::query()->whereHas('route', function ($q) use ($taxoparkId) {
-            $q->where('from_taxopark_id', $taxoparkId)
-              ->orWhere('to_taxopark_id', $taxoparkId);
+            $q->where('taxopark_from_id', $taxoparkId)
+              ->orWhere('taxopark_to_id', $taxoparkId);
         });
 
         $completed = (clone $query)->where('status', OrderStatus::Completed)->count();

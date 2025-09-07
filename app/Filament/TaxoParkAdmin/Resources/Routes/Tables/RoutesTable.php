@@ -1,15 +1,17 @@
 <?php
 
-namespace App\Filament\Resources\Routes\Tables;
+namespace App\Filament\TaxoParkAdmin\Resources\Routes\Tables;
 
 use App\Filament\Actions\DisActiveAction;
 use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Tables\Table;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
 
 class RoutesTable
 {
@@ -47,16 +49,18 @@ class RoutesTable
                         default => 'gray',
                     }),
             ])
-            ->recordActions([
+            ->filters([
                 //
             ])
-            ->actions([
+            ->recordActions([
                 ViewAction::make()->label("Ko'rish")->button(),
                 ActionGroup::make([
                     DisActiveAction::create(),
                     EditAction::make()->label("Tahrirlash")->button(),
-                    DeleteAction::make()->label("O'chirish")->button(),
                 ]),
+            ])
+            ->toolbarActions([
+                //
             ]);
     }
 }

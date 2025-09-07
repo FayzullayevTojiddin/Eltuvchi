@@ -7,7 +7,7 @@ use App\Models\Order;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
-class OrdersReview extends StatsOverviewWidget
+class OrdersOverview extends StatsOverviewWidget
 {
     protected ?string $pollingInterval = '10s';
 

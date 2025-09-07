@@ -3,8 +3,7 @@
 namespace App\Filament\TaxoParkAdmin\Resources\Orders\Pages;
 
 use App\Filament\TaxoParkAdmin\Resources\Orders\OrderResource;
-use App\Filament\TaxoParkAdmin\Widgets\OrdersReview;
-use App\Filament\TaxoParkAdmin\Widgets\OrdersWidget;
+use App\Filament\TaxoParkAdmin\Widgets\OrdersOverview;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
@@ -17,7 +16,7 @@ class ListOrders extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return [
-            OrdersReview::class
+            OrdersOverview::class
         ];
     }
 

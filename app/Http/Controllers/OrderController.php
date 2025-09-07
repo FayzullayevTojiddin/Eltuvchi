@@ -150,13 +150,6 @@ class OrderController extends Controller
                 $clientDiscount->update(['used' => true]);
             }
 
-            $order->histories()->create([
-                'status' => OrderStatus::Created,
-                'changed_by_id' => $user->id,
-                'changed_by_type' => get_class($user),
-                'description' => 'Order created',
-            ]);
-
             DB::commit();
 
             return $this->success(new OrderResource($order), 200, 'Order created successfully.');

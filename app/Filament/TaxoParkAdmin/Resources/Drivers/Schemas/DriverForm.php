@@ -3,6 +3,7 @@
 namespace App\Filament\TaxoParkAdmin\Resources\Drivers\Schemas;
 
 use App\Models\User;
+use Auth;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
@@ -56,7 +57,13 @@ class DriverForm
                             ->visible(fn ($state) => filled($state))   
                     )
                     ->required(),
-                Hidden::make('taxopark_id'),
+                Select::make('taxopark_id')
+                    ->label('TaxoPark')
+                    ->relationship('taxopark', 'name')
+                    ->default(fn () => Auth::user()->dispatcher->taxopark_id)
+                    ->disabled()
+                    ->dehydrated()
+                    ->required(),
                 Select::make('status')
                     ->label('Status')
                     ->options([

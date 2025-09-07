@@ -19,6 +19,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Filament\Auth\Login;
+use App\Filament\TaxoParkAdmin\Pages\TaxoParkAdminDashboard;
 
 class TaxoParkAdminPanelProvider extends PanelProvider
 {
@@ -33,8 +34,9 @@ class TaxoParkAdminPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/TaxoParkAdmin/Resources'), for: 'App\Filament\TaxoParkAdmin\Resources')
             ->discoverPages(in: app_path('Filament/TaxoParkAdmin/Pages'), for: 'App\Filament\TaxoParkAdmin\Pages')
             ->pages([
-                Dashboard::class,
-            ])->login(Login::class)
+                TaxoParkAdminDashboard::class,
+            ])
+            ->login(Login::class)
             ->discoverWidgets(in: app_path('Filament/TaxoParkAdmin/Widgets'), for: 'App\Filament\TaxoParkAdmin\Widgets')
             ->widgets([
                 AccountWidget::class,
