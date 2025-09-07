@@ -29,7 +29,7 @@ class RegionController extends Controller
      */
     public function index()
     {
-        $regions = Region::all();
+        $regions = Region::where('status', 'active')->get();
         return $this->response(RegionResource::collection($regions), 200);
     }
 

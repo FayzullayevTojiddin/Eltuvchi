@@ -2,6 +2,7 @@
 
 namespace App\Filament\TaxoParkAdmin\Resources\Orders\Schemas;
 
+use App\Enums\OrderStatus;
 use App\Models\Route;
 use Auth;
 use Filament\Forms\Components\DatePicker;
@@ -43,8 +44,17 @@ class OrderForm
                             ->preload()
                             ->nullable()
                             ->disabledOn(['edit']),
+                        
+                        Select::make('status')
+                            ->label('Status')
+                            ->options(
+                                collect(OrderStatus::cases())
+                                    ->mapWithKeys(fn ($case) => [$case->value => $case->name])
+                                    ->toArray()
+                            )
+                            ->disabled(),
                     ])
-                    ->columns(2)
+                    ->columns(3)
                     ->collapsible()
                     ->columnSpanFull(),
 
@@ -162,10 +172,8 @@ class OrderForm
                                 3 => '3',
                                 4 => '4',
                                 5 => '5',
-                            ])
-                            ->required(),
-                        Textarea::make('comment')
-                            ->required(),
+                            ]),
+                        Textarea::make('comment'),
                         Hidden::make('client_id')
                             ->default(fn ($record, $get) => $record?->order?->client_id ?? null)
                     ])

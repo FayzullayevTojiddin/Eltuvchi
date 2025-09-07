@@ -47,7 +47,6 @@ class DiscountsTable
                 ViewAction::make()->label("Ko'rish")->button(),
                 ActionGroup::make([
                     EditAction::make()->label("Tahrirlash")->button(),
-                    DeleteAction::make()->label("O'chirish")->button(),
                     DisActiveAction::create(),
                 ])
             ])

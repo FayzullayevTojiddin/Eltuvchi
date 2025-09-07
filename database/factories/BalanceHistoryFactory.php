@@ -4,6 +4,8 @@ namespace Database\Factories;
 
 use App\Models\BalanceHistory;
 use App\Models\Client;
+use App\Models\SuperAdmin;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class BalanceHistoryFactory extends Factory
@@ -12,7 +14,9 @@ class BalanceHistoryFactory extends Factory
 
     public function definition()
     {
+        $superAdminIds = User::where('role', 'superadmin')->pluck('id');
         return [
+            'user_id' => $superAdminIds->isNotEmpty() ? $superAdminIds->random() : User::factory()->create(['role' => 'superadmin'])->id,
             'amount' => $this->faker->numberBetween(1000, 100000),
             'type' => $this->faker->randomElement(['plus', 'minus']),
             'balance_after' => $this->faker->numberBetween(10000, 200000),

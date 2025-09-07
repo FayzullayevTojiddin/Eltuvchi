@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Models\BalanceHistory;
+use Auth;
 
 trait HasBalance
 {
@@ -12,12 +13,13 @@ trait HasBalance
         $this->refresh();
 
         BalanceHistory::create([
-            'balanceable_id' => $this->id,
+            'balanceable_id'   => $this->id,
             'balanceable_type' => static::class,
-            'amount' => $amount,
-            'type' => 'plus',
-            'balance_after' => $this->balance,
-            'description' => $description,
+            'amount'           => $amount,
+            'type'             => 'plus',
+            'balance_after'    => $this->balance,
+            'description'      => $description,
+            'user_id'          => Auth::id(),
         ]);
     }
 
@@ -31,12 +33,13 @@ trait HasBalance
         $this->refresh();
 
         BalanceHistory::create([
-            'balanceable_id' => $this->id,
+            'balanceable_id'   => $this->id,
             'balanceable_type' => static::class,
-            'amount' => $amount,
-            'type' => 'minus',
-            'balance_after' => $this->balance,
-            'description' => $description,
+            'amount'           => $amount,
+            'type'             => 'minus',
+            'balance_after'    => $this->balance,
+            'description'      => $description,
+            'user_id'          => Auth::id(),
         ]);
 
         return true;

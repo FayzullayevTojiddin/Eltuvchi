@@ -22,6 +22,11 @@ class ProductsTable
                 TextColumn::make('title')
                     ->label("Sarlavhasi"),
 
+                TextColumn::make('points')
+                    ->label("Points")
+                    ->numeric()
+                    ->sortable(),
+
                 TextColumn::make('status')
                     ->label('Status')
                     ->searchable()
@@ -31,6 +36,11 @@ class ProductsTable
                         'success' => fn($state) => $state === 'active',
                         'danger'  => fn($state) => $state === 'inactive',
                     ]),
+
+                // TextColumn::make('created_at')
+                //     ->label('Qachondan Beri')
+                //     ->dateTime('d-M-Y H:i')
+                //     ->sortable(),
             ])
             ->filters([
                 //

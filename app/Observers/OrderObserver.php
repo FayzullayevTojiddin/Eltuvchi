@@ -46,11 +46,12 @@ class OrderObserver
         if ($driverId) {
             broadcast(new OrderUpdated($order, "driver.{$driverId}.orders"));
         }
+
         $order->histories()->create([
             'status' => $order->status,
             'changed_by_id' => $user->id,
             'changed_by_type' => get_class($user),
-            'description' => 'Buyurtma Yangilandi',
+            'description' => $order->temp_description ?? 'Buyurtma yangilandi',
         ]);
     }
 }

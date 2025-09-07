@@ -34,8 +34,17 @@ class OrderForm
                         ->getOptionLabelFromRecordUsing(fn ($record) => $record->id . " - " . $record->details['full_name'])
                         ->searchable(['id'])
                         ->nullable(),
+
+                    Select::make('status')
+                        ->label('Status')
+                        ->options(
+                            collect(OrderStatus::cases())
+                                ->mapWithKeys(fn ($case) => [$case->value => $case->name])
+                                ->toArray()
+                        )
+                        ->disabled(),
                 ])
-                ->columns(2)
+                ->columns(3)
                 ->collapsible()
                 ->columnSpanFull(),
 
@@ -143,17 +152,14 @@ class OrderForm
                             3 => '3',
                             4 => '4',
                             5 => '5',
-                        ])
-                        ->required(),
-                    Textarea::make('comment')
-                        ->required(),
-                    Hidden::make('client_id')
-                        ->default(fn ($record, $get) => $record?->order?->client_id ?? null)
+                        ]),
+                    Textarea::make('comment'),
                 ])
                 ->columns(2)
                 ->columnSpanFull()
                 ->collapsible()
-                ->hiddenOn('create')
+                ->hidden(fn ($record) => $record === null)
+                ->disabled()
         ]);
     }
 }

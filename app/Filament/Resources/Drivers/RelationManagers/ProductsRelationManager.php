@@ -56,7 +56,11 @@ class ProductsRelationManager extends RelationManager
                     ->falseIcon('heroicon-o-x-circle')
                     ->trueColor('success')
                     ->falseColor('danger')
-                    ->sortable()
+                    ->sortable(),
+                TextColumn::make('created_at')
+                    ->label('Qachondan Olingan Edi?')
+                    ->dateTime('d-M-Y H:i')
+                    ->sortable(),
             ])
             ->filters([
                 //

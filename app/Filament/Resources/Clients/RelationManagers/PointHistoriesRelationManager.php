@@ -48,6 +48,12 @@ class PointHistoriesRelationManager extends RelationManager
                     ->color(fn (string $state): string => $state === 'plus' ? 'success' : 'danger')
                     ->tooltip(fn (string $state): string => $state === 'plus' ? 'Kirim' : 'Chiqim'),
 
+                TextColumn::make('user.display_name')
+                    ->label('Kim Tomonidan')
+                    ->sortable()
+                    ->searchable()
+                    ->formatStateUsing(fn ($state, $record) => $record->user ? "#{$record->user->id} {$state}" : null),
+
                 TextColumn::make('points_after')
                     ->label('Qolgan Ball')
                     ->sortable(),
@@ -64,8 +70,8 @@ class PointHistoriesRelationManager extends RelationManager
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([])
-            ->headerActions([]) // yangi qo'shishni yopamiz
-            ->actions([]) // edit/delete yo'q
+            ->headerActions([])
+            ->actions([])
             ->bulkActions([]);
     }
 }

@@ -128,8 +128,30 @@ class User extends Authenticatable implements FilamentUser
         };
     }
 
+    public function getWhereAttribute()
+    {
+        return match ($this->role) {
+            'client' => $this->client,
+            'driver' => $this->driver,
+            'superadmin' => $this->superAdmin,
+            'taxoparkadmin' => $this->taxoParkAdmin,
+            default => null,
+        };
+    }
+
     public function dispatcher(): HasOne
     {
         return $this->hasOne(Dispatcher::class);
+    }
+
+    public function getDisplayNameAttribute(): ?string
+    {
+        return match($this->role) {
+            'superadmin' => $this->superAdmin?->full_name,
+            'taxoparkadmin' => $this->taxoParkAdmin?->full_name,
+            'driver' => $this->driver?->details['full_name'] ?? null,
+            'client' => $this->client?->settings['full_name'] ?? null,
+            default => $this->name,
+        };
     }
 }

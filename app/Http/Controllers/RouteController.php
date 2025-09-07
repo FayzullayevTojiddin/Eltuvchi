@@ -53,7 +53,6 @@ class RouteController extends Controller
 {
     public function check(int $from, int $to)
     {
-        $cacheKey = "route_{$from}_{$to}";
         $route = Route::with(['fromTaxopark', 'toTaxopark'])
                 ->where('taxopark_from_id', $from)
                 ->where('taxopark_to_id', $to)

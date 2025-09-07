@@ -38,6 +38,7 @@ class HistoriesRelationManager extends RelationManager
                 TextColumn::make('id')->sortable(),
 
                 TextColumn::make('status')
+                    ->label("Yangilangan Status")
                     ->badge()
                     ->sortable(),
 

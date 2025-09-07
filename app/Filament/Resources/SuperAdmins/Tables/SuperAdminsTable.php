@@ -33,13 +33,9 @@ class SuperAdminsTable
                         'danger'  => fn($state) => $state === 'inactive',
                     ]),
                 TextColumn::make('created_at')
+                    ->label("Qachondan Beri?")
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
             ])
             ->filters([
                 //

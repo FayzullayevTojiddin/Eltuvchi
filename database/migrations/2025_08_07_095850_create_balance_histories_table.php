@@ -10,12 +10,12 @@ return new class extends Migration
     {
         Schema::create('balance_histories', function (Blueprint $table) {
             $table->id();
-            $table->morphs('balanceable');
+            $table->morphs('balanceable'); 
             $table->bigInteger('amount');
             $table->enum('type', ['plus', 'minus']);
             $table->bigInteger('balance_after');
             $table->string('description')->nullable();
-
+            $table->foreignId('user_id')->constrained()->nullOnDelete();
             $table->timestamps();
         });
     }

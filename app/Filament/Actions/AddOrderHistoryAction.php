@@ -15,7 +15,7 @@ class AddOrderHistoryAction
     public static function make(): Action
     {
         return Action::make('addHistory')
-            ->label('Add History')
+            ->label('Yangi Tarix Yozish')
             ->icon('heroicon-o-clock')
             ->form([
                 Select::make('status')
@@ -26,16 +26,11 @@ class AddOrderHistoryAction
                     ->nullable(),
             ])
             ->action(function (array $data, Order $record): void {
+                $record->temp_description = $data['description'] ?? null;
                 $record->update([
                     'status' => $data['status'],
                 ]);
-                OrderHistory::create([
-                    'order_id'       => $record->id,
-                    'status'         => $data['status'],
-                    'description'    => $data['description'] ?? null,
-                    'changed_by_id'  => Auth::id(),
-                    'changed_by_type'=> Auth::user()::class,
-                ]);
-            })->button();
+            })
+            ->button();
     }
 }

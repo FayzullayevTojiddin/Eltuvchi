@@ -1,13 +1,4 @@
 <?php
-
-use App\Http\Controllers\AdminClientController;
-use App\Http\Controllers\AdminDashboardController;
-use App\Http\Controllers\AdminDispatcherController;
-use App\Http\Controllers\AdminDriverController;
-use App\Http\Controllers\AdminMarketController;
-use App\Http\Controllers\AdminOrderController;
-use App\Http\Controllers\AdminPaymentController;
-use App\Http\Controllers\AdminTaxoParkController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BalanceHistoryController;
 use App\Http\Controllers\ClientCancelOrderController;
@@ -17,7 +8,6 @@ use App\Http\Controllers\ClientDiscountController;
 use App\Http\Controllers\ClientMarketController;
 use App\Http\Controllers\ClientOrderController;
 use App\Http\Controllers\ClientProfileController;
-use App\Http\Controllers\DispatcherDriverController;
 use App\Http\Controllers\DriverCancelOrderController;
 use App\Http\Controllers\DriverStoppedOrderController;
 use App\Http\Controllers\DriverController;
@@ -29,10 +19,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderReviewController;
 use App\Http\Controllers\ReferralController;
 use App\Http\Controllers\RegionController;
-use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RouteController;
-use Illuminate\Http\Request;
-use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/auth', [AuthController::class, 'telegramAuth']);
@@ -70,22 +57,3 @@ Route::prefix('/driver')->middleware(['auth:sanctum', 'role_status:driver'])->gr
     Route::get('/market', [DriverMarketController::class, 'list_products']);
     Route::post('/market/{product}', [DriverMarketController::class, 'get_product']);
 });
-
-// Route::prefix('/super-admin')->middleware(['auth:sanctum', 'role_status:admin'])->group(function() {
-//     Route::get('/dashboard', [AdminDashboardController::class, 'dashboard']);
-//     Route::get('/reports/download', [ReportController::class, 'download']); // Hozircha emas keyinroq yozamiz
-//     Route::apiResources([
-//         'clients' => AdminClientController::class,
-//         'drivers' => AdminDriverController::class,
-//         'taxoparks' => AdminTaxoParkController::class,
-//         'payments' => AdminPaymentController::class, // Hali Paymentning o'zi yo'q
-//         'orders' => AdminOrderController::class,
-//         'market' => AdminMarketController::class,
-//         'dispatchers' => AdminDispatcherController::class,
-//     ]);
-// });
-// Route::prefix('/dispatcher')->middleware(['auth:sanctum', 'role_status:dispatcher'])->group(function() {
-//     Route::apiResources([
-//         'drivers' => DispatcherDriverController::class
-//     ]);
-// });

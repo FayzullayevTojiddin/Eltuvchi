@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Models\PointHistory;
+use Auth;
 
 trait HasPoint
 {
@@ -17,6 +18,7 @@ trait HasPoint
             'type' => 'plus',
             'points_after' => $this->points,
             'description' => $description,
+            'user_id'          => Auth::id(),
         ]);
     }
 
@@ -35,6 +37,7 @@ trait HasPoint
             'type' => 'minus',
             'points_after' => $this->points,
             'description' => $description,
+            'user_id'          => Auth::id(),
         ]);
 
         return true;

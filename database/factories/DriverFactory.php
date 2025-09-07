@@ -20,6 +20,7 @@ class DriverFactory extends Factory
             'balance' => $this->faker->numberBetween(0, 100000),
             'points' => $this->faker->numberBetween(0, 1000),
             'details' => [
+                'full_name' => $this->faker->name(),
                 'phone_number' => $this->faker->phoneNumber(),
                 'license_series' => strtoupper($this->faker->lexify('??')),
                 'license_number' => $this->faker->numerify('######'),
@@ -31,7 +32,6 @@ class DriverFactory extends Factory
                 'notifications' => true,
                 'language' => 'uz',
             ],
-            'full_name' => $this->faker->name(),
         ];
     }
 }

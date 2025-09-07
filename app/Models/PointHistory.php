@@ -16,5 +16,11 @@ class PointHistory extends Model
         'type',
         'points_after',
         'description',
+        'user_id'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

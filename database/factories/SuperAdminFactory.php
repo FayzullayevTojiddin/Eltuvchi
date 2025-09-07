@@ -15,7 +15,7 @@ class SuperAdminFactory extends Factory
         return [
             'user_id'   => User::factory(),
             'full_name' => $this->faker->name(),
-            'status'    => true,
+            'status'    => 'active',
         ];
     }
 }

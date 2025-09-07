@@ -59,6 +59,8 @@ class Order extends Model
 {
     use HasFactory;
 
+    public $temp_description;
+
     protected $fillable = [
         'client_id',
         'driver_id',

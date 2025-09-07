@@ -4,6 +4,7 @@ namespace App\Filament\Actions;
 
 use App\Models\BalanceHistory;
 use App\Models\PointHistory;
+use Auth;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -59,6 +60,7 @@ class ChangeBalanceAction
                         : max(0, $currentBalance - $value);
                     $balanceable->update(['balance' => $newBalance]);
                     BalanceHistory::create([
+                        'user_id' => Auth::id(),
                         'balanceable_id' => $balanceable->id,
                         'balanceable_type' => get_class($balanceable),
                         'amount' => $value,
@@ -74,6 +76,7 @@ class ChangeBalanceAction
                         : max(0, $currentPoints - $value);
                     $pointable->update(['points' => $newPoints]);
                     PointHistory::create([
+                        'user_id' => Auth::id(),
                         'pointable_id' => $pointable->id,
                         'pointable_type' => get_class($pointable),
                         'points' => $value,

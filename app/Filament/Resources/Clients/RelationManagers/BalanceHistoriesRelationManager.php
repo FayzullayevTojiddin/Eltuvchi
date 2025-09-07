@@ -37,6 +37,11 @@ class BalanceHistoriesRelationManager extends RelationManager
                 TextColumn::make('amount')
                     ->label('Miqdor')
                     ->sortable(),
+                TextColumn::make('user.display_name')
+                    ->label('Kim Tomonidan')
+                    ->sortable()
+                    ->searchable()
+                    ->formatStateUsing(fn ($state, $record) => $record->user ? "#{$record->user->id} {$state}" : null),
                 TextColumn::make('balance_after')
                     ->label('Qolgan Pul'),
                 TextColumn::make('description')

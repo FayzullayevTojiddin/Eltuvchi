@@ -11,8 +11,8 @@ class ProductsOverview extends StatsOverviewWidget
     protected function getStats(): array
     {
         $all = Product::count();
-        $active = Product::where('status', true)->count();
-        $inactive = Product::where('status', false)->count();
+        $active = Product::where('status', 'active')->count();
+        $inactive = Product::where('status', 'inactive')->count();
 
         return [
             Stat::make('Barcha Mahsulotlar', $all)
