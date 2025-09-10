@@ -12,6 +12,7 @@ use App\Filament\TaxoParkAdmin\Resources\Drivers\RelationManagers\ProductsRelati
 use App\Filament\TaxoParkAdmin\Resources\Drivers\Schemas\DriverForm;
 use App\Filament\TaxoParkAdmin\Resources\Drivers\Tables\DriversTable;
 use App\Models\Driver;
+use App\Models\User;
 use Auth;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -34,15 +35,28 @@ class DriverResource extends Resource
         return parent::getEloquentQuery()->where('taxopark_id', $user->dispatcher->taxopark_id);
     }
 
+
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['taxopark_id'] = Auth::user()->dispatcher->taxopark_id;
+        if (isset($data['user_id'])) {
+            $user = User::find($data['user_id']);
+            if (!in_array($user->role, ['client', 'driver'])) {
+                abort(403, 'Faqat Client va Driver roli tanlanishi mumkin.');
+            }
+        }
         return $data;
     }
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
         $data['taxopark_id'] = Auth::user()->dispatcher->taxopark_id;
+        if (isset($data['user_id'])) {
+            $user = User::find($data['user_id']);
+            if (!in_array($user->role, ['client', 'driver'])) {
+                abort(403, 'Faqat Client va Driver roli tanlanishi mumkin.');
+            }
+        }
         return $data;
     }
 

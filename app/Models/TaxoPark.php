@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 /**
  * @property int $id
@@ -67,12 +68,9 @@ class TaxoPark extends Model
         return $this->hasMany(Dispatcher::class, 'taxopark_id');
     }
 
-    public function orders(): HasMany
-    {
-        return $this->hasMany(Order::class, 'id', 'id')
-            ->whereHas('route', function ($q) {
-                $q->where('taxopark_from_id', $this->id)
-                  ->orWhere('taxopark_to_id', $this->id);
-            });
-    }
+    public function orders(): HasManyThrough
+{
+    return $this->hasManyThrough(Order::class, Route::class, 'taxopark_from_id', 'route_id')
+        ->orWhereHas('route', fn($q) => $q->where('taxopark_to_id', $this->id));
+}
 }

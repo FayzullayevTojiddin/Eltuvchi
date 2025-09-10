@@ -91,7 +91,6 @@ class OrderStoreTest extends TestCase
             'status' => OrderStatus::Created->value,
             'changed_by_id' => $user->id,
         ]);
-        // dump($response->json()); 
     }
 
     #[Test]

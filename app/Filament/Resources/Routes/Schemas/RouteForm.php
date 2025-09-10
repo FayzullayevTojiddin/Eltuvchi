@@ -7,7 +7,9 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 use Filament\Forms;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
+use Illuminate\Validation\Rule;
 
 class RouteForm
 {
@@ -28,6 +30,11 @@ class RouteForm
                     ->relationship('toTaxoPark', 'name')
                     ->getOptionLabelFromRecordUsing(fn ($record) => $record->id . ' - ' . $record->name)
                     ->searchable(['id', 'name'])
+                    ->rules([
+                        fn (Get $get) =>
+                            Rule::unique('routes', 'taxopark_to_id')
+                                ->where(fn ($query) => $query->where('taxopark_from_id', $get('taxopark_from_id'))),
+                    ])
                     ->required(),
 
                 TextInput::make('status')

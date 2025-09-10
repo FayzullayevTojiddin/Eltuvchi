@@ -22,7 +22,11 @@ class DriverForm
             ->components([
                 Select::make('user_id')
                     ->label('User')
-                    ->relationship('user', 'email')
+                    ->relationship(
+                        'user',
+                        'email',
+                        modifyQueryUsing: fn ($query) => $query->whereIn('role', ['client', 'driver', 'user'])
+                    )
                     ->searchable(['id', 'email', 'telegram_id'])
                     ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->id} - {$record->email}")
                     ->createOptionForm([
@@ -51,10 +55,8 @@ class DriverForm
                                 TextEntry::make('telegram_id'),
                                 TextEntry::make('role')
                             ])
-                            ->record(function ($state) {
-                                return User::find($state);
-                            })
-                            ->visible(fn ($state) => filled($state))   
+                            ->record(fn ($state) => User::find($state))
+                            ->visible(fn ($state) => filled($state))
                     )
                     ->required(),
                 Select::make('taxopark_id')

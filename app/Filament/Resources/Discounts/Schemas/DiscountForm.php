@@ -14,6 +14,7 @@ class DiscountForm
                 TextInput::make('type')
                     ->disabled()
                     ->label("Turi")
+                    ->dehydrated(true)
                     ->default('percent'),
                 TextInput::make('value')
                     ->label("Qiymati")

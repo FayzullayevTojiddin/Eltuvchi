@@ -54,6 +54,5 @@ class RegionControllerTest extends TestCase
             'error' => 'Region not found.',
             'data' => [],
         ]);
-        // dump($response->json()); 
     }
 }

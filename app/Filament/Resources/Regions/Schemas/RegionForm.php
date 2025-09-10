@@ -12,9 +12,6 @@ class RegionForm
     {
         return $schema
             ->components([
-                TextInput::make('id')
-                    ->label("ID"),
-                
                 TextInput::make('name')
                     ->required(),
 

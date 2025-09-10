@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Enums\RouteStatus;
 use App\Http\Resources\RouteResource;
 use App\Models\Route;
-use Illuminate\Support\Facades\Cache;
 
 /**
  * @OA\Get(
@@ -56,7 +55,7 @@ class RouteController extends Controller
         $route = Route::with(['fromTaxopark', 'toTaxopark'])
                 ->where('taxopark_from_id', $from)
                 ->where('taxopark_to_id', $to)
-                ->where('status', RouteStatus::ACTIVE->value)
+                ->where('status', 'active')
                 ->first();
         if (!$route) {
             return $this->error([], 404, 'Route not found.');

@@ -19,7 +19,7 @@ class RouteFactory extends Factory
         return [
             'taxopark_from_id' => TaxoPark::factory(),
             'taxopark_to_id' => TaxoPark::factory(),
-            'status' => RouteStatus::ACTIVE->value,
+            'status' => 'active',
             'deposit_client' => $deposit,
             'distance_km' => $this->faker->numberBetween(50, 500),
             'price_in' => $priceIn,

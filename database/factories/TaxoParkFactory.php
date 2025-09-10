@@ -13,9 +13,9 @@ class TaxoParkFactory extends Factory
     public function definition(): array
     {
         return [
-            'region_id' => Region::inRandomOrder()->value('id'),
+            'region_id' => Region::inRandomOrder()->value('id') ?? Region::factory(),
             'name' => $this->faker->company . ' Taxi Park',
-            'status' => $this->faker->randomElement(['active', 'disactive']),
+            'status' => $this->faker->randomElement(['active', 'inactive']),
         ];
     }
 }

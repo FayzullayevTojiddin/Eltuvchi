@@ -124,22 +124,30 @@ class OrderForm
                         TextInput::make('price_order')
                             ->numeric()
                             ->label('Buyurtma summasi')
-                            ->required(),
+                            ->required()
+                            ->readOnly(),
                         TextInput::make('client_deposit')
                             ->numeric()
-                            ->label('Mijoz depositi'),
+                            ->label('Mijoz depositi')
+                            ->required()
+                            ->readOnly(),
                         TextInput::make('driver_payment')
                             ->numeric()
-                            ->label('Haydovchi to‘lovi'),
+                            ->label('Haydovchi to‘lovi')
+                            ->required()
+                            ->readOnly(),
                         TextInput::make('discount_percent')
                             ->numeric()
-                            ->label('Chegirma (%)'),
+                            ->label('Chegirma (%)')
+                            ->required()
+                            ->readOnly(),
                         TextInput::make('discount_summ')
                             ->numeric()
-                            ->label('Chegirma summasi'),
+                            ->label('Chegirma summasi')
+                            ->required()
+                            ->readOnly(),
                     ])
-                    ->collapsible()
-                    ->disabled(),
+                    ->collapsible(),
 
                 Section::make('Aloqa ma’lumotlari')
                     ->columns(2)

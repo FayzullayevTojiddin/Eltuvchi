@@ -55,13 +55,13 @@ class RouteControllerTest extends TestCase
 
     public function test_check_returns_404_if_route_is_inactive()
     {
-        $from = \App\Models\TaxoPark::factory()->create();
-        $to = \App\Models\TaxoPark::factory()->create();
+        $from = TaxoPark::factory()->create();
+        $to = TaxoPark::factory()->create();
 
-        \App\Models\Route::factory()->create([
+        Route::factory()->create([
             'taxopark_from_id' => $from->id,
             'taxopark_to_id' => $to->id,
-            'status' => \App\Enums\RouteStatus::INACTIVE->value,
+            'status' => 'inactive',
         ]);
 
         $response = $this->getJson("/api/routes/check/{$from->id}/{$to->id}");

@@ -155,7 +155,7 @@ class OrderController extends Controller
             return $this->success(new OrderResource($order), 200, 'Order created successfully.');
         } catch (\Throwable $e) {
             DB::rollBack();
-            return $this->error('Failed to create order.', 500);
+            return $this->error($e->getMessage(), 500);
         }
     }
 
