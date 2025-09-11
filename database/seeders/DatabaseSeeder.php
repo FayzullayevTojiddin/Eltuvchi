@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
         SuperAdmin::factory()->create(['user_id' => $user->id, 'full_name' => "Tizim"]);
         User::factory()->create(['role' => 'taxoparkadmin', 'email' => 'taxopark@gmail.com', 'password' => bcrypt('1')]);
         
+
         $this->call([
             RegionSeeder::class,
             TaxoParkSeeder::class,
