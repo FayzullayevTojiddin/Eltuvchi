@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Order;
 use App\Models\TaxoPark;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -28,9 +29,12 @@ class OrderSeeder extends Seeder
                 ->make([
                     'route_id' => $routeIds->random(),
                 ])
+                ->map(function ($order) {
+                    $order['date'] = Carbon::parse($order['date'])->toDateString();
+                    $order['time'] = Carbon::parse($order['time'])->format('H:i:s');
+                    return $order;
+                })
                 ->toArray();
-
-            $orders = array_merge($orders, $batch);
         }
         DB::table('orders')->insert($orders);
     }
