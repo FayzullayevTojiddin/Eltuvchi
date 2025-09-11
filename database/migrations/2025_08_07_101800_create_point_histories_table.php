@@ -16,7 +16,7 @@ return new class extends Migration
             $table->enum('type', ['plus', 'minus']);
             $table->integer('points_after');
             $table->string('description')->nullable();
-            $table->foreignId('user_id')->constrained()->nullOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
             $table->index(['pointable_id', 'pointable_type']);
         });
