@@ -119,6 +119,7 @@ class OrderForm
                         ->label('Chegirma summasi'),
                 ])
                 ->disabled()
+                ->dehydrated()
                 ->collapsible(),
 
             Section::make('Aloqa ma’lumotlari')
