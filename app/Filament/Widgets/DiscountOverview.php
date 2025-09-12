@@ -8,11 +8,14 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class DiscountOverview extends StatsOverviewWidget
 {
+    
+    public int $discountId;
+
     protected function getStats(): array
     {
-        $total = ClientDiscount::count();
-        $used = ClientDiscount::where('used', true)->count();
-        $unused = ClientDiscount::where('used', false)->count();
+        $total = ClientDiscount::where('discount_id', $this->discountId)->count();
+        $used = ClientDiscount::where('discount_id', $this->discountId)->where('used', true)->count();
+        $unused = ClientDiscount::where('discount_id', $this->discountId)->where('used', false)->count();
 
         return [
             Stat::make('Jami berilgan chegirmalar', $total)

@@ -17,7 +17,7 @@ class DiscountForm
                     ->dehydrated(true)
                     ->default('percent'),
                 TextInput::make('value')
-                    ->label("Qiymati")
+                    ->label("Qiymati (percent %)")
                     ->numeric(),
                 TextInput::make('points')
                     ->label("Ball Narxi")
