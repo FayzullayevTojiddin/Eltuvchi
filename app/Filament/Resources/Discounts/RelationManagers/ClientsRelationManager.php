@@ -28,9 +28,10 @@ class ClientsRelationManager extends RelationManager
             ->components([
                 Select::make('client_id')
                         ->label('Mijoz')
-                        ->relationship('client', 'settings.full_name')
+                        ->relationship('client', 'id')
                         ->getOptionLabelFromRecordUsing(fn ($record) => $record->id . " - " . $record->settings['full_name'])
                         ->searchable()
+                        ->columnSpanFull()
                         ->required(),
             ]);
     }
