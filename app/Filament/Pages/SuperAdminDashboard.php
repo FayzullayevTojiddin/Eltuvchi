@@ -48,10 +48,10 @@ class SuperAdminDashboard extends Page
     /**
      * @return array<class-string<Widget>>
      */
-    public function getWidgets(): array
+    public static function getWidgets(): array
     {
         return [
-            OrdersOverview::class
+            OrdersOverview::class,
         ];
     }
 

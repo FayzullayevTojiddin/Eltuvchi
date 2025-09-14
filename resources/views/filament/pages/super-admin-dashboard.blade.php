@@ -1,3 +1,6 @@
 <x-filament-panels::page>
-    {{-- Page content --}}
+    <x-filament-widgets::widgets
+        :widgets="static::getWidgets()"
+        :columns="2"
+    />
 </x-filament-panels::page>
