@@ -18,7 +18,7 @@ class RegionsOverview extends StatsOverviewWidget
 
         return [
             Stat::make('Umumiy Regionlar soni', $stats->total)
-                ->icon('heroicon-o-users')  
+                ->icon('heroicon-o-users')
                 ->color('primary'),
 
             Stat::make('Active Regionlar soni', $stats->active)
