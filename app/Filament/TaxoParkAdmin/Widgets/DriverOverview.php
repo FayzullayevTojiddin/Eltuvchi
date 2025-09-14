@@ -34,7 +34,7 @@ class DriverOverview extends StatsOverviewWidget
 
         $totalDriverDeposit = Order::where('driver_id', $this->record->id)
             ->where('status', OrderStatus::Completed)
-            ->sum('driver_deposit');
+            ->sum('driver_payment');
 
         $netIncome = $totalEarned - $totalDriverDeposit;
 

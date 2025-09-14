@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\SuperAdmin;
+use App\Models\TaxoPark;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 
@@ -10,10 +11,10 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        $user = User::factory()->create(['role' => 'superadmin', 'email' => 'super@gmail.com', 'password' => bcrypt('1')]);
-        SuperAdmin::factory()->create(['user_id' => $user->id, 'full_name' => "Tizim"]);
-        User::factory()->create(['role' => 'taxoparkadmin', 'email' => 'taxopark@gmail.com', 'password' => bcrypt('1')]);
-        
+        $user_admin = User::factory()->create(['role' => 'superadmin', 'email' => 'super@gmail.com', 'password' => bcrypt('1')]);
+        SuperAdmin::factory()->create(['user_id' => $user_admin->id, 'full_name' => "Tizim"]);
+        $user_taxopark = User::factory()->create(['role' => 'taxoparkadmin', 'email' => 'taxopark@gmail.com', 'password' => bcrypt('1')]);
+        TaxoPark::factory()->create(['user_id' => $user_taxopark->id, 'full_name' => "TaxoPark (test)"]);
 
         $this->call([
             RegionSeeder::class,
