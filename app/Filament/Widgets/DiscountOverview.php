@@ -3,19 +3,19 @@
 namespace App\Filament\Widgets;
 
 use App\Models\ClientDiscount;
+use App\Models\Discount;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class DiscountOverview extends StatsOverviewWidget
 {
-    
-    public int $discountId;
+    public ?Discount $record = null;
 
     protected function getStats(): array
     {
-        $total = ClientDiscount::where('discount_id', $this->discountId)->count();
-        $used = ClientDiscount::where('discount_id', $this->discountId)->where('used', true)->count();
-        $unused = ClientDiscount::where('discount_id', $this->discountId)->where('used', false)->count();
+        $total = ClientDiscount::where('discount_id', $this->record->id)->count();
+        $used = ClientDiscount::where('discount_id', $this->record->id)->where('used', true)->count();
+        $unused = ClientDiscount::where('discount_id', $this->record->id)->where('used', false)->count();
 
         return [
             Stat::make('Jami berilgan chegirmalar', $total)

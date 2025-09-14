@@ -35,7 +35,7 @@ class DriverProductsRelationManager extends RelationManager
             Select::make('driver_id')
                 ->relationship('driver', 'details.full_name')
                 ->label("Haydovchi")
-                ->searchable(['id', 'details.full_name'])
+                ->searchable(['id'])
                 ->preload(10)
                 ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->id} - {$record->details["full_name"]}")
                 ->columnSpanFull()
@@ -69,9 +69,9 @@ class DriverProductsRelationManager extends RelationManager
             ActionGroup::make([
                 Action::make('driver')
                     ->label("Haydovchini Ko'rish")
-                    ->url(fn ($record) => $record->driver 
-                        ? DriverResource::getUrl('edit', ['record' => $record->driver]) 
-                        : null, 
+                    ->url(fn ($record) => $record->driver
+                        ? DriverResource::getUrl('edit', ['record' => $record->driver])
+                        : null,
                         shouldOpenInNewTab: true
                     )
                     ->button()
