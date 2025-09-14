@@ -44,7 +44,7 @@ class OrderForm
                             ->preload()
                             ->nullable()
                             ->disabledOn(['edit']),
-                        
+
                         Select::make('status')
                             ->label('Status')
                             ->options(
@@ -69,8 +69,7 @@ class OrderForm
                                 modifyQueryUsing: function ($query) {
                                     $user = Auth::user();
                                     $taxoparkId = $user->dispatcher->taxopark_id;
-                                    $query->where('taxopark_from_id', $taxoparkId)
-                                        ->orWhere('taxopark_to_id', $taxoparkId);
+                                    $query->where('taxopark_from_id', $taxoparkId);
                                 }
                             )
                             ->disabledOn(['edit'])
