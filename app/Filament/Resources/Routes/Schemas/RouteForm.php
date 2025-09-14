@@ -61,7 +61,7 @@ class RouteForm
                 TextInput::make('deposit_client')
                     ->label('Deposit Client (30%)')
                     ->numeric()
-                    ->disabled(),
+                    ->dehydrated(),
 
                 TextInput::make('distance_km')
                     ->label('Distance (km)')
@@ -71,7 +71,7 @@ class RouteForm
                 TextInput::make('fee_per_client')
                     ->label('Fee per Client (10%)')
                     ->numeric()
-                    ->disabled(),
+                    ->dehydrated(),
             ]);
     }
 }
