@@ -14,16 +14,13 @@ use Illuminate\Support\Facades\Broadcast;
 */
 
 Broadcast::channel('client.{clientId}.orders', function ($user, $clientId) {
-    // return $user->client->id == (int) $clientId;
-    return true;
+    return $user->client && $user->client->id === (int) $clientId;
 });
 
 Broadcast::channel('driver.{driverId}.orders', function ($user, $driverId) {
-    // return $user->driver->id == (int) $driverId;
-    return true;
+    return $user->driver && $user->driver->id === (int) $driverId;
 });
 
 Broadcast::channel('taxopark.{taxoparkId}.orders', function ($user, $taxoparkId) {
-    // return $user->driver->taxopark_id == (int) $taxoparkId;
-    return true;
+    return $user->driver && $user->driver->taxopark_id === (int) $taxoparkId;
 });
