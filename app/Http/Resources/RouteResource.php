@@ -35,8 +35,10 @@ class RouteResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'from' => new TaxoParkResource($this->whenLoaded('fromTaxopark')),
-            'to' => new TaxoParkResource($this->whenLoaded('toTaxopark')),
+//            'from' => new TaxoParkResource($this->whenLoaded('fromTaxopark')),
+//            'to' => new TaxoParkResource($this->whenLoaded('toTaxopark')),
+            'from' => new TaxoParkResource($this->fromTaxopark),
+            'to' => new TaxoParkResource($this->toTaxopark),
             'status' => $this->status,
             'deposit_client' => $this->deposit_client,
             'distance_km' => $this->distance_km,
