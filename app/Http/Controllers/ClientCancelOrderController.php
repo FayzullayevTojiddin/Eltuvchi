@@ -73,7 +73,7 @@ class ClientCancelOrderController extends Controller
             return $this->error([], 404, 'Order not found.');
         }
 
-        if ($order->client_id !== $user->id) {
+        if ($order->client_id !== $user->client->id) {
             return $this->error([], 403, 'Unauthorized.');
         }
 
@@ -83,7 +83,7 @@ class ClientCancelOrderController extends Controller
 
         DB::beginTransaction();
         try {
-            $depositPercent = $order->discount_percent; 
+            $depositPercent = $order->discount_percent;
             $depositAmount = $order->client_deposit;
 
             if ($order->status === OrderStatus::Created) {
