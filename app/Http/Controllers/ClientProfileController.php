@@ -56,6 +56,7 @@ class ClientProfileController extends Controller
 
         return $this->success([
             'id'         => $user->id,
+            'client_id' => $user->client->id,
             'role'       => $user->role,
             'telegram_id'=> $user->telegram_id,
             'settings'   => $user->client->settings,
