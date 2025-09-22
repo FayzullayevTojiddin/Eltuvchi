@@ -38,7 +38,7 @@ class ClientDiscountController extends Controller
      */
     public function index()
     {
-        $client = Auth::user()->client; 
+        $client = Auth::user()->client;
         $discounts = ClientDiscount::with('discount')
             ->where('client_id', $client->id)
             ->where('used', false)
