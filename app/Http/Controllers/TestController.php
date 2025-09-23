@@ -11,7 +11,7 @@ class TestController extends Controller
         $user = Auth::user();
         return [
             'user' => $user,
-            // 'details' => $user->connected
+            'details' => $user->connected
         ];
     }
 }
