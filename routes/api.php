@@ -20,10 +20,11 @@ use App\Http\Controllers\OrderReviewController;
 use App\Http\Controllers\ReferralController;
 use App\Http\Controllers\RegionController;
 use App\Http\Controllers\RouteController;
+use App\Http\Controllers\TestController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/auth', [AuthController::class, 'telegramAuth']);
-
+Route::get('/test', [TestController::class, '']);
 Route::get('/regions', [RegionController::class, 'index']);
 Route::get('/regions/{region_id}', [RegionController::class, 'show']);
 Route::get('/routes/check/{from}/{to}', [RouteController::class, 'check']);
