@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Models\DriverProduct;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -94,10 +95,17 @@ class DriverMarketController extends Controller
             ]);
 
             return $this->success(
-                data: new ProductResource($product), 
-                status: 200, 
+                data: new ProductResource($product),
+                status: 200,
                 message: 'Product successfully purchased.'
             );
         });
+    }
+
+    public function my_products(): JsonResponse
+    {
+        $user = Auth::user();
+        $my_products = $user->driver->products;
+        return $this->response(ProductResource::collection($my_products));
     }
 }

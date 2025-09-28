@@ -35,8 +35,9 @@ class DriverOrderController extends Controller
         $orders = Order::query()
             ->whereHas('route', function ($q) use ($driver) {
                 $q->where('taxopark_from_id', $driver->taxopark_id)
-                ->orWhere('taxopark_to_id', $driver->taxopark_id);
+                    ->orWhere('taxopark_to_id', $driver->taxopark_id);
             })
+            ->where('status', 'created')
             ->with(['driver', 'route'])
             ->latest()
             ->get();
