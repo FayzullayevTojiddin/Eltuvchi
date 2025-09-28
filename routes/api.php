@@ -57,5 +57,5 @@ Route::prefix('/driver')->middleware(['auth:sanctum', 'role_status:driver'])->gr
     Route::post('/orders/{order}/stop', [DriverStoppedOrderController::class, 'stop_order']);
     Route::get('/market', [DriverMarketController::class, 'list_products']);
     Route::post('/market/{product}', [DriverMarketController::class, 'get_product']);
-    Route::get('/my_products', DriverMarketController::class, 'my_products');
+    Route::get('/my_products', [DriverMarketController::class, 'my_products']);
 });

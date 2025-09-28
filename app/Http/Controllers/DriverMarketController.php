@@ -102,7 +102,7 @@ class DriverMarketController extends Controller
         });
     }
 
-    public function my_products(): JsonResponse
+    public function my_products()
     {
         $user = Auth::user();
         $my_products = $user->driver->products;
