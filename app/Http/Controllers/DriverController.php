@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\OrderStatus;
 use App\Http\Resources\DriverDashboardResource;
+use App\Http\Resources\OrderResource;
 use App\Models\BalanceHistory;
 use App\Models\Order;
 use App\Models\OrderReview;
@@ -69,7 +70,7 @@ class DriverController extends Controller
             'total_income'           => (int) $totalIncome,
             'completed_orders_count' => $completedOrdersCount,
             'average_rating'         => $averageRating,
-            'recent_orders'          => $recentOrders,
+            'recent_orders'          => OrderResource::collection($recentOrders),
         ];
 
         return $this->response(new DriverDashboardResource($data));
