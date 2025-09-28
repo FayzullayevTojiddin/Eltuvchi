@@ -62,6 +62,7 @@ class DriverController extends Controller
         $averageRating = $averageRating ? round($averageRating, 2) : null;
 
         $recentOrders = Order::where('driver_id', $driver->id)
+            ->with('route')
             ->orderByDesc('created_at')
             ->limit(5)
             ->get();
