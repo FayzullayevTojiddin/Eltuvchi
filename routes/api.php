@@ -24,7 +24,7 @@ use App\Http\Controllers\TestController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/auth', [AuthController::class, 'telegramAuth']);
-Route::get('/test', [TestController::class, 'index']);
+Route::get('/test', [TestController::class, 'index'])->middleware('auth:sanctum');
 Route::get('/regions', [RegionController::class, 'index']);
 Route::get('/regions/{region_id}', [RegionController::class, 'show']);
 Route::get('/routes/check/{from}/{to}', [RouteController::class, 'check']);
