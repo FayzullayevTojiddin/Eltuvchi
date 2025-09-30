@@ -38,7 +38,7 @@ class DriverOrderController extends Controller
                     ->orWhere('taxopark_to_id', $driver->taxopark_id);
             })
             ->where('status', 'created')
-            ->with(['driver', 'route'])
+            ->with(['route'])
             ->latest()
             ->get();
 

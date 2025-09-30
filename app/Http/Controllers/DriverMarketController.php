@@ -36,7 +36,7 @@ class DriverMarketController extends Controller
      */
     public function list_products()
     {
-        $products = Product::active()->get();
+        $products = Product::where('status', 'active')->get();
         return $this->response(ProductResource::collection($products));
     }
 
