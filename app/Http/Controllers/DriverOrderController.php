@@ -76,13 +76,7 @@ class DriverOrderController extends Controller
     public function my_orders()
     {
         $driver = Auth::user()->driver;
-        $query = Order::query()
-            ->whereHas('route', function ($q) use ($driver) {
-                $q->where('taxopark_from_id', $driver->taxopark_id)
-                ->orWhere('taxopark_to_id', $driver->taxopark_id);
-            })
-            ->with(['client', 'route', 'review', 'histories'])
-            ->latest();
+        $query = Order::with('route', 'histories', 'client', 'review')->where('driver_id', $driver->id);
         if ($status = request('status')) {
             $query->where('status', $status);
         }
