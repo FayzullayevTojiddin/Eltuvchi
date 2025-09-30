@@ -42,7 +42,7 @@ class DriverMarketController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/driver/market/products/{product}",
+     *     path="/api/driver/market/{product}",
      *     summary="Purchase a product",
      *     description="Driver purchases a product using points. Points will be deducted if sufficient balance exists.",
      *     tags={"Driver Market"},
