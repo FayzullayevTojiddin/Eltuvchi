@@ -55,7 +55,7 @@ class DriverResource extends JsonResource
             'created_at' => $this->created_at?->toDateTimeString(),
             'updated_at' => $this->updated_at?->toDateTimeString(),
             'user'      => new UserResource($this->whenLoaded('user')),
-            'taxopark'  => new TaxoparkResource($this->whenLoaded('taxopark')),
+            'taxopark'  => new TaxoParkResource($this->whenLoaded('taxopark')),
             'orders'    => OrderResource::collection($this->whenLoaded('orders')),
         ];
     }
