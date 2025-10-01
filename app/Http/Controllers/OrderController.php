@@ -121,6 +121,13 @@ class OrderController extends Controller
 
         $depositToCharge = round(min($request->client_deposit, $finalPrice), 2);
 
+        return $this->response([
+            'discount' => $discountSumm,
+            'deposit' => $depositToCharge,
+            'final_price' => $finalPrice,
+            'price_order' => $priceOrder,
+        ]);
+
         if ($depositToCharge < 0) {
             $depositToCharge = 0;
         }
