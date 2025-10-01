@@ -83,7 +83,7 @@ class OrderController extends Controller
      *     )
      * )
      */
-    public function store(StoreOrderRequest $request): JsonResponse
+    public function store(StoreOrderRequest $request)
     {
         $user = Auth::user();
         $client = $user->client;
@@ -113,7 +113,7 @@ class OrderController extends Controller
 
         $priceOrder = $this->calculatePriceOrder($request->route_id, $request->passengers);
 
-        dd($priceOrder);
+        dd($priceOrder + 1);
 
         if ($discountPercent > 0) {
             $discountSumm = ($priceOrder * $discountPercent) / 100;
