@@ -194,7 +194,7 @@ class OrderController extends Controller
             $discount_sum = ($priceOrder * $discount_percent) / 100;
         }
         $finalPrice = max(0, $priceOrder - $discount_sum);
-        $client_deposit = $finalPrice / $request->passengers;
+        $client_deposit = ($finalPrice * 20) / 100;
 
         return $this->response([
             'client_deposit' => $client_deposit,
