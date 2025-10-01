@@ -109,9 +109,11 @@ class OrderController extends Controller
             $discount_sum = ($priceOrder * $discount_percent) / 100;
         }
         $finalPrice = max(0, $priceOrder - $discount_sum);
-        $client_deposit = floor(($finalPrice * 20) / 100);
+        $client_deposit_with_discount = floor(($finalPrice * 20) / 100);
+        $route = Route::findOrFail($request->route_id);
+        $client_deposit = $route->client_deposit * $request->passengers;
 
-        if (!$client->subtractBalance($client_deposit, "Order deposit payment")) {
+        if (!$client->subtractBalance($client_deposit_with_discount, "Order deposit payment")) {
             return $this->error('Balance is insufficient for deposit payment.', 400);
         }
 
