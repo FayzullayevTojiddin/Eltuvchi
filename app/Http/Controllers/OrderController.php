@@ -113,8 +113,6 @@ class OrderController extends Controller
 
         $priceOrder = $this->calculatePriceOrder($request->route_id, $request->passengers);
 
-        dd($priceOrder + 1);
-
         if ($discountPercent > 0) {
             $discountSumm = ($priceOrder * $discountPercent) / 100;
         }
