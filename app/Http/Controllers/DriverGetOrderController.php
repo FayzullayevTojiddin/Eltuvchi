@@ -6,6 +6,7 @@ use App\Enums\OrderStatus;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
 use Auth;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class DriverGetOrderController extends Controller
@@ -76,24 +77,26 @@ class DriverGetOrderController extends Controller
      *     )
      * )
      */
-    public function get_order(Order $order)
+    public function get_order(Order $order): JsonResponse
     {
         $driver = Auth::user()->driver;
+        $route = $order->route;
+        $driver_payment = $route->fee_per_client * $order->passengers;
 
         if ($order->driver_id) {
             return $this->error(data: [], status: 400, error_message: 'This order already has a driver assigned.');
         }
 
         if ($order->route->taxopark_from_id !== $driver->taxopark_id
-            && $order->route->taxopark_to_id !== $driver->taxopark_id) {
+            && $route->taxopark_to_id !== $driver->taxopark_id) {
             return $this->error(data: [], status: 400, error_message: 'You cannot take this order because it is not in your taxopark route.');
         }
 
-        if ($driver->balance < $order->driver_payment) {
+        if ($driver->balance < $driver_payment) {
             return $this->error(data: [], status: 400, error_message: 'Insufficient balance to accept this order.');
         }
 
-        $driver->subtractBalance($order->driver_payment, "Payment for order #{$order->id}");
+        $driver->subtractBalance($driver_payment, "Payment for order #{$order->id}");
 
         $order->update([
             'driver_id' => $driver->id,
