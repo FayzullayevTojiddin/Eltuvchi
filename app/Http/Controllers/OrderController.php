@@ -117,7 +117,10 @@ class OrderController extends Controller
             $discountSumm = ($priceOrder * $discountPercent) / 100;
         }
 
-        $depositToCharge = round($request->client_deposit - $discountSumm, 2);
+        $finalPrice = max(0, $priceOrder - $discountSumm);
+
+        $depositToCharge = round(min($request->client_deposit, $finalPrice), 2);
+
         if ($depositToCharge < 0) {
             $depositToCharge = 0;
         }
