@@ -29,8 +29,9 @@ trait HasBalance
             return false;
         }
 
-        $this->decrement('balance', 10000);
-        $this->refresh();
+//        $this->decrement('balance', 10000);
+        $this->balance -= $amount;
+        $this->save();
 
         BalanceHistory::create([
             'balanceable_id'   => $this->id,
