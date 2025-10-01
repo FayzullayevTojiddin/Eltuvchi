@@ -175,6 +175,7 @@ class OrderController extends Controller
         $client = Auth::user()->client;
         $discount_percent = 0;
         $discount_sum = 0;
+        $clientDiscount = null;
         if($request->filled('discount_id')) {
             $clientDiscount = ClientDiscount::where('client_id', $client->id)
                 ->where('discount_id', $request->discount_id)
