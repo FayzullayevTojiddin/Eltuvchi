@@ -20,7 +20,7 @@ class RoleStatusMiddleware
             return response()->json(['message' => 'Forbidden: wrong role'], 403);
         }
 
-        if (isset($user->status) && $user->status !== 'active') {
+        if (isset($user->connected()->status) && $user->connected()->status !== 'active') {
             return response()->json(['message' => 'Your account is not active'], 403);
         }
 
