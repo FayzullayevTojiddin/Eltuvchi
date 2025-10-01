@@ -201,6 +201,7 @@ class OrderController extends Controller
             'discount_percent' => $discount_percent,
             'discount_sum' => $discount_sum,
             'final_price' => $finalPrice,
+            'passengers' => $request->passengers
         ]);
 
     }
