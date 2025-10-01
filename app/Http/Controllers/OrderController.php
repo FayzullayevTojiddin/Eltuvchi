@@ -121,10 +121,6 @@ class OrderController extends Controller
 
         $depositToCharge = round(min($request->client_deposit, $finalPrice), 2);
 
-        if ($depositToCharge < 0) {
-            $depositToCharge = 0;
-        }
-
         if (!$client->subtractBalance($depositToCharge, "Order deposit payment")) {
             return $this->error('Balance is insufficient for deposit payment.', 400);
         }
