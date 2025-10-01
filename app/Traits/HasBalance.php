@@ -29,7 +29,7 @@ trait HasBalance
             return false;
         }
 
-        $this->decrement('balance', 10000);
+        $this->decrement('balance', $amount);
         $this->refresh();
 
         BalanceHistory::create([
