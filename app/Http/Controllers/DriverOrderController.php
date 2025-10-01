@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ClientOrderResource;
 use App\Models\Order;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
 class DriverOrderController extends Controller
@@ -29,7 +30,7 @@ class DriverOrderController extends Controller
      *     )
      * )
      */
-    public function index()
+    public function index(): JsonResponse
     {
         $driver = Auth::user()->driver;
         $orders = Order::query()
@@ -73,7 +74,7 @@ class DriverOrderController extends Controller
      *     )
      * )
      */
-    public function my_orders()
+    public function my_orders(): JsonResponse
     {
         $driver = Auth::user()->driver;
         $query = Order::with('route', 'histories', 'client', 'review')->where('driver_id', $driver->id);
