@@ -170,7 +170,7 @@ class OrderController extends Controller
 //        }
 //    }
 
-    public function store(OrderStoreRequest $request)
+    public function store(StoreOrderRequest $request)
     {
         $client = Auth::user()->client;
         $discount_percent = 0;
