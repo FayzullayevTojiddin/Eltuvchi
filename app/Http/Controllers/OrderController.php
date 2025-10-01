@@ -194,16 +194,43 @@ class OrderController extends Controller
             $discount_sum = ($priceOrder * $discount_percent) / 100;
         }
         $finalPrice = max(0, $priceOrder - $discount_sum);
-        $client_deposit = ($finalPrice * 20) / 100;
+        $client_deposit = floor(($finalPrice * 20) / 100);
 
-        return $this->response([
-            'client_deposit' => $client_deposit,
-            'discount_percent' => $discount_percent,
-            'discount_sum' => $discount_sum,
-            'final_price' => $finalPrice,
-            'passengers' => $request->passengers
-        ]);
+        if (!$client->subtractBalance($client_deposit, "Order deposit payment")) {
+            return $this->error('Balance is insufficient for deposit payment.', 400);
+        }
 
+        DB::beginTransaction();
+
+        try {
+            $order = Order::create([
+                'client_id' => $client->id,
+                'driver_id' => null,
+                'route_id' => $request->route_id,
+                'passengers' => $request->passengers,
+                'date' => $request->date,
+                'time' => $request->time,
+                'price_order' => $finalPrice,
+                'client_deposit' => $client_deposit,
+                'discount_percent' => $discount_percent,
+                'discount_summ' => $discount_sum,
+                'phone' => $request->phone,
+                'optional_phone' => $request->optional_phone,
+                'note' => $request->note,
+                'status' => OrderStatus::Created->value,
+            ]);
+
+            if ($clientDiscount) {
+                $clientDiscount->update(['used' => true]);
+            }
+
+            DB::commit();
+
+            return $this->success(new OrderResource($order), 200, 'Order created successfully.');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return $this->error($e->getMessage(), 500);
+        }
     }
 
     protected function calculatePriceOrder(int $routeId, int $passengers): float
