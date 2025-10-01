@@ -113,16 +113,19 @@ class OrderController extends Controller
 
         $priceOrder = $this->calculatePriceOrder($request->route_id, $request->passengers);
 
-//        if ($discountPercent > 0) {
-//            $discountSumm = ($priceOrder * $discountPercent) / 100;
-//        }
-//
-//        $finalPrice = max(0, $priceOrder - $discountSumm);
-//
-//        $depositToCharge = round(min($request->client_deposit, $finalPrice), 2);
+        if ($discountPercent > 0) {
+            $discountSumm = ($priceOrder * $discountPercent) / 100;
+        }
 
-        $client->refresh();
-        if (!$client->subtractBalance(10000, "Order deposit payment")) {
+        $finalPrice = max(0, $priceOrder - $discountSumm);
+
+        $depositToCharge = round(min($request->client_deposit, $finalPrice), 2);
+
+        if ($depositToCharge < 0) {
+            $depositToCharge = 0;
+        }
+
+        if (!$client->subtractBalance($depositToCharge, "Order deposit payment")) {
             return $this->error('Balance is insufficient for deposit payment.', 400);
         }
 
@@ -137,7 +140,7 @@ class OrderController extends Controller
                 'date' => $request->date,
                 'time' => $request->time,
                 'price_order' => $priceOrder,
-                'client_deposit' => $request->client_deposit,
+                'client_deposit' => $depositToCharge,
                 'discount_percent' => $discountPercent,
                 'discount_summ' => $discountSumm,
                 'phone' => $request->phone,
