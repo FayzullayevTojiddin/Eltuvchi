@@ -15,7 +15,7 @@ class AuthController extends Controller
      *     path="/api/auth",
      *     tags={"Authentication"},
      *     summary="Telegram orqali autentifikatsiya",
-     *     description="Telegram WebApp orqali olingan initData ni yuborib foydalanuvchini autentifikatsiya qiladi. 
+     *     description="Telegram WebApp orqali olingan initData ni yuborib foydalanuvchini autentifikatsiya qiladi.
      *                  Agar foydalanuvchi mavjud bo'lmasa — yangi client sifatida yaratiladi.",
      *     @OA\RequestBody(
      *         required=true,
@@ -46,7 +46,7 @@ class AuthController extends Controller
     {
         $initData = $request->input('initData');
 
-        $data = TelegramService::validateInitData($initData, env('TELEGRAM_BOT_TOKEN'));
+        $data = TelegramService::validateInitData($initData, env('TELEGRAM_BOT_TOKEN') || "null");
         if (!$data || !isset($data['user'])) {
             return response()->json(['status' => 'invalid initData'], 401);
         }
