@@ -89,30 +89,40 @@ class OrderForm
                                     }
                                 }
                             }),
-                        TextInput::make('passengers')
-                            ->disabledOn(['edit'])
-                            ->numeric()
-                            ->minValue(1)
-                            ->default(1)
+                        Select::make('passengers')
+                            ->disabled(fn (string $operation) => $operation === 'edit')
+                            ->label("Yo'lovchilarning Soni")
+                            ->options([
+                                0.25 => 'Pochta',
+                                1    => '1 kishi',
+                                2   => '2 kishi',
+                                3    => '3 kishi',
+                                4    => '4 kishi',
+                            ])
                             ->required()
                             ->reactive()
                             ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                 $routeId = $get('route_id');
+
                                 if ($routeId) {
                                     $route = Route::find($routeId);
 
                                     if ($route) {
-                                        $set('price_order', $route->price_in * $state);
-                                        $set('client_deposit', $route->deposit_client * $state);
-                                        $set('driver_payment', $route->fee_per_client * $state);
+                                        $multiplier = (float) $state;
+
+                                        $set('price_order',     $route->price_in * $multiplier);
+                                        $set('client_deposit',  $route->deposit_client * $multiplier);
+                                        $set('driver_payment',  $route->fee_per_client * $multiplier);
                                         $set('discount_percent', 0);
                                         $set('discount_summ', 0);
                                     }
                                 }
                             }),
                         DatePicker::make('date')
+                            ->disabled(fn (string $operation) => $operation === 'edit')
                             ->required(),
                         TimePicker::make('time')
+                            ->disabled(fn (string $operation) => $operation === 'edit')
                             ->required(),
                     ])
                     ->collapsible(),
@@ -122,26 +132,31 @@ class OrderForm
                     ->schema([
                         TextInput::make('price_order')
                             ->numeric()
+                            ->disabled(fn (string $operation) => $operation === 'edit')
                             ->label('Buyurtma summasi')
                             ->required()
                             ->readOnly(),
                         TextInput::make('client_deposit')
                             ->numeric()
+                            ->disabled(fn (string $operation) => $operation === 'edit')
                             ->label('Mijoz depositi')
                             ->required()
                             ->readOnly(),
                         TextInput::make('driver_payment')
                             ->numeric()
+                            ->disabled(fn (string $operation) => $operation === 'edit')
                             ->label('Haydovchi to‘lovi')
                             ->required()
                             ->readOnly(),
                         TextInput::make('discount_percent')
                             ->numeric()
+                            ->disabled(fn (string $operation) => $operation === 'edit')
                             ->label('Chegirma (%)')
                             ->required()
                             ->readOnly(),
                         TextInput::make('discount_summ')
                             ->numeric()
+                            ->disabled(fn (string $operation) => $operation === 'edit')
                             ->label('Chegirma summasi')
                             ->required()
                             ->readOnly(),
@@ -153,10 +168,12 @@ class OrderForm
                     ->schema([
                         TextInput::make('phone')
                             ->label('Asosiy telefon')
+                            ->disabled(fn (string $operation) => $operation === 'edit')
                             ->tel()
                             ->required(),
                         TextInput::make('optional_phone')
                             ->label('Qo‘shimcha telefon')
+                            ->disabled(fn (string $operation) => $operation === 'edit')
                             ->tel(),
                     ])
                     ->collapsed(),
@@ -165,6 +182,7 @@ class OrderForm
                     ->schema([
                         TextInput::make('note')
                             ->label('Izoh')
+                            ->disabled(fn (string $operation) => $operation === 'edit')
                             ->maxLength(255),
                     ])
                     ->collapsed(),
@@ -173,6 +191,7 @@ class OrderForm
                     ->relationship('review')
                     ->schema([
                         Select::make('score')
+                            ->disabled(fn (string $operation) => $operation === 'edit')
                             ->options([
                                 1 => '1',
                                 2 => '2',
@@ -182,6 +201,7 @@ class OrderForm
                             ]),
                         Textarea::make('comment'),
                         Hidden::make('client_id')
+                            ->disabled(fn (string $operation) => $operation === 'edit')
                             ->default(fn ($record, $get) => $record?->order?->client_id ?? null)
                     ])
                     ->columns(2)

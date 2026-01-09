@@ -150,7 +150,7 @@ class OrderController extends Controller
         }
     }
 
-    protected function calculatePriceOrder(int $routeId, int $passengers): float
+    protected function calculatePriceOrder(int $routeId, string $passengers): float
     {
         $route = Route::findOrFail($routeId);
         return $route->price_in * $passengers;

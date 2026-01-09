@@ -72,25 +72,34 @@ class OrderForm
                             }
                         })
                         ->columnSpanFull(),
-                    TextInput::make('passengers')
-                            ->numeric()
-                            ->minValue(1)
-                            ->default(1)
-                            ->required()
-                            ->reactive()
-                            ->afterStateUpdated(function ($state, callable $set, callable $get) {
-                                $routeId = $get('route_id');
-                                if ($routeId) {
-                                    $route = Route::find($routeId);
-                                    if ($route) {
-                                        $set('price_order', $route->price_in * $state);
-                                        $set('client_deposit', $route->deposit_client * $state);
-                                        $set('driver_payment', $route->fee_per_client * $state);
-                                        $set('discount_percent', 0);
-                                        $set('discount_summ', 0);
-                                    }
+                    Select::make('passengers')
+                        ->label("Yo'lovchilarning Soni")
+                        ->options([
+                            0.25 => 'Pochta',
+                            1    => '1 kishi',
+                            2   => '2 kishi',
+                            3    => '3 kishi',
+                            4    => '4 kishi',
+                        ])
+                        ->required()
+                        ->reactive()
+                        ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                            $routeId = $get('route_id');
+
+                            if ($routeId) {
+                                $route = Route::find($routeId);
+
+                                if ($route) {
+                                    $multiplier = (float) $state;
+
+                                    $set('price_order',     $route->price_in * $multiplier);
+                                    $set('client_deposit',  $route->deposit_client * $multiplier);
+                                    $set('driver_payment',  $route->fee_per_client * $multiplier);
+                                    $set('discount_percent', 0);
+                                    $set('discount_summ', 0);
                                 }
-                            }),
+                            }
+                        }),
                     DatePicker::make('date')
                         ->required(),
                     TimePicker::make('time')
