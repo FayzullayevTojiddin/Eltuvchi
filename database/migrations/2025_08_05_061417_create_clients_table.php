@@ -14,7 +14,7 @@ return new class extends Migration
                 ->unique()
                 ->constrained()
                 ->onDelete('cascade');
-            $table->string('status')->default('active');
+            $table->string('status')->default('new');
             $table->decimal('balance', 15, 2)->default(0);
             $table->integer('points')->default(0);
             $table->json('settings')->nullable();

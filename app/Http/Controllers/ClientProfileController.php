@@ -60,6 +60,7 @@ class ClientProfileController extends Controller
             'role'       => $user->role,
             'telegram_id'=> $user->telegram_id,
             'settings'   => $user->client->settings,
+            'balance' => $user->client->balance,
         ], 200, 'Client profile retrieved successfully.');
     }
 

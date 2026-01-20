@@ -76,7 +76,7 @@ class AuthController extends Controller
 
             Client::create([
                 'user_id' => $user->id,
-                'status'  => "active",
+                'status'  => "inactive",
                 'balance' => 0,
                 'points'  => 0,
                 'settings'=> $settings,
