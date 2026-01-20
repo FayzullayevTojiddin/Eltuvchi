@@ -7,6 +7,6 @@ use Livewire\Livewire;
 
 Livewire::component('app.filament.auth.login', Login::class);
 
-Route::get('/login', Login::class)->name('login');
-Route::post('/login', [LoginController::class, 'login']);
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::get('/', function() {
+    return redirect('/taxoParkAdmin');
+});
