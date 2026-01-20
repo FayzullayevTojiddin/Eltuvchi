@@ -63,8 +63,8 @@ class ClientForm
                     ->options([
                         'active' => 'Faol',
                         'inactive' => 'Bloklangan',
+                        'new' => 'Yangi',
                     ])
-                    ->disabled()
                     ->default('active'),
                     
                 Section::make('Sozlamalar')

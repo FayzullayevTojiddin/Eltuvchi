@@ -20,13 +20,13 @@ class RoleStatusMiddleware
             return response()->json(['message' => 'Forbidden: wrong role'], 403);
         }
 
-        if ($user->connected()->status === 'blocked') {
+        if ($user->connected()->status === 'inactive') {
             return response()->json([
                 'message' => 'Your account is blocked',
             ], 301);
         }
 
-        if ($user->connected()->status !== 'active') {
+        if ($user->connected()->status === 'new') {
             return response()->json(['message' => 'Your account is not active'], 403);
         }
 

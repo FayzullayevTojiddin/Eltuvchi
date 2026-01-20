@@ -24,15 +24,15 @@ use App\Http\Controllers\TestController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/auth', [AuthController::class, 'telegramAuth']);
-Route::get('/test', [TestController::class, 'index'])->middleware('auth:sanctum');
-Route::get('/regions', [RegionController::class, 'index']);
-Route::get('/regions/{region_id}', [RegionController::class, 'show']);
-Route::get('/routes/check/{from}/{to}', [RouteController::class, 'check']);
 
 Route::middleware('role_status:driver,client')->group(function () {
     Route::get('/referrals', [ReferralController::class, 'index'])->middleware('auth:sanctum');
     Route::post('/referrals', [ReferralController::class, 'referred'])->middleware('auth:sanctum');
     Route::get('/balance-history', [BalanceHistoryController::class, 'balance_history'])->middleware('auth:sanctum');
+
+    Route::get('/regions', [RegionController::class, 'index']);
+    Route::get('/regions/{region_id}', [RegionController::class, 'show']);
+    Route::get('/routes/check/{from}/{to}', [RouteController::class, 'check']);
 });
 
 Route::prefix('/client')->middleware(['auth:sanctum', 'role_status:client'])->group(function (){

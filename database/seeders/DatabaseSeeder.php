@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Dispatcher;
 use App\Models\SuperAdmin;
-use App\Models\TaxoPark;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 
