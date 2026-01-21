@@ -1,4 +1,5 @@
 <?php
+
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BalanceHistoryController;
 use App\Http\Controllers\ClientCancelOrderController;
@@ -9,18 +10,18 @@ use App\Http\Controllers\ClientMarketController;
 use App\Http\Controllers\ClientOrderController;
 use App\Http\Controllers\ClientProfileController;
 use App\Http\Controllers\DriverCancelOrderController;
-use App\Http\Controllers\DriverStoppedOrderController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\DriverGetOrderController;
 use App\Http\Controllers\DriverMarketController;
 use App\Http\Controllers\DriverOrderController;
 use App\Http\Controllers\DriverStartOrderController;
+use App\Http\Controllers\DriverStoppedOrderController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderReviewController;
 use App\Http\Controllers\ReferralController;
 use App\Http\Controllers\RegionController;
 use App\Http\Controllers\RouteController;
-use App\Http\Controllers\TestController;
+use App\Http\Controllers\TelegramBotController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/auth', [AuthController::class, 'telegramAuth']);
@@ -35,7 +36,7 @@ Route::middleware('role_status:driver,client')->group(function () {
     Route::get('/routes/check/{from}/{to}', [RouteController::class, 'check']);
 });
 
-Route::prefix('/client')->middleware(['auth:sanctum', 'role_status:client'])->group(function (){
+Route::prefix('/client')->middleware(['auth:sanctum', 'role_status:client'])->group(function () {
     Route::get('/dashboard', [ClientController::class, 'dashboard']);
     Route::apiResource('/my_discounts', ClientDiscountController::class);
     Route::post('orders/{order}/review', [OrderReviewController::class, 'client_review'])->name('orders.client_review');
@@ -50,7 +51,7 @@ Route::prefix('/client')->middleware(['auth:sanctum', 'role_status:client'])->gr
     Route::post('/market', [ClientMarketController::class, 'store']);
 });
 
-Route::prefix('/driver')->middleware(['auth:sanctum', 'role_status:driver'])->group(function() {
+Route::prefix('/driver')->middleware(['auth:sanctum', 'role_status:driver'])->group(function () {
     Route::get('/dashboard', [DriverController::class, 'dashboard']);
     Route::get('/my_orders', [DriverOrderController::class, 'my_orders']);
     Route::get('/orders', [DriverOrderController::class, 'index']);
@@ -62,3 +63,5 @@ Route::prefix('/driver')->middleware(['auth:sanctum', 'role_status:driver'])->gr
     Route::post('/market/{product}', [DriverMarketController::class, 'get_product']);
     Route::get('/my_products', [DriverMarketController::class, 'my_products']);
 });
+
+Route::post('/webhook', [TelegramBotController::class, 'handle']);
