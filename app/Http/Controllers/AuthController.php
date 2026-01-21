@@ -96,9 +96,7 @@ class AuthController extends Controller
                 ], 401);
             }
 
-            $tgUser = is_array($data['user']) 
-                ? $data['user'] 
-                : json_decode($data['user'], true);
+            $tgUser = $data['user'];
 
             if (!isset($tgUser['id'])) {
                 return response()->json([
