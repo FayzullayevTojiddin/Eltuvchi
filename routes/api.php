@@ -26,7 +26,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/auth', [AuthController::class, 'telegramAuth']);
 
-Route::middlewares(['role_status:driver,client', 'auth:sanctum'])->group(function () {
+Route::middleware(['role_status:driver,client', 'auth:sanctum'])->group(function () {
     Route::get('/referrals', [ReferralController::class, 'index']);
     Route::post('/referrals', [ReferralController::class, 'referred']);
     Route::get('/balance-history', [BalanceHistoryController::class, 'balance_history']);
