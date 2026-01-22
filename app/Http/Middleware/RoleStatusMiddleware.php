@@ -13,7 +13,7 @@ class RoleStatusMiddleware
         $user = Auth::user();
 
         if (! $user) {
-            return response()->json(['message' => 'Unauthenticated'], 401);
+            return response()->json(['message' => 'Unauthenticated'], 404);
         }
 
         if (! in_array($user->role, $roles)) {
@@ -23,11 +23,11 @@ class RoleStatusMiddleware
         if ($user->connected()->status === 'inactive') {
             return response()->json([
                 'message' => 'Your account is blocked',
-            ], 301);
+            ], 403);
         }
 
         if ($user->connected()->status === 'new') {
-            return response()->json(['message' => 'Your account is not active'], 403);
+            return response()->json(['message' => 'Your account is not active'], 401);
         }
 
         return $next($request);
