@@ -313,26 +313,82 @@ class TelegramBotController extends Controller
             return;
         }
 
-        $activated = false;
-
-        if ($user->client && $user->client->status === 'new') {
-            $user->client->update(['status' => 'active']);
-            $activated = true;
-        }
+        $connected = $user->role === 'client' ? $user->client : $user->driver;
         
-        if ($user->driver && $user->driver->status === 'new') {
-            $user->driver->update(['status' => 'active']);
-            $activated = true;
+        if (!$connected) {
+            $this->sendMessage($chatId, "❌ Hisob ma'lumotlari topilmadi.", $this->getMainKeyboard($user));
+            return;
         }
 
-        if ($activated) {
-            $text = "🎉 Tabriklaymiz!\n\n";
-            $text .= "✅ Hisobingiz muvaffaqiyatli faollashtirildi!\n\n";
-            $text .= "🚀 Endi barcha xizmatlardan to'liq foydalanishingiz mumkin.\n\n";
-            $text .= "💼 Botimiz imkoniyatlaridan bahramand bo'ling!";
-        } else {
+        // Agar allaqachon faol bo'lsa
+        if ($connected->status === 'active') {
             $text = "ℹ️ Hisobingiz allaqachon faol holda.";
+            $this->sendMessage($chatId, $text, $this->getMainKeyboard($user));
+            return;
         }
+
+        // Agar yangi bo'lsa va faollashtirish kerak bo'lsa
+        if ($connected->status === 'new') {
+            $subscribePrice = env('SUBSCRIBE_PRICE', 0);
+            $currentBalance = $connected->balance ?? 0;
+
+            // Balans tekshirish
+            if ($currentBalance < $subscribePrice) {
+                $needed = $subscribePrice - $currentBalance;
+                $text = "❌ Balans yetarli emas!\n\n";
+                $text .= "💰 Joriy balans: " . number_format($currentBalance, 0, '.', ' ') . " so'm\n";
+                $text .= "💵 Faollashtirish narxi: " . number_format($subscribePrice, 0, '.', ' ') . " so'm\n";
+                $text .= "📊 Yetishmayotgan: " . number_format($needed, 0, '.', ' ') . " so'm\n\n";
+                $text .= "💳 Balansni to'ldirish uchun 'Balans 💰' bo'limiga o'ting.";
+                
+                $this->sendMessage($chatId, $text, $this->getMainKeyboard($user));
+                return;
+            }
+
+            // To'lovni amalga oshirish
+            try {
+                \DB::beginTransaction();
+
+                // Balansdan yechish
+                $connected->decrement('balance', $subscribePrice);
+
+                // Balance history qo'shish
+                $connected->balanceHistories()->create([
+                    'amount' => -$subscribePrice,
+                    'type' => 'debit',
+                    'description' => 'Hisobni faollashtirish uchun obuna to\'lovi',
+                    'balance_before' => $currentBalance,
+                    'balance_after' => $currentBalance - $subscribePrice,
+                ]);
+
+                // Statusni faollashtirish
+                $connected->update(['status' => 'active']);
+
+                \DB::commit();
+
+                $text = "🎉 Tabriklaymiz!\n\n";
+                $text .= "✅ Hisobingiz muvaffaqiyatli faollashtirildi!\n\n";
+                $text .= "💸 To'lov: " . number_format($subscribePrice, 0, '.', ' ') . " so'm\n";
+                $text .= "💰 Yangi balans: " . number_format($currentBalance - $subscribePrice, 0, '.', ' ') . " so'm\n\n";
+                $text .= "🚀 Endi barcha xizmatlardan to'liq foydalanishingiz mumkin.\n\n";
+                $text .= "💼 Botimiz imkoniyatlaridan bahramand bo'ling!";
+
+            } catch (\Exception $e) {
+                \DB::rollBack();
+                \Log::error('Activation payment error: ' . $e->getMessage());
+                
+                $text = "❌ Xatolik yuz berdi!\n\n";
+                $text .= "Iltimos, qaytadan urinib ko'ring yoki admin bilan bog'laning.\n";
+                $text .= "👤 @" . env('TELEGRAM_ADMIN_USERNAME', 'admin');
+            }
+            
+            $this->sendMessage($chatId, $text, $this->getMainKeyboard($user));
+            return;
+        }
+
+        // Boshqa statuslar uchun
+        $text = "ℹ️ Hisobingizni faollashtirish imkonsiz. Admin bilan bog'laning.\n";
+        $text .= "👤 @" . env('TELEGRAM_ADMIN_USERNAME', 'admin');
         
         $this->sendMessage($chatId, $text, $this->getMainKeyboard($user));
     }
