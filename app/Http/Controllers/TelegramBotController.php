@@ -223,11 +223,18 @@ class TelegramBotController extends Controller
             $text .= "📊 Oxirgi tranzaksiyalar:\n\n";
             
             foreach ($histories as $history) {
-                $type = $history->type === 'credit' ? '➕' : '➖';
+                if ($history->type === 'credit') {
+                    $typeIcon = '💚';
+                    $typeText = 'Kirim';
+                } else {
+                    $typeIcon = '❌';
+                    $typeText = 'Chiqim';
+                }
+                
                 $amount = number_format(abs($history->amount), 0, '.', ' ');
                 $date = $history->created_at->format('d.m.Y H:i');
                 
-                $text .= "{$type} {$amount} so'm\n";
+                $text .= "{$typeIcon} {$typeText}: {$amount} so'm\n";
                 $text .= "📝 {$history->description}\n";
                 $text .= "🕐 {$date}\n\n";
             }
