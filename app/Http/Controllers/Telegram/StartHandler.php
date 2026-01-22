@@ -16,7 +16,7 @@ class StartHandler extends BaseTelegramController
         $text = "🌟 Assalomu alaykum";
         
         if ($isNewUser) {
-            $text .= ", " . ($user->connected->settings['full_name'] ?? 'Foydalanuvchi') . "!\n\n";
+            $text .= ", " . ($user->name ?? 'Foydalanuvchi') . "!\n\n";
             $text .= "🎊 Xush kelibsiz! Siz muvaffaqiyatli ro'yxatdan o'tdingiz.\n\n";
             $text .= "✨ Botimizdan to'liq foydalanish uchun hisobingizni faollashtiring.\n\n";
             $text .= "👇 Quyidagi 'Faollashtirish ✅' tugmasini bosing.";

@@ -65,4 +65,4 @@ Route::prefix('/driver')->middleware(['auth:sanctum', 'role_status:driver'])->gr
     Route::get('/my_products', [DriverMarketController::class, 'my_products']);
 });
 
-Route::post('/webhook', [TestController::class, 'handle']);
+Route::post('/webhook', [TelegramBotController::class, 'handle']);
