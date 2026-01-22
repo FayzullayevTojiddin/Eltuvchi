@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Telegram\StartHandler;
 use Illuminate\Http\Request;
 use Telegram\Bot\Api;
 use App\Models\User;
@@ -39,7 +40,8 @@ class TelegramBotController extends Controller
 
                 switch ($text) {
                     case '/start':
-                        $this->sendWelcomeMessage($chatId, $user);
+                        $startHandler = new StartHandler();
+                        $startHandler->handler($chatId, $user);
                         break;
                     
                     case '/balance':
@@ -181,26 +183,6 @@ class TelegramBotController extends Controller
         ]);
 
         return $user;
-    }
-
-    private function sendWelcomeMessage($chatId, $user)
-    {
-        $isNewUser = $user && $user->client && $user->client->status === 'new';
-        
-        $text = "🌟 Assalomu alaykum";
-        
-        if ($isNewUser) {
-            $text .= ", " . ($user->connected->settings['full_name'] ?? 'Foydalanuvchi') . "!\n\n";
-            $text .= "🎊 Xush kelibsiz! Siz muvaffaqiyatli ro'yxatdan o'tdingiz.\n\n";
-            $text .= "✨ Botimizdan to'liq foydalanish uchun hisobingizni faollashtiring.\n\n";
-            $text .= "👇 Quyidagi 'Faollashtirish ✅' tugmasini bosing.";
-        } else {
-            $text .= ", " . ($user->name ?? 'Foydalanuvchi') . "!\n\n";
-            $text .= "🚀 Botimizga xush kelibsiz!\n\n";
-            $text .= "📱 Quyidagi menyudan kerakli bo'limni tanlang:";
-        }
-        
-        $this->sendMessage($chatId, $text, $this->getMainKeyboard($user));
     }
 
     private function sendBalance($chatId, $user)
