@@ -26,10 +26,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/auth', [AuthController::class, 'telegramAuth']);
 
-Route::middleware('role_status:driver,client')->group(function () {
-    Route::get('/referrals', [ReferralController::class, 'index'])->middleware('auth:sanctum');
-    Route::post('/referrals', [ReferralController::class, 'referred'])->middleware('auth:sanctum');
-    Route::get('/balance-history', [BalanceHistoryController::class, 'balance_history'])->middleware('auth:sanctum');
+Route::middlewares(['role_status:driver,client', 'auth:sanctum'])->group(function () {
+    Route::get('/referrals', [ReferralController::class, 'index']);
+    Route::post('/referrals', [ReferralController::class, 'referred']);
+    Route::get('/balance-history', [BalanceHistoryController::class, 'balance_history']);
 
     Route::get('/regions', [RegionController::class, 'index']);
     Route::get('/regions/{region_id}', [RegionController::class, 'show']);
