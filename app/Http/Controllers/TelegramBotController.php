@@ -223,24 +223,16 @@ class TelegramBotController extends Controller
             $text .= "📊 Oxirgi tranzaksiyalar:\n\n";
             
             foreach ($histories as $history) {
-                // Database'dan kelayotgan type'ni tekshirish
-                // 'credit', 'plus', yoki musbat amount -> Kirim
-                // 'debit', 'minus', yoki manfiy amount -> Chiqim
+                // HasBalance trait 'plus' va 'minus' ishlatadi
+                // Shuningdek amount'ga qarab ham aniqlash mumkin
                 $isCredit = false;
                 
-                if (in_array($history->type, ['credit', 'plus'])) {
+                if ($history->type === 'plus' || $history->amount > 0) {
                     $isCredit = true;
-                } elseif (in_array($history->type, ['debit', 'minus'])) {
-                    $isCredit = false;
-                } else {
-                    // Agar type aniq bo'lmasa, amount bo'yicha tekshirish
-                    $isCredit = $history->amount > 0;
-                }
-                
-                if ($isCredit) {
                     $typeIcon = '💚';
                     $typeText = 'Kirim';
                 } else {
+                    $isCredit = false;
                     $typeIcon = '❌';
                     $typeText = 'Chiqim';
                 }
@@ -363,27 +355,29 @@ class TelegramBotController extends Controller
             try {
                 \DB::beginTransaction();
 
-                // Balansdan yechish
-                $connected->decrement('balance', $subscribePrice);
+                // HasBalance trait'dagi subtractBalance metodidan foydalanish
+                $paymentSuccess = $connected->subtractBalance($subscribePrice, 'Hisobni faollashtirish uchun obuna to\'lovi');
 
-                // Balance history qo'shish
-                $connected->balanceHistories()->create([
-                    'amount' => -$subscribePrice,
-                    'type' => 'debit',
-                    'description' => 'Hisobni faollashtirish uchun obuna to\'lovi',
-                    'balance_before' => $currentBalance,
-                    'balance_after' => $currentBalance - $subscribePrice,
-                ]);
+                if (!$paymentSuccess) {
+                    \DB::rollBack();
+                    $text = "❌ To'lovda xatolik yuz berdi!\n\n";
+                    $text .= "Balans yetarli emas. Iltimos qayta urinib ko'ring.";
+                    $this->sendMessage($chatId, $text, $this->getMainKeyboard($user));
+                    return;
+                }
 
                 // Statusni faollashtirish
                 $connected->update(['status' => 'active']);
 
                 \DB::commit();
+                
+                // Yangi balansni olish
+                $connected->refresh();
 
                 $text = "🎉 Tabriklaymiz!\n\n";
                 $text .= "✅ Hisobingiz muvaffaqiyatli faollashtirildi!\n\n";
                 $text .= "💸 To'lov: " . number_format($subscribePrice, 0, '.', ' ') . " so'm\n";
-                $text .= "💰 Yangi balans: " . number_format($currentBalance - $subscribePrice, 0, '.', ' ') . " so'm\n\n";
+                $text .= "💰 Yangi balans: " . number_format($connected->balance, 0, '.', ' ') . " so'm\n\n";
                 $text .= "🚀 Endi barcha xizmatlardan to'liq foydalanishingiz mumkin.\n\n";
                 $text .= "💼 Botimiz imkoniyatlaridan bahramand bo'ling!";
 
