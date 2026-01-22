@@ -21,7 +21,6 @@ use App\Http\Controllers\OrderReviewController;
 use App\Http\Controllers\ReferralController;
 use App\Http\Controllers\RegionController;
 use App\Http\Controllers\RouteController;
-use App\Http\Controllers\Telegram\TestController;
 use App\Http\Controllers\TelegramBotController;
 use Illuminate\Support\Facades\Route;
 

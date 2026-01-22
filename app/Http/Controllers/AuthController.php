@@ -107,15 +107,18 @@ class AuthController extends Controller
 
             $telegramId = (string) $tgUser['id'];
 
-            $user = User::where('telegram_id', $telegramId)->first();
+            $user = User::with(['client', 'driver'])
+                ->where('telegram_id', $telegramId)
+                ->first();
 
             if (!$user) {
                 $user = $this->createNewUser($tgUser, $telegramId);
+                $user->load(['client', 'driver']);
             } else {
                 $this->updateUserInfo($user, $tgUser);
             }
 
-            $token = $user->createToken('telegram', ['*'], now()->addDays(30))->plainTextToken;
+            $token = $user->createToken('telegram', ['*'])->plainTextToken;
 
             return response()->json([
                 'status' => 'success',
@@ -127,6 +130,8 @@ class AuthController extends Controller
                     'telegram_id' => $user->telegram_id,
                     'username' => $user->username,
                     'photo_url' => $user->photo_url,
+                    'client_id' => $user->client?->id,
+                    'driver_id' => $user->driver?->id,
                 ]
             ], 200);
 
