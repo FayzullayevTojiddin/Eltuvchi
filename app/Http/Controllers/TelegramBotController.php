@@ -223,7 +223,21 @@ class TelegramBotController extends Controller
             $text .= "📊 Oxirgi tranzaksiyalar:\n\n";
             
             foreach ($histories as $history) {
-                if ($history->type === 'credit') {
+                // Database'dan kelayotgan type'ni tekshirish
+                // 'credit', 'plus', yoki musbat amount -> Kirim
+                // 'debit', 'minus', yoki manfiy amount -> Chiqim
+                $isCredit = false;
+                
+                if (in_array($history->type, ['credit', 'plus'])) {
+                    $isCredit = true;
+                } elseif (in_array($history->type, ['debit', 'minus'])) {
+                    $isCredit = false;
+                } else {
+                    // Agar type aniq bo'lmasa, amount bo'yicha tekshirish
+                    $isCredit = $history->amount > 0;
+                }
+                
+                if ($isCredit) {
                     $typeIcon = '💚';
                     $typeText = 'Kirim';
                 } else {
