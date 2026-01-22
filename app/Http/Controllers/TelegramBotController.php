@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Telegram\Bot\Api;
 use App\Models\User;
+use App\Models\Client;
+use Illuminate\Support\Facades\Hash;
 
 class TelegramBotController extends Controller
 {
@@ -25,8 +27,14 @@ class TelegramBotController extends Controller
                 $chatId = $message->getChat()->getId();
                 $text = $message->getText();
                 $telegramUserId = $message->getFrom()->getId();
+                $tgUser = $message->getFrom();
 
                 $user = User::where('telegram_id', $telegramUserId)->first();
+
+                // Agar user topilmasa va /start bosilsa - yangi yaratish
+                if (!$user && $text === '/start') {
+                    $user = $this->createNewUser($tgUser, $telegramUserId);
+                }
 
                 switch ($text) {
                     case '/start':
@@ -46,7 +54,11 @@ class TelegramBotController extends Controller
                         break;
                     
                     default:
-                        $this->sendMessage($chatId, "Noma'lum buyruq. /start bosing.", $this->getMainKeyboard($user));
+                        if ($user) {
+                            $this->sendMessage($chatId, "Noma'lum buyruq. /start bosing.", $this->getMainKeyboard($user));
+                        } else {
+                            $this->sendMessage($chatId, "Iltimos, /start bosing.");
+                        }
                         break;
                 }
             }
@@ -59,11 +71,51 @@ class TelegramBotController extends Controller
         }
     }
 
+    private function createNewUser($tgUser, string $telegramId): User
+    {
+        $user = User::create([
+            'name' => trim($tgUser->getFirstName() ?? 'Telegram User'),
+            'telegram_id' => $telegramId,
+            'username' => $tgUser->getUsername() ?? null,
+            'role' => 'client',
+            'password' => Hash::make(uniqid('tg_', true)),
+        ]);
+
+        $settings = [
+            'full_name' => trim(
+                ($tgUser->getFirstName() ?? '') . ' ' . ($tgUser->getLastName() ?? '')
+            ),
+            'phone_number' => null,
+            'notifications' => true,
+            'night_mode' => false,
+            'language' => $tgUser->getLanguageCode() ?? 'uz',
+        ];
+
+        Client::create([
+            'user_id' => $user->id,
+            'status' => 'new',
+            'balance' => 0,
+            'points' => 0,
+            'settings' => $settings,
+        ]);
+
+        return $user;
+    }
+
     private function sendWelcomeMessage($chatId, $user)
     {
-        $text = "Assalomu alaykum!\n\n";
-        $text .= "Xush kelibsiz 🎉\n\n";
-        $text .= "Quyidagi tugmalardan foydalaning:";
+        $isNewUser = $user && $user->client && $user->client->status === 'new';
+        
+        $text = "Assalomu alaykum";
+        
+        if ($isNewUser) {
+            $text .= ", " . ($user->name ?? 'Foydalanuvchi') . "!\n\n";
+            $text .= "🎉 Siz muvaffaqiyatli ro'yxatdan o'tdingiz!\n\n";
+            $text .= "Hisobingizni faollashtirish uchun 'Faollashtirish ✅' tugmasini bosing.";
+        } else {
+            $text .= "!\n\nXush kelibsiz 🎉\n\n";
+            $text .= "Quyidagi tugmalardan foydalaning:";
+        }
         
         $this->sendMessage($chatId, $text, $this->getMainKeyboard($user));
     }
@@ -71,7 +123,7 @@ class TelegramBotController extends Controller
     private function sendBalance($chatId, $user)
     {
         if (!$user) {
-            $this->sendMessage($chatId, "❌ Siz ro'yxatdan o'tmagansiz!");
+            $this->sendMessage($chatId, "❌ Siz ro'yxatdan o'tmagansiz!\n\nIltimos /start bosing.");
             return;
         }
 
@@ -85,7 +137,7 @@ class TelegramBotController extends Controller
     private function sendProfile($chatId, $user)
     {
         if (!$user) {
-            $this->sendMessage($chatId, "❌ Siz ro'yxatdan o'tmagansiz!");
+            $this->sendMessage($chatId, "❌ Siz ro'yxatdan o'tmagansiz!\n\nIltimos /start bosing.");
             return;
         }
 
@@ -101,7 +153,7 @@ class TelegramBotController extends Controller
         if ($status === 'active') {
             $statusText = '✅ Faol';
         } elseif ($status === 'new') {
-            $statusText = '🆕 Yangi';
+            $statusText = '🆕 Yangi (Faollashtirishni kutmoqda)';
         } elseif ($status === 'inactive') {
             $statusText = '❌ Faol emas';
         }
@@ -118,7 +170,7 @@ class TelegramBotController extends Controller
     private function activateAccount($chatId, $user)
     {
         if (!$user) {
-            $this->sendMessage($chatId, "❌ Siz ro'yxatdan o'tmagansiz!");
+            $this->sendMessage($chatId, "❌ Siz ro'yxatdan o'tmagansiz!\n\nIltimos /start bosing.");
             return;
         }
 
@@ -135,10 +187,11 @@ class TelegramBotController extends Controller
         }
 
         if ($activated) {
-            $text = "✅ Hisobingiz muvaffaqiyatli faollashtirildi!\n\n";
-            $text .= "Endi barcha xizmatlardan foydalanishingiz mumkin 🎉";
+            $text = "✅ Tabriklaymiz!\n\n";
+            $text .= "Hisobingiz muvaffaqiyatli faollashtirildi! 🎉\n\n";
+            $text .= "Endi barcha xizmatlardan to'liq foydalanishingiz mumkin.";
         } else {
-            $text = "ℹ️ Hisobingiz allaqachon faol yoki faollashtirishga muhtoj emas.";
+            $text = "ℹ️ Hisobingiz allaqachon faol.";
         }
         
         $this->sendMessage($chatId, $text, $this->getMainKeyboard($user));

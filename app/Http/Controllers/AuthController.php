@@ -131,12 +131,6 @@ class AuthController extends Controller
             ], 200);
 
         } catch (\Exception $e) {
-            Log::error('Telegram autentifikatsiya xatosi: ' . $e->getMessage(), [
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString()
-            ]);
-
             return response()->json([
                 'status' => 'error',
                 'message' => 'Autentifikatsiya jarayonida xatolik yuz berdi'

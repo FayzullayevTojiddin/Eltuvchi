@@ -6,4 +6,5 @@ return [
     App\Providers\EventServiceProvider::class,
     App\Providers\Filament\SuperAdminPanelProvider::class,
     App\Providers\Filament\TaxoParkAdminPanelProvider::class,
+    App\Providers\TelescopeServiceProvider::class,
 ];
