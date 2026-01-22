@@ -13,7 +13,7 @@ class ProcessActionHandler extends BaseTelegramController
             return;
         }
 
-        $connected = $user->connected;
+        $connected = $user->connected();
         
         if (!$connected) {
             $this->sendMessage($chatId, "❌ Hisob ma'lumotlari topilmadi.", $this->getMainKeyboard($user));
