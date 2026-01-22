@@ -7,6 +7,8 @@ use Telegram\Bot\Api;
 use App\Models\User;
 use App\Models\Client;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class TelegramBotController extends Controller
 {
@@ -80,14 +82,13 @@ class TelegramBotController extends Controller
             return response()->json(['ok' => true]);
             
         } catch (\Exception $e) {
-            \Log::error('Telegram Bot Error: ' . $e->getMessage());
+            Log::error('Telegram Bot Error: ' . $e->getMessage());
             return response()->json(['ok' => false, 'error' => $e->getMessage()], 500);
         }
     }
 
     private function handleCallbackQuery($chatId, $data, $user, $callbackQueryId)
     {
-        // Callback query javobini yuborish
         $this->telegram->answerCallbackQuery([
             'callback_query_id' => $callbackQueryId,
         ]);
@@ -104,6 +105,14 @@ class TelegramBotController extends Controller
             
             case 'withdraw':
                 $this->handleWithdraw($chatId, $user);
+                break;
+            
+            case 'confirm_activate':
+                $this->processActivation($chatId, $user);
+                break;
+            
+            case 'cancel_activate':
+                $this->sendMessage($chatId, "❌ Faollashtirish bekor qilindi.", $this->getMainKeyboard($user));
                 break;
             
             default:
@@ -213,7 +222,6 @@ class TelegramBotController extends Controller
         $text = "💰 Sizning balansingiz:\n\n";
         $text .= "💵 " . number_format($balance, 0, '.', ' ') . " so'm\n\n";
         
-        // Oxirgi 3 ta tranzaksiya
         $histories = $connected->balanceHistories()
             ->orderByDesc('created_at')
             ->limit(3)
@@ -223,16 +231,10 @@ class TelegramBotController extends Controller
             $text .= "📊 Oxirgi tranzaksiyalar:\n\n";
             
             foreach ($histories as $history) {
-                // HasBalance trait 'plus' va 'minus' ishlatadi
-                // Shuningdek amount'ga qarab ham aniqlash mumkin
-                $isCredit = false;
-                
-                if ($history->type === 'plus' || $history->amount > 0) {
-                    $isCredit = true;
+                if ($history->type === 'plus') {
                     $typeIcon = '💚';
                     $typeText = 'Kirim';
                 } else {
-                    $isCredit = false;
                     $typeIcon = '❌';
                     $typeText = 'Chiqim';
                 }
@@ -248,7 +250,6 @@ class TelegramBotController extends Controller
             $text .= "ℹ️ Hozircha tranzaksiyalar yo'q.";
         }
         
-        // Inline tugmalar
         $inlineKeyboard = [
             [
                 ['text' => '💳 Pul kiritish', 'callback_data' => 'deposit'],
@@ -284,7 +285,6 @@ class TelegramBotController extends Controller
             $statusText = '🚫 Bloklangan';
         }
         
-        // Buyurtmalar soni
         $ordersCount = 0;
         if ($user->role === 'client') {
             $ordersCount = $user->client->orders()->count();
@@ -326,19 +326,16 @@ class TelegramBotController extends Controller
             return;
         }
 
-        // Agar allaqachon faol bo'lsa
         if ($connected->status === 'active') {
             $text = "ℹ️ Hisobingiz allaqachon faol holda.";
             $this->sendMessage($chatId, $text, $this->getMainKeyboard($user));
             return;
         }
 
-        // Agar yangi bo'lsa va faollashtirish kerak bo'lsa
         if ($connected->status === 'new') {
             $subscribePrice = env('SUBSCRIBE_PRICE', 0);
             $currentBalance = $connected->balance ?? 0;
 
-            // Balans tekshirish
             if ($currentBalance < $subscribePrice) {
                 $needed = $subscribePrice - $currentBalance;
                 $text = "❌ Balans yetarli emas!\n\n";
@@ -351,52 +348,92 @@ class TelegramBotController extends Controller
                 return;
             }
 
-            // To'lovni amalga oshirish
-            try {
-                \DB::beginTransaction();
+            $text = "⚠️ Hisobni faollashtirish\n\n";
+            $text .= "💰 Joriy balans: " . number_format($currentBalance, 0, '.', ' ') . " so'm\n";
+            $text .= "💸 To'lov summasi: " . number_format($subscribePrice, 0, '.', ' ') . " so'm\n";
+            $text .= "💵 Qolgan balans: " . number_format($currentBalance - $subscribePrice, 0, '.', ' ') . " so'm\n\n";
+            $text .= "❓ Hisobingizni faollashtirishni tasdiqlaysizmi?";
 
-                // HasBalance trait'dagi subtractBalance metodidan foydalanish
-                $paymentSuccess = $connected->subtractBalance($subscribePrice, 'Hisobni faollashtirish uchun obuna to\'lovi');
+            $inlineKeyboard = [
+                [
+                    ['text' => '✅ Tasdiqlash', 'callback_data' => 'confirm_activate'],
+                    ['text' => '❌ Bekor qilish', 'callback_data' => 'cancel_activate']
+                ]
+            ];
 
-                if (!$paymentSuccess) {
-                    \DB::rollBack();
-                    $text = "❌ To'lovda xatolik yuz berdi!\n\n";
-                    $text .= "Balans yetarli emas. Iltimos qayta urinib ko'ring.";
-                    $this->sendMessage($chatId, $text, $this->getMainKeyboard($user));
-                    return;
-                }
+            $this->sendMessage($chatId, $text, null, $inlineKeyboard);
+            return;
+        }
 
-                // Statusni faollashtirish
-                $connected->update(['status' => 'active']);
+        $text = "ℹ️ Hisobingizni faollashtirish imkonsiz. Admin bilan bog'laning.\n";
+        $text .= "👤 @" . env('TELEGRAM_ADMIN_USERNAME', 'admin');
+        
+        $this->sendMessage($chatId, $text, $this->getMainKeyboard($user));
+    }
 
-                \DB::commit();
-                
-                // Yangi balansni olish
-                $connected->refresh();
+    private function processActivation($chatId, $user)
+    {
+        if (!$user) {
+            $this->sendMessage($chatId, "❌ Siz ro'yxatdan o'tmagansiz!\n\n👉 Iltimos /start buyrug'ini yuboring.");
+            return;
+        }
 
-                $text = "🎉 Tabriklaymiz!\n\n";
-                $text .= "✅ Hisobingiz muvaffaqiyatli faollashtirildi!\n\n";
-                $text .= "💸 To'lov: " . number_format($subscribePrice, 0, '.', ' ') . " so'm\n";
-                $text .= "💰 Yangi balans: " . number_format($connected->balance, 0, '.', ' ') . " so'm\n\n";
-                $text .= "🚀 Endi barcha xizmatlardan to'liq foydalanishingiz mumkin.\n\n";
-                $text .= "💼 Botimiz imkoniyatlaridan bahramand bo'ling!";
+        $connected = $user->role === 'client' ? $user->client : $user->driver;
+        
+        if (!$connected) {
+            $this->sendMessage($chatId, "❌ Hisob ma'lumotlari topilmadi.", $this->getMainKeyboard($user));
+            return;
+        }
 
-            } catch (\Exception $e) {
-                \DB::rollBack();
-                \Log::error('Activation payment error: ' . $e->getMessage());
-                
-                $text = "❌ Xatolik yuz berdi!\n\n";
-                $text .= "Iltimos, qaytadan urinib ko'ring yoki admin bilan bog'laning.\n";
-                $text .= "👤 @" . env('TELEGRAM_ADMIN_USERNAME', 'admin');
-            }
-            
+        if ($connected->status !== 'new') {
+            $this->sendMessage($chatId, "ℹ️ Hisobingiz allaqachon faollashtirilgan yoki faollashtirish mumkin emas.", $this->getMainKeyboard($user));
+            return;
+        }
+
+        $subscribePrice = env('SUBSCRIBE_PRICE', 0);
+        $currentBalance = $connected->balance ?? 0;
+
+        if ($currentBalance < $subscribePrice) {
+            $text = "❌ Balans yetarli emas!\n\n";
+            $text .= "Balansni to'ldiring va qaytadan urinib ko'ring.";
             $this->sendMessage($chatId, $text, $this->getMainKeyboard($user));
             return;
         }
 
-        // Boshqa statuslar uchun
-        $text = "ℹ️ Hisobingizni faollashtirish imkonsiz. Admin bilan bog'laning.\n";
-        $text .= "👤 @" . env('TELEGRAM_ADMIN_USERNAME', 'admin');
+        try {
+            DB::beginTransaction();
+
+            $paymentSuccess = $connected->subtractBalance($subscribePrice, 'Hisobni faollashtirish uchun obuna to\'lovi');
+
+            if (!$paymentSuccess) {
+                DB::rollBack();
+                $text = "❌ To'lovda xatolik yuz berdi!\n\n";
+                $text .= "Balans yetarli emas. Iltimos qayta urinib ko'ring.";
+                $this->sendMessage($chatId, $text, $this->getMainKeyboard($user));
+                return;
+            }
+
+            $connected->update(['status' => 'active']);
+
+            DB::commit();
+            
+            $connected->refresh();
+
+            $text = "🎉 Tabriklaymiz!\n\n";
+            $text .= "✅ Hisobingiz muvaffaqiyatli faollashtirildi!\n\n";
+            $text .= "💸 To'lov: " . number_format($subscribePrice, 0, '.', ' ') . " so'm\n";
+            $text .= "💰 Yangi balans: " . number_format($connected->balance, 0, '.', ' ') . " so'm\n\n";
+            $text .= "🚀 Endi barcha xizmatlardan to'liq foydalanishingiz mumkin.\n\n";
+            $text .= "💼 Botimiz imkoniyatlaridan bahramand bo'ling!";
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Activation payment error: ' . $e->getMessage());
+            
+            $text = "❌ Xatolik yuz berdi!\n\n";
+            $text .= "Iltimos, qaytadan urinib ko'ring yoki admin bilan bog'laning.\n";
+            $text .= "👤 @" . env('TELEGRAM_ADMIN_USERNAME', 'admin');
+        }
         
         $this->sendMessage($chatId, $text, $this->getMainKeyboard($user));
     }
@@ -442,7 +479,6 @@ class TelegramBotController extends Controller
                 }
             }
 
-            // Birinchi qatorda faqat faollashtirish yoki blokdan chiqish
             if ($needsActivation) {
                 $keyboard[] = ['Faollashtirish ✅'];
             } elseif ($isBlocked) {
@@ -450,7 +486,6 @@ class TelegramBotController extends Controller
             }
         }
 
-        // Asosiy tugmalar
         $keyboard[] = ['Balans 💰', 'Hisobim 👤'];
 
         return [
