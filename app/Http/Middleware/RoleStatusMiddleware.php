@@ -10,7 +10,7 @@ class RoleStatusMiddleware
 {
     public function handle(Request $request, Closure $next, ...$roles)
     {
-        $user = Auth::user();
+        $user = $request->user();
 
         if (! $user) {
             return response()->json(['message' => 'Unauthenticated'], 404);
