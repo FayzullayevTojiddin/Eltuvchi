@@ -31,8 +31,28 @@ class TelegramBotController extends BaseTelegramController
     {
         try {
             $update = $this->telegram->getWebhookUpdate();
-            
+
+            if ($update->getCallbackQuery()) {
+
+                $callbackQuery = $update->getCallbackQuery();
+                $chatId = $callbackQuery->getMessage()->getChat()->getId();
+                $data = $callbackQuery->getData();
+                $telegramUserId = $callbackQuery->getFrom()->getId();
+
+                $user = User::where('telegram_id', $telegramUserId)->first();
+
+                $this->handleCallbackQuery(
+                    $chatId,
+                    $data,
+                    $user,
+                    $callbackQuery->getId()
+                );
+
+                return response()->json(['ok' => true]);
+            }
+
             if ($update->getMessage()) {
+
                 $message = $update->getMessage();
                 $chatId = $message->getChat()->getId();
                 $text = $message->getText();
@@ -47,56 +67,52 @@ class TelegramBotController extends BaseTelegramController
 
                 switch ($text) {
                     case '/start':
-                        $startHandler = new StartHandler();
-                        $startHandler->handler($chatId, $user);
+                        (new StartHandler())->handler($chatId, $user);
                         break;
-                    
+
                     case '/balance':
                     case 'Balans 💰':
-                        $balanceHandler = new BalanceHandler();
-                        $balanceHandler->handler($chatId, $user);
+                        (new BalanceHandler())->handler($chatId, $user);
                         break;
-                    
+
                     case '/my':
                     case 'Hisobim 👤':
-                        $profileHandler = new ProfileHandler();
-                        $profileHandler->handler($chatId, $user);
+                        (new ProfileHandler())->handler($chatId, $user);
                         break;
-                    
+
                     case 'Faollashtirish ✅':
-                        $activateAccountHandler = new ActivateAccountHandler();
-                        $activateAccountHandler->handler($chatId, $user);
+                        (new ActivateAccountHandler())->handler($chatId, $user);
                         break;
-                    
+
                     case 'Blokdan chiqish 🔓':
-                        $requestUnblockHandler = new RequestUnblockHandler();
-                        $requestUnblockHandler->handler($chatId, $user);
+                        (new RequestUnblockHandler())->handler($chatId, $user);
                         break;
-                    
+
                     default:
                         if ($user) {
-                            $this->sendMessage($chatId, "❓ Noma'lum buyruq.\n\nQuyidagi tugmalardan foydalaning yoki /start buyrug'ini yuboring.", $this->getMainKeyboard($user));
+                            $this->sendMessage(
+                                $chatId,
+                                "❓ Noma'lum buyruq.\n\nQuyidagi tugmalardan foydalaning yoki /start buyrug'ini yuboring.",
+                                $this->getMainKeyboard($user)
+                            );
                         } else {
-                            $this->sendMessage($chatId, "👋 Botdan foydalanish uchun /start buyrug'ini yuboring.");
+                            $this->sendMessage(
+                                $chatId,
+                                "👋 Botdan foydalanish uchun /start buyrug'ini yuboring."
+                            );
                         }
-                        break;
                 }
-            } elseif ($update->getCallbackQuery()) {
-                $callbackQuery = $update->getCallbackQuery();
-                $chatId = $callbackQuery->getMessage()->getChat()->getId();
-                $data = $callbackQuery->getData();
-                $telegramUserId = $callbackQuery->getFrom()->getId();
-
-                $user = User::where('telegram_id', $telegramUserId)->first();
-
-                $this->handleCallbackQuery($chatId, $data, $user, $callbackQuery->getId());
             }
 
             return response()->json(['ok' => true]);
-            
-        } catch (\Exception $e) {
+
+        } catch (\Throwable $e) {
             Log::error('Telegram Bot Error: ' . $e->getMessage());
-            return response()->json(['ok' => false, 'error' => $e->getMessage()], 500);
+
+            return response()->json([
+                'ok' => false,
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 
