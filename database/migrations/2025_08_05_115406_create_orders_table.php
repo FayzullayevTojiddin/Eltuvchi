@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('driver_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('route_id')->constrained()->cascadeOnDelete();
 
-            $table->unsignedSmallInteger('passengers');
+            $table->decimal('passengers', 4, 2);
 
             $table->date('date');
             $table->time('time');
