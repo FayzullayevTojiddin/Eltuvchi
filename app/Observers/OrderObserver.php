@@ -13,7 +13,6 @@ class OrderObserver
     public function created(Order $order): void
     {
         $user = Auth::user();
-        $order->load('client', 'route', 'driver');
         
         $order->histories()->create([
             'status' => OrderStatus::Created,
@@ -22,13 +21,12 @@ class OrderObserver
             'description' => 'Buyurtma yaratildi',
         ]);
 
-        event(new OrderCreated($order));
+        OrderCreated::dispatch($order);
     }
 
     public function updated(Order $order): void
     {
         $user = Auth::user();
-        $order->load('client', 'route', 'driver');
         
         $description = $order->temp_description ?? 'Buyurtma yangilandi';
 
@@ -39,6 +37,6 @@ class OrderObserver
             'description' => $description,
         ]);
 
-        event(new OrderUpdated($order, $description));
+        OrderUpdated::dispatch($order, $description);
     }
 }
