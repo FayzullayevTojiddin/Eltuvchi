@@ -158,7 +158,6 @@ class TelegramBotController extends BaseTelegramController
                 $this->sendMessage($chatId, "❌ Faollashtirish bekor qilindi.", $this->getMainKeyboard($user));
                 break;
             
-            // ✅ YANGI: Bosh menyuga qaytish
             case 'main_menu':
                 $user->update(['telegram_state' => null]);
                 $this->sendMessage($chatId, "🏠 Bosh menyu", $this->getMainKeyboard($user));

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Telegram;
 
+use App\Models\DepositRequest;
 use App\Services\ClickService;
-use App\Models\DepositTransaction;
 
 class DepositHandler extends BaseTelegramController
 {
@@ -45,7 +45,7 @@ class DepositHandler extends BaseTelegramController
         try {
             $merchantTransId = 'DEP_' . $user->id . '_' . time();
             
-            $transaction = DepositTransaction::create([
+            $transaction = DepositRequest::create([
                 'user_id' => $user->id,
                 'amount' => $amount,
                 'merchant_trans_id' => $merchantTransId,

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class DepositTransaction extends Model
+class DepositRequest extends Model
 {
     protected $fillable = [
         'user_id',
