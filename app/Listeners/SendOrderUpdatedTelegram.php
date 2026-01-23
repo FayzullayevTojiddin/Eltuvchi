@@ -37,25 +37,25 @@ class SendOrderUpdatedTelegram implements ShouldQueue
     private function clientText($order, $description): string
     {
         return
-            "🔄 <b>Buyurtma yangilandi</b>\n\n" .
-            "📋 Buyurtma ID: #{$order->id}\n" .
-            "🛣 Yo'nalish: {$order->route->name}\n" .
-            "📊 Status: {$order->status}\n" .
-            "📝 Tavsif: {$description}\n" .
-            "📅 Sana: {$order->date->format('d.m.Y')}\n" .
-            "🕐 Vaqt: " . date('H:i', strtotime($order->time));
+            "🔄 <b>Buyurtma yangilandi</b>\n\n" ;
+            // "📋 Buyurtma ID: #{$order->id}\n" .
+            // "🛣 Yo'nalish: {$order->route->name}\n" .
+            // "📊 Status: {$order->status}\n" .
+            // "📝 Tavsif: {$description}\n" .
+            // "📅 Sana: {$order->date->format('d.m.Y')}\n" .
+            // "🕐 Vaqt: " . date('H:i', strtotime($order->time));
     }
 
     private function driverText($order, $description): string
     {
         return
-            "🔄 <b>Buyurtma yangilandi</b>\n\n" .
-            "📋 Buyurtma ID: #{$order->id}\n" .
-            "🛣 Yo'nalish: {$order->route->name}\n" .
-            "📊 Status: {$order->status}\n" .
-            "📝 Tavsif: {$description}\n" .
-            "📅 Sana: {$order->date->format('d.m.Y')}\n" .
-            "🕐 Vaqt: " . date('H:i', strtotime($order->time)) . "\n" .
-            "📱 Mijoz: {$order->phone}";
+            "🔄 <b>Buyurtma yangilandi</b>\n\n" ;
+            // "📋 Buyurtma ID: #{$order->id}\n" .
+            // "🛣 Yo'nalish: {$order->route->name}\n" .
+            // "📊 Status: {$order->status}\n" .
+            // "📝 Tavsif: {$description}\n" .
+            // "📅 Sana: {$order->date->format('d.m.Y')}\n" .
+            // "🕐 Vaqt: " . date('H:i', strtotime($order->time)) . "\n" .
+            // "📱 Mijoz: {$order->phone}";
     }
 }

@@ -36,28 +36,28 @@ class SendOrderCreatedTelegram implements ShouldQueue
     private function clientText($order): string
     {
         return
-            "🆕 <b>Buyurtma yaratildi</b>\n\n" .
-            "📋 Buyurtma ID: #{$order->id}\n" .
-            "🛣 Yo'nalish: {$order->route->name}\n" .
-            "👥 Yo'lovchilar: {$order->passengers} ta\n" .
-            "📅 Sana: {$order->date->format('d.m.Y')}\n" .
-            "🕐 Vaqt: " . date('H:i', strtotime($order->time)) . "\n" .
-            "📱 Telefon: {$order->phone}\n" .
-            ($order->note ? "📝 Izoh: {$order->note}\n" : "") .
-            "\n✅ Buyurtmangiz muvaffaqiyatli qabul qilindi";
+            "🆕 <b>Buyurtma yaratildi</b>\n\n";
+            // "📋 Buyurtma ID: #{$order->id}\n" .
+            // "🛣 Yo'nalish: {$order->route->name}\n" .
+            // "👥 Yo'lovchilar: {$order->passengers} ta\n" .
+            // "📅 Sana: {$order->date->format('d.m.Y')}\n" .
+            // "🕐 Vaqt: " . date('H:i', strtotime($order->time)) . "\n" .
+            // "📱 Telefon: {$order->phone}\n" .
+            // ($order->note ? "📝 Izoh: {$order->note}\n" : "") .
+            // "\n✅ Buyurtmangiz muvaffaqiyatli qabul qilindi";
     }
 
     private function driverText($order): string
     {
         return
-            "🚗 <b>Sizga yangi buyurtma tayinlandi</b>\n\n" .
-            "📋 Buyurtma ID: #{$order->id}\n" .
-            "🛣 Yo'nalish: {$order->route->name}\n" .
-            "👥 Yo'lovchilar: {$order->passengers} ta\n" .
-            "📅 Sana: {$order->date->format('d.m.Y')}\n" .
-            "🕐 Vaqt: " . date('H:i', strtotime($order->time)) . "\n" .
-            "📱 Mijoz telefoni: {$order->phone}\n" .
-            ($order->optional_phone ? "📱 Qo'shimcha: {$order->optional_phone}\n" : "") .
-            ($order->note ? "📝 Izoh: {$order->note}" : "");
+            "🚗 <b>Sizga yangi buyurtma tayinlandi</b>\n\n" ;
+            // "📋 Buyurtma ID: #{$order->id}\n" .
+            // "🛣 Yo'nalish: {$order->route->name}\n" .
+            // "👥 Yo'lovchilar: {$order->passengers} ta\n" .
+            // "📅 Sana: {$order->date->format('d.m.Y')}\n" .
+            // "🕐 Vaqt: " . date('H:i', strtotime($order->time)) . "\n" .
+            // "📱 Mijoz telefoni: {$order->phone}\n" .
+            // ($order->optional_phone ? "📱 Qo'shimcha: {$order->optional_phone}\n" : "") .
+            // ($order->note ? "📝 Izoh: {$order->note}" : "");
     }
 }
