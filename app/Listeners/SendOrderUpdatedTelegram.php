@@ -10,28 +10,28 @@ class SendOrderUpdatedTelegram implements ShouldQueue
 {
     public function handle(OrderUpdated $event): void
     {
-        $order = $event->order->load('client.user', 'driver.user', 'route');
-        $description = $event->description;
+        // $order = $event->order->load('client.user', 'driver.user', 'route');
+        // $description = $event->description;
 
-        $telegram = new Api();
+        // $telegram = new Api();
 
-        $clientTelegramId = $order->client?->user?->telegram_id;
-        if ($clientTelegramId) {
-            $telegram->sendMessage([
-                'chat_id' => $clientTelegramId,
-                'text' => $this->clientText($order, $description),
-                'parse_mode' => 'HTML',
-            ]);
-        }
+        // $clientTelegramId = $order->client?->user?->telegram_id;
+        // if ($clientTelegramId) {
+        //     $telegram->sendMessage([
+        //         'chat_id' => $clientTelegramId,
+        //         'text' => $this->clientText($order, $description),
+        //         'parse_mode' => 'HTML',
+        //     ]);
+        // }
 
-        $driverTelegramId = $order->driver?->user?->telegram_id;
-        if ($driverTelegramId) {
-            $telegram->sendMessage([
-                'chat_id' => $driverTelegramId,
-                'text' => $this->driverText($order, $description),
-                'parse_mode' => 'HTML',
-            ]);
-        }
+        // $driverTelegramId = $order->driver?->user?->telegram_id;
+        // if ($driverTelegramId) {
+        //     $telegram->sendMessage([
+        //         'chat_id' => $driverTelegramId,
+        //         'text' => $this->driverText($order, $description),
+        //         'parse_mode' => 'HTML',
+        //     ]);
+        // }
     }
 
     private function clientText($order, $description): string
