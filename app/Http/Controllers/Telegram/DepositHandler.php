@@ -88,10 +88,8 @@ class DepositHandler extends BaseTelegramController
     {
         return [
             'keyboard' => [
-                [['text' => "10000"]],
-                [['text' => "20000"]],
-                [['text' => "50000"]],
-                [['text' => "100000"]],
+                [['text' => "10000"], ['text' => "20000"]],
+                [['text' => "50000"], ['text' => "100000"]],
                 [['text' => '❌ Bekor qilish']],
             ],
             'resize_keyboard' => true,
