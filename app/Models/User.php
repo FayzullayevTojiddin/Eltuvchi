@@ -63,6 +63,7 @@ class User extends Authenticatable implements FilamentUser
         'email',
         'password',
         'telegram_id',
+        'telegram_state'
     ];
 
     protected $hidden = [

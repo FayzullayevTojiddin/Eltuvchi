@@ -33,7 +33,6 @@ class TelegramBotController extends BaseTelegramController
             $update = $this->telegram->getWebhookUpdate();
 
             if ($update->getCallbackQuery()) {
-
                 $callbackQuery = $update->getCallbackQuery();
                 $chatId = $callbackQuery->getMessage()->getChat()->getId();
                 $data = $callbackQuery->getData();
@@ -52,7 +51,6 @@ class TelegramBotController extends BaseTelegramController
             }
 
             if ($update->getMessage()) {
-
                 $message = $update->getMessage();
                 $chatId = $message->getChat()->getId();
                 $text = $message->getText();
@@ -63,6 +61,19 @@ class TelegramBotController extends BaseTelegramController
 
                 if (!$user && $text === '/start') {
                     $user = $this->createNewUser($tgUser, $telegramUserId);
+                }
+
+                // ✅ YANGI: Agar foydalanuvchi deposit summasini kutayotgan bo'lsa
+                if ($user && $user->telegram_state === 'waiting_deposit_amount') {
+                    if ($text === '❌ Bekor qilish') {
+                        $user->update(['telegram_state' => null]);
+                        $this->sendMessage($chatId, "❌ Bekor qilindi.", $this->getMainKeyboard($user));
+                        return response()->json(['ok' => true]);
+                    }
+                    
+                    $depositHandler = new DepositHandler();
+                    $depositHandler->handleAmount($chatId, $user, $text);
+                    return response()->json(['ok' => true]);
                 }
 
                 switch ($text) {
@@ -147,13 +158,17 @@ class TelegramBotController extends BaseTelegramController
                 $this->sendMessage($chatId, "❌ Faollashtirish bekor qilindi.", $this->getMainKeyboard($user));
                 break;
             
+            // ✅ YANGI: Bosh menyuga qaytish
+            case 'main_menu':
+                $user->update(['telegram_state' => null]);
+                $this->sendMessage($chatId, "🏠 Bosh menyu", $this->getMainKeyboard($user));
+                break;
+            
             default:
                 $this->sendMessage($chatId, "❓ Noma'lum amal.");
                 break;
         }
     }
-
-    
 
     private function createNewUser($tgUser, string $telegramId): User
     {

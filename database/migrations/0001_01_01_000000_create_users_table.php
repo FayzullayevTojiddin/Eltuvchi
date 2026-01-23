@@ -15,6 +15,9 @@ return new class extends Migration
             $table->string('password')->nullable();
             $table->string('telegram_id')->nullable()->unique();
             $table->string('promo_code')->nullable()->unique();
+
+            $table->string('telegram_state')->nullable();
+
             $table->rememberToken();
             $table->timestamps();
         });
