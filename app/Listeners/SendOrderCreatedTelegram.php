@@ -10,7 +10,7 @@ class SendOrderCreatedTelegram implements ShouldQueue
 {
     public function handle(OrderCreated $event): void
     {
-        $order = $event->order->load('client.user', 'driver.user', 'route');
+        $order = $event->order->load('client.user', 'route');
 
         $telegram = new Api();
 
