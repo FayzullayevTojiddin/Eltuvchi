@@ -40,7 +40,7 @@ class SendOrderUpdatedTelegram implements ShouldQueue
             "🔄 <b>Buyurtma yangilandi</b>\n\n" .
             "📋 Buyurtma ID: #{$order->id}\n" .
             "🛣 Yo'nalish: {$order->route->name}\n" .
-            "📊 Status: {$order->status->label()}\n" .
+            "📊 Status: {$order->status}\n" .
             "📝 Tavsif: {$description}\n" .
             "📅 Sana: {$order->date->format('d.m.Y')}\n" .
             "🕐 Vaqt: " . date('H:i', strtotime($order->time));
@@ -52,7 +52,7 @@ class SendOrderUpdatedTelegram implements ShouldQueue
             "🔄 <b>Buyurtma yangilandi</b>\n\n" .
             "📋 Buyurtma ID: #{$order->id}\n" .
             "🛣 Yo'nalish: {$order->route->name}\n" .
-            "📊 Status: {$order->status->label()}\n" .
+            "📊 Status: {$order->status}\n" .
             "📝 Tavsif: {$description}\n" .
             "📅 Sana: {$order->date->format('d.m.Y')}\n" .
             "🕐 Vaqt: " . date('H:i', strtotime($order->time)) . "\n" .
