@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Str;
 
 class ClickService
 {
@@ -22,7 +23,7 @@ class ClickService
 
     public function createInvoice($userId, $amount, $merchantTransId = null)
     {
-        $merchantTransId = $merchantTransId ?? 'DEP_' . $userId . '_' . time();
+        $merchantTransId = $merchantTransId = $merchantTransId ?? 'DEP_' . $userId . '_' . Str::uuid();
         
         $params = [
             'service_id' => $this->serviceId,
@@ -42,20 +43,29 @@ class ClickService
         ];
     }
 
-    public function checkSignature($params)
+    public function checkSignature(array $params): bool
     {
-        $signString = implode('', [
-            $params['click_trans_id'] ?? '',
-            $params['service_id'] ?? '',
-            $this->secretKey,
-            $params['merchant_trans_id'] ?? '',
-            $params['amount'] ?? '',
-            $params['action'] ?? '',
-            $params['sign_time'] ?? '',
-        ]);
+        if (!isset(
+            $params['click_trans_id'],
+            $params['service_id'],
+            $params['merchant_trans_id'],
+            $params['amount'],
+            $params['action'],
+            $params['sign_time'],
+            $params['sign_string']
+        )) {
+            return false;
+        }
 
-        $signKey = md5($signString);
+        $signString =
+            $params['click_trans_id'] .
+            $params['service_id'] .
+            $this->secretKey .
+            $params['merchant_trans_id'] .
+            $params['amount'] .
+            $params['action'] .
+            $params['sign_time'];
 
-        return $signKey === ($params['sign_string'] ?? '');
+        return md5($signString) === $params['sign_string'];
     }
 }

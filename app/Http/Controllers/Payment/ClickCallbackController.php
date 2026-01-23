@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
+use App\Models\DepositRequest;
 use App\Models\DepositTransaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -14,7 +15,7 @@ class ClickCallbackController extends Controller
     {
         $merchantTransId = $request->merchant_trans_id;
         
-        $transaction = DepositTransaction::where('merchant_trans_id', $merchantTransId)
+        $transaction = DepositRequest::where('merchant_trans_id', $merchantTransId)
             ->where('status', 'pending')
             ->first();
         
@@ -45,7 +46,7 @@ class ClickCallbackController extends Controller
     {
         $merchantTransId = $request->merchant_trans_id;
         
-        $transaction = DepositTransaction::where('merchant_trans_id', $merchantTransId)->first();
+        $transaction = DepositRequest::where('merchant_trans_id', $merchantTransId)->first();
         
         if (!$transaction) {
             return response()->json([
