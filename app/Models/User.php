@@ -25,7 +25,15 @@ class User extends Authenticatable implements FilamentUser
 
     public function getNameAttribute(): string
     {
-        return $this->connected()?->settings->full_name ?? $this->email ?? 'No name';
+        if ($this->role === 'client') {
+            return $this->client?->settings?->full_name ?? $this->email ?? 'No name';
+        }
+        
+        if ($this->role === 'driver') {
+            return $this->driver?->details?->full_name ?? $this->email ?? 'No name';
+        }
+        
+        return $this->email ?? 'No name';
     }
     
     protected $fillable = [
