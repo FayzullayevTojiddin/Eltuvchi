@@ -10,7 +10,7 @@ class SendOrderCreatedTelegram implements ShouldQueue
 {
     public function handle(OrderCreated $event): void
     {
-        $order = $event->order;
+        $order = $event->order->load('client.user');
 
         $telegram = new Api();
 
@@ -19,15 +19,6 @@ class SendOrderCreatedTelegram implements ShouldQueue
             $telegram->sendMessage([
                 'chat_id' => $clientTelegramId,
                 'text' => $this->clientText($order),
-                'parse_mode' => 'HTML',
-            ]);
-        }
-
-        $driverTelegramId = $order->driver?->user?->telegram_id;
-        if ($driverTelegramId) {
-            $telegram->sendMessage([
-                'chat_id' => $driverTelegramId,
-                'text' => $this->driverText($order),
                 'parse_mode' => 'HTML',
             ]);
         }
@@ -45,19 +36,5 @@ class SendOrderCreatedTelegram implements ShouldQueue
             "📱 Telefon: {$order->phone}\n" .
             ($order->note ? "📝 Izoh: {$order->note}\n" : "") .
             "\n✅ Buyurtmangiz muvaffaqiyatli qabul qilindi";
-    }
-
-    private function driverText($order): string
-    {
-        return
-            "🚗 <b>Sizga yangi buyurtma tayinlandi</b>\n\n" .
-            "📋 Buyurtma ID: #{$order->id}\n" .
-            "🛣 Yo'nalish: {$order->route->name}\n" .
-            "👥 Yo'lovchilar: {$order->passengers} ta\n" .
-            "📅 Sana: {$order->date->format('d.m.Y')}\n" .
-            "🕐 Vaqt: " . date('H:i', strtotime($order->time)) . "\n" .
-            "📱 Mijoz telefoni: {$order->phone}\n" .
-            ($order->optional_phone ? "📱 Qo'shimcha: {$order->optional_phone}\n" : "") .
-            ($order->note ? "📝 Izoh: {$order->note}" : "");
     }
 }
