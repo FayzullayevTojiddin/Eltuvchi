@@ -13,15 +13,21 @@ class StartHandler extends BaseTelegramController
     {
         $isNewUser = $user && $user->client && $user->client->status === 'new';
         
-        $text = "🌟 Assalomu alaykum";
+        $displayName = match(true) {
+            $user?->role === 'client' && $user->client 
+                => $user->client->settings['full_name'] ?? 'Foydalanuvchi',
+            $user?->role === 'driver' && $user->driver 
+                => $user->driver->details['full_name'] ?? 'Foydalanuvchi',
+            default => $user?->name ?? 'Foydalanuvchi',
+        };
+        
+        $text = "🌟 Assalomu alaykum, {$displayName}!\n\n";
         
         if ($isNewUser) {
-            $text .= ", " . ($user->displayName ?? 'Foydalanuvchi') . "!\n\n";
             $text .= "🎊 Xush kelibsiz! Siz muvaffaqiyatli ro'yxatdan o'tdingiz.\n\n";
             $text .= "✨ Botimizdan to'liq foydalanish uchun hisobingizni faollashtiring.\n\n";
             $text .= "👇 Quyidagi 'Faollashtirish ✅' tugmasini bosing.";
         } else {
-            $text .= ", " . ($user->displayName ?? 'Foydalanuvchi') . "!\n\n";
             $text .= "🚀 Botimizga xush kelibsiz!\n\n";
             $text .= "📱 Quyidagi menyudan kerakli bo'limni tanlang:";
         }
