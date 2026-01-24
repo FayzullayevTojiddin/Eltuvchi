@@ -10,8 +10,7 @@ class DriverMeController extends Controller
     {
         $user = $request->user();
         return $this->response([
-            'data' => $user,
-            // 'balance' => $user->driver->balance
+            'data' => ""
         ]);
     }
 }
