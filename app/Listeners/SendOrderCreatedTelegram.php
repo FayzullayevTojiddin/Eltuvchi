@@ -28,13 +28,13 @@ class SendOrderCreatedTelegram implements ShouldQueue
     {
         return
             "🆕 <b>Buyurtma yaratildi</b>\n\n".
-            "📋 Buyurtma ID: #{$order->id}\n" .
-            "🛣 Yo'nalish: {$order->route->name}\n" .
-            "👥 Yo'lovchilar: {$order->passengers} ta\n" .
-            "📅 Sana: {$order->date->format('d.m.Y')}\n" .
-            "🕐 Vaqt: " . date('H:i', strtotime($order->time)) . "\n" .
-            "📱 Telefon: {$order->phone}\n" .
-            ($order->note ? "📝 Izoh: {$order->note}\n" : "") .
-            "\n✅ Buyurtmangiz muvaffaqiyatli qabul qilindi";
+            "📋 Buyurtma ID: #{$order->id}\n" ;
+            // "🛣 Yo'nalish: {$order->route->name}\n" .
+            // "👥 Yo'lovchilar: {$order->passengers} ta\n" .
+            // "📅 Sana: {$order->date->format('d.m.Y')}\n" .
+            // "🕐 Vaqt: " . date('H:i', strtotime($order->time)) . "\n" .
+            // "📱 Telefon: {$order->phone}\n" .
+            // ($order->note ? "📝 Izoh: {$order->note}\n" : "") .
+            // "\n✅ Buyurtmangiz muvaffaqiyatli qabul qilindi";
     }
 }

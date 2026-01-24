@@ -3,6 +3,8 @@
 namespace App\Observers;
 
 use App\Enums\OrderStatus;
+use App\Events\OrderCreated;
+use App\Events\OrderUpdated;
 use App\Models\Order;
 use Auth;
 
@@ -18,6 +20,8 @@ class OrderObserver
             'changed_by_type' => get_class($user),
             'description' => 'Buyurtma yaratildi',
         ]);
+
+        OrderCreated::dispatch($order);
     }
 
     public function updated(Order $order): void
@@ -32,5 +36,7 @@ class OrderObserver
             'changed_by_type' => get_class($user),
             'description' => $description,
         ]);
+
+        OrderUpdated::dispatch($order, $description);
     }
 }
