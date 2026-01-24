@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class User extends Authenticatable implements FilamentUser
 {
@@ -26,7 +25,7 @@ class User extends Authenticatable implements FilamentUser
 
     public function getNameAttribute(): string
     {
-        return $this->connected()?->full_name ?? $this->email ?? 'No name';
+        return $this->connected()?->settings->full_name ?? $this->email ?? 'No name';
     }
     
     protected $fillable = [
@@ -48,15 +47,6 @@ class User extends Authenticatable implements FilamentUser
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
-    }
-
-    public function name(): Attribute
-    {
-        return Attribute::make(
-        get: fn () => trim(
-            $this->connected?->settings?->full_name ?? 'No Name'
-        ),
-    );
     }
 
     public function client(): HasOne

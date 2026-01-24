@@ -73,7 +73,7 @@ class DriverForm
                     ->schema([
                         Grid::make(2)
                             ->schema([
-                                TextInput::make('details.full_name')
+                                TextInput::make('settings.full_name')
                                     ->label("To'liq Ism")
                                     ->required(),
                                 TextInput::make('details.phone_number')
