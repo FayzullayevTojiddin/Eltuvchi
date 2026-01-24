@@ -55,7 +55,7 @@ Route::prefix('/client')->middleware(['auth:sanctum', 'role_status:client'])->gr
 
 Route::prefix('/driver')->middleware(['auth:sanctum', 'role_status:driver'])->group(function () {
     Route::get('/dashboard', [DriverController::class, 'dashboard']);
-    Route::get('/me', [DriverMeController::class]);
+    Route::get('/me', DriverMeController::class);
     Route::get('/my_orders', [DriverOrderController::class, 'my_orders']);
     Route::get('/orders', [DriverOrderController::class, 'index']);
     Route::delete('/orders/{order}', [DriverCancelOrderController::class, 'cancel_order']);
