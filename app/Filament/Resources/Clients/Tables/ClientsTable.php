@@ -31,10 +31,16 @@ class ClientsTable
                     ->label('Status')
                     ->searchable()
                     ->sortable()
-                    ->formatStateUsing(fn ($state) => $state === 'active' ? 'Faol' : 'Bloklangan')
+                    ->formatStateUsing(fn (string $state) => match ($state) {
+                        'active'   => 'Faol',
+                        'inactive' => 'Bloklangan',
+                        'new'      => 'Yangi',
+                        default    => ucfirst($state),
+                    })
                     ->colors([
                         'success' => fn($state) => $state === 'active',
                         'danger'  => fn($state) => $state === 'inactive',
+                        'warning' => fn($state) => $state === 'new',
                     ]),
 
                 TextColumn::make('balance')

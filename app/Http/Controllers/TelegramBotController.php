@@ -32,6 +32,10 @@ class TelegramBotController extends BaseTelegramController
         try {
             $update = $this->telegram->getWebhookUpdate();
 
+            if ($update->getMyChatMember()) {
+                return response()->json(['ok' => true]);
+            }
+
             if ($update->getCallbackQuery()) {
                 $callbackQuery = $update->getCallbackQuery();
                 $chatId = $callbackQuery->getMessage()->getChat()->getId();
