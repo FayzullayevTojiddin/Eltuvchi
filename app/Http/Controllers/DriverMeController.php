@@ -8,9 +8,9 @@ class DriverMeController extends Controller
 {
     public function __invoke(Request $request)
     {
-        $driver = $request->user()?->driver;
+        $user = $request->user();
         return $this->response([
-            'balance' => $driver->balance
+            'balance' => $$user->client->balance
         ]);
     }
 }
