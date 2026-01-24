@@ -13,6 +13,7 @@ use App\Http\Controllers\DriverCancelOrderController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\DriverGetOrderController;
 use App\Http\Controllers\DriverMarketController;
+use App\Http\Controllers\DriverMeController;
 use App\Http\Controllers\DriverOrderController;
 use App\Http\Controllers\DriverStartOrderController;
 use App\Http\Controllers\DriverStoppedOrderController;
@@ -54,6 +55,7 @@ Route::prefix('/client')->middleware(['auth:sanctum', 'role_status:client'])->gr
 
 Route::prefix('/driver')->middleware(['auth:sanctum', 'role_status:driver'])->group(function () {
     Route::get('/dashboard', [DriverController::class, 'dashboard']);
+    Route::get('/me', [DriverMeController::class]);
     Route::get('/my_orders', [DriverOrderController::class, 'my_orders']);
     Route::get('/orders', [DriverOrderController::class, 'index']);
     Route::delete('/orders/{order}', [DriverCancelOrderController::class, 'cancel_order']);
