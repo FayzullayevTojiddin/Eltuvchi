@@ -37,6 +37,12 @@ class TelegramBotController extends BaseTelegramController
             }
 
             if ($update->getCallbackQuery()) {
+                $chat = $update->getCallbackQuery()->getMessage()?->getChat();
+
+                if (! $chat || $chat->getType() !== 'private') {
+                    return response()->json(['ok' => true]);
+                }
+
                 $callbackQuery = $update->getCallbackQuery();
                 $chatId = $callbackQuery->getMessage()->getChat()->getId();
                 $data = $callbackQuery->getData();
@@ -55,6 +61,11 @@ class TelegramBotController extends BaseTelegramController
             }
 
             if ($update->getMessage()) {
+                $chat = $update->getMessage()->getChat();
+
+                if ($chat->getType() !== 'private') {
+                    return response()->json(['ok' => true]);
+                }
                 $message = $update->getMessage();
                 $chatId = $message->getChat()->getId();
                 $text = $message->getText();
