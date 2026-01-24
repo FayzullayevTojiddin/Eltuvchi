@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\HasBalance;
 use App\Traits\HasPoint;
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -25,8 +26,8 @@ class Driver extends Model
     ];
 
     protected $casts = [
-        'details' => 'array',
-        'settings' => 'array',
+        'details' => AsArrayObject::class,
+        'settings' => AsArrayObject::class,
     ];
 
     public function user(): BelongsTo
