@@ -72,6 +72,7 @@ class DriverController extends Controller
             'completed_orders_count' => $completedOrdersCount,
             'average_rating'         => $averageRating,
             'recent_orders'          => OrderResource::collection($recentOrders),
+            'balance' => $driver->balance,
         ];
 
         return $this->response(new DriverDashboardResource($data));
