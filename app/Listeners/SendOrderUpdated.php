@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Events\OrderUpdated;
 use App\Traits\TelegramBotTrait;
+use App\Enums\OrderStatus;
 use Illuminate\Support\Facades\Log;
 
 class SendOrderUpdated
@@ -13,13 +14,21 @@ class SendOrderUpdated
     public function handle(OrderUpdated $event): void
     {
         try {
+            if (! $event->order->wasChanged('status')) {
+                return;
+            }
+
             $order = $event->order->fresh([
                 'client.user',
                 'driver.user',
                 'route',
             ]);
 
-            $message = $this->buildMessage($order);
+            $message = $this->buildStatusMessage($order);
+
+            if (! $message) {
+                return;
+            }
 
             $clientTelegramId = $order->client?->user?->telegram_id;
             if ($clientTelegramId) {
@@ -39,21 +48,42 @@ class SendOrderUpdated
         }
     }
 
-    private function buildMessage($order): string
+    private function buildStatusMessage($order): ?string
+    {
+        return match ($order->status) {
+
+            OrderStatus::Accepted->value =>
+                "🚖 <b>Taksi biriktirildi</b>\n\n" .
+                $this->baseInfo($order),
+
+            OrderStatus::Started->value =>
+                "▶️ <b>Sizning safaringiz boshlandi</b>\n\n" .
+                $this->baseInfo($order),
+
+            OrderStatus::Completed->value =>
+                "✅ <b>Safar yakunlandi</b>\n\n" .
+                $this->baseInfo($order),
+
+            OrderStatus::Cancelled->value =>
+                "❌ <b>Buyurtma bekor qilindi</b>\n\n" .
+                $this->baseInfo($order),
+
+            default => null,
+        };
+    }
+
+    private function baseInfo($order): string
     {
         return
-            "✏️ <b>Buyurtma yangilandi</b>\n\n" .
             "📋 <b>ID:</b> #{$order->id}\n" .
             "🛣 <b>Yo'nalish:</b> {$order->route?->name}\n" .
             "👥 <b>Yo'lovchilar:</b> {$order->passengers} ta\n" .
             "📅 <b>Sana:</b> {$order->date->format('d.m.Y')}\n" .
             "🕐 <b>Vaqt:</b> " . date('H:i', strtotime($order->time)) . "\n" .
-            "📱 <b>Telefon:</b> {$order->phone}\n" .
             ($order->driver
                 ? "🚖 <b>Haydovchi:</b> {$order->driver->user?->name}\n"
-                : "🚖 <b>Haydovchi:</b> Biriktirilmagan\n"
+                : ""
             ) .
-            ($order->note ? "📝 <b>Izoh:</b> {$order->note}\n" : "") .
-            "\nℹ️ Buyurtma ma’lumotlari yangilandi.";
+            ($order->note ? "📝 <b>Izoh:</b> {$order->note}\n" : "");
     }
 }
