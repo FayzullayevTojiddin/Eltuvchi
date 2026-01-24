@@ -4,22 +4,34 @@ namespace App\Listeners;
 
 use App\Events\OrderCreated;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Api;
+use Throwable;
 
 class SendOrderCreatedTelegram implements ShouldQueue
 {
+    public int $tries = 1;
     public function handle(OrderCreated $event): void
     {
-        $order = $event->order->load('client.user');
+        try {
+            $order = $event->order->fresh(['client.user', 'route']);
 
-        $telegram = new Api();
+            $clientTelegramId = $order->client?->user?->telegram_id;
+            if (! $clientTelegramId) {
+                return;
+            }
 
-        $clientTelegramId = $order->client?->user?->telegram_id;
-        if ($clientTelegramId) {
+            $telegram = new Api();
+
             $telegram->sendMessage([
                 'chat_id' => $clientTelegramId,
                 'text' => $this->clientText($order),
                 'parse_mode' => 'HTML',
+            ]);
+        } catch (Throwable $e) {
+            Log::error('Telegram order created failed', [
+                'order_id' => $event->order->id,
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -28,13 +40,13 @@ class SendOrderCreatedTelegram implements ShouldQueue
     {
         return
             "🆕 <b>Buyurtma yaratildi</b>\n\n".
-            "📋 Buyurtma ID: #{$order->id}\n" ;
-            // "🛣 Yo'nalish: {$order->route->name}\n" .
-            // "👥 Yo'lovchilar: {$order->passengers} ta\n" .
-            // "📅 Sana: {$order->date->format('d.m.Y')}\n" .
-            // "🕐 Vaqt: " . date('H:i', strtotime($order->time)) . "\n" .
-            // "📱 Telefon: {$order->phone}\n" .
-            // ($order->note ? "📝 Izoh: {$order->note}\n" : "") .
-            // "\n✅ Buyurtmangiz muvaffaqiyatli qabul qilindi";
+            "📋 Buyurtma ID: #{$order->id}\n" .
+            "🛣 Yo'nalish: {$order->route->name}\n" .
+            "👥 Yo'lovchilar: {$order->passengers} ta\n" .
+            "📅 Sana: {$order->date->format('d.m.Y')}\n" .
+            "🕐 Vaqt: " . date('H:i', strtotime($order->time)) . "\n" .
+            "📱 Telefon: {$order->phone}\n" .
+            ($order->note ? "📝 Izoh: {$order->note}\n" : "") .
+            "\n✅ Buyurtmangiz muvaffaqiyatli qabul qilindi";
     }
 }
