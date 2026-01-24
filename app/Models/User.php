@@ -123,14 +123,14 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasOne(Dispatcher::class);
     }
 
-    public function getDisplayNameAttribute(): ?string
+    public function getDisplayNameAttribute(): string
     {
         return match($this->role) {
-            'superadmin' => $this->superAdmin?->full_name,
-            'taxoparkadmin' => $this->taxoParkAdmin?->full_name,
-            'driver' => $this->driver?->details['full_name'] ?? null,
-            'client' => $this->client?->settings['full_name'] ?? null,
-            default => $this->name,
+            'superadmin' => $this->superAdmin?->full_name ?? 'No name',
+            'taxoparkadmin' => $this->taxoParkAdmin?->full_name ?? 'No name',
+            'driver' => $this->driver?->details['full_name'] ?? 'No name',
+            'client' => $this->client?->settings['full_name'] ?? 'No name',
+            default => $this->name ?? 'No name',
         };
     }
 }
