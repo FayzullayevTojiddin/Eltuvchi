@@ -32,7 +32,16 @@ class TelegramBotController extends BaseTelegramController
         try {
             $update = $this->telegram->getWebhookUpdate();
 
+            if ($update->getMyChatMember()) {
+                return response()->json(['ok' => true]);
+            }
+
             if ($update->getCallbackQuery()) {
+                $chat = $update->getCallbackQuery()->getMessage()?->getChat();
+
+                if (! $chat || $chat->getType() !== 'private') {
+                    return response()->json(['ok' => true]);
+                }
 
                 $callbackQuery = $update->getCallbackQuery();
                 $chatId = $callbackQuery->getMessage()->getChat()->getId();
@@ -52,7 +61,11 @@ class TelegramBotController extends BaseTelegramController
             }
 
             if ($update->getMessage()) {
+                $chat = $update->getMessage()->getChat();
 
+                if ($chat->getType() !== 'private') {
+                    return response()->json(['ok' => true]);
+                }
                 $message = $update->getMessage();
                 $chatId = $message->getChat()->getId();
                 $text = $message->getText();
@@ -63,6 +76,19 @@ class TelegramBotController extends BaseTelegramController
 
                 if (!$user && $text === '/start') {
                     $user = $this->createNewUser($tgUser, $telegramUserId);
+                }
+
+                // ✅ YANGI: Agar foydalanuvchi deposit summasini kutayotgan bo'lsa
+                if ($user && $user->telegram_state === 'waiting_deposit_amount') {
+                    if ($text === '❌ Bekor qilish') {
+                        $user->update(['telegram_state' => null]);
+                        $this->sendMessage($chatId, "❌ Bekor qilindi.", $this->getMainKeyboard($user));
+                        return response()->json(['ok' => true]);
+                    }
+                    
+                    $depositHandler = new DepositHandler();
+                    $depositHandler->handleAmount($chatId, $user, $text);
+                    return response()->json(['ok' => true]);
                 }
 
                 switch ($text) {
@@ -147,13 +173,16 @@ class TelegramBotController extends BaseTelegramController
                 $this->sendMessage($chatId, "❌ Faollashtirish bekor qilindi.", $this->getMainKeyboard($user));
                 break;
             
+            case 'main_menu':
+                $user->update(['telegram_state' => null]);
+                $this->sendMessage($chatId, "🏠 Bosh menyu", $this->getMainKeyboard($user));
+                break;
+            
             default:
                 $this->sendMessage($chatId, "❓ Noma'lum amal.");
                 break;
         }
     }
-
-    
 
     private function createNewUser($tgUser, string $telegramId): User
     {

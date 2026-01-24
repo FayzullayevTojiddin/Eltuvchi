@@ -18,10 +18,10 @@ use App\Http\Controllers\DriverStartOrderController;
 use App\Http\Controllers\DriverStoppedOrderController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderReviewController;
+use App\Http\Controllers\Payment\ClickCallbackController;
 use App\Http\Controllers\ReferralController;
 use App\Http\Controllers\RegionController;
 use App\Http\Controllers\RouteController;
-use App\Http\Controllers\Telegram\TestController;
 use App\Http\Controllers\TelegramBotController;
 use Illuminate\Support\Facades\Route;
 
@@ -66,3 +66,6 @@ Route::prefix('/driver')->middleware(['auth:sanctum', 'role_status:driver'])->gr
 });
 
 Route::post('/webhook', [TelegramBotController::class, 'handle']);
+
+Route::post('click/prepare', [ClickCallbackController::class, 'prepare'])->name('click.prepare');
+Route::post('click/complete', [ClickCallbackController::class, 'complete'])->name('click.complete');

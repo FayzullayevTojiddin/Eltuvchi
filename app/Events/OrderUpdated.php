@@ -3,27 +3,17 @@
 namespace App\Events;
 
 use App\Models\Order;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
-class OrderUpdated implements ShouldBroadcast
+class OrderUpdated
 {
-    use Dispatchable, InteractsWithSockets;
+    use Dispatchable, SerializesModels;
 
-    public array $order;
-    public string $channel;
-
-    public function __construct(Order $order, string $channel)
-    {
-        $this->order = $order->toArray();
-        $this->channel = $channel;
-    }
-
-    public function broadcastOn()
-    {
-        return new PrivateChannel($this->channel);
+    public function __construct(
+        public Order $order,
+        public string $description
+    ) {
+        //
     }
 }

@@ -20,13 +20,13 @@ class DatabaseSeeder extends Seeder
             RegionSeeder::class,
             TaxoParkSeeder::class,
             RouteSeeder::class,
-            ClientSeeder::class,
-            DriverSeeder::class,
-            DiscountSeeder::class,
-            OrderSeeder::class,
+            // ClientSeeder::class,
+            // DriverSeeder::class,
+            // DiscountSeeder::class,
+            // OrderSeeder::class,
             DispatcherSeeder::class,
-            DriverProductSeeder::class,
-            ClientDiscountSeeder::class
+            // DriverProductSeeder::class,
+            // ClientDiscountSeeder::class
         ]);
     }
 }

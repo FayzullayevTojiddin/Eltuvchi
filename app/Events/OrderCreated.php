@@ -3,33 +3,15 @@
 namespace App\Events;
 
 use App\Models\Order;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class OrderCreated implements ShouldBroadcast
+class OrderCreated
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable, SerializesModels;
 
-    public Order $order;
-    public $channel;
-
-    public function __construct(Order $order, string $channel)
+    public function __construct(public Order $order)
     {
-        $this->order = $order;
-        $this->channel = $channel;
-    }
-
-    public function broadcastAs()
-    {
-        return 'order.created';
-    }
-
-    public function broadcastOn()
-    {
-        return new PrivateChannel($this->channel);
+        //
     }
 }
