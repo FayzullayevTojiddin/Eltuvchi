@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\OrderCreated;
+use App\Traits\TelegramBotTrait;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Api;
@@ -10,6 +11,7 @@ use Throwable;
 
 class SendOrderCreatedTelegram implements ShouldQueue
 {
+    use TelegramBotTrait;
     public int $tries = 1;
     public function handle(OrderCreated $event): void
     {
@@ -21,13 +23,7 @@ class SendOrderCreatedTelegram implements ShouldQueue
                 return;
             }
 
-            $telegram = new Api();
-
-            $telegram->sendMessage([
-                'chat_id' => $clientTelegramId,
-                'text' => $this->clientText($order),
-                'parse_mode' => 'HTML',
-            ]);
+            $this->sendTelegramMessage($clientTelegramId, $this->clientText($order));
         } catch (Throwable $e) {
             Log::error('Telegram order created failed', [
                 'order_id' => $event->order->id,
