@@ -13,22 +13,20 @@ class SendOrderUpdated
 
     public function handle(OrderUpdated $event): void
     {
-        // BIRINCHI LOG - handle ishga tushganini ko'rish uchun
         Log::info('=== SendOrderUpdated HANDLE STARTED ===', [
             'order_id' => $event->order->id ?? 'NO_ID',
-            'order_exists' => isset($event->order),
         ]);
 
         try {
-            // wasChanged() tekshiruvini VAQTINCHA o'chirib qo'yamiz
+            Log::info('Step 1: Checking wasChanged');
+            
+            // VAQTINCHA wasChanged ni o'chirish
             // if (! $event->order->wasChanged('status')) {
-            //     Log::info('Status was not changed, skipping');
+            //     Log::info('Status NOT changed - SKIPPING');
             //     return;
             // }
 
-            Log::info('Before loading relations', [
-                'order_id' => $event->order->id,
-            ]);
+            Log::info('Step 2: Loading relations');
 
             $order = $event->order->load([
                 'client.user',
@@ -36,105 +34,65 @@ class SendOrderUpdated
                 'route',
             ]);
 
-            Log::info('After loading relations', [
-                'order_id' => $order->id,
-                'status' => $order->status,
+            Log::info('Step 3: Relations loaded', [
                 'has_client' => isset($order->client),
                 'has_driver' => isset($order->driver),
-                'has_route' => isset($order->route),
-                'client_telegram_id' => $order->client?->user?->telegram_id ?? 'NULL',
-                'driver_telegram_id' => $order->driver?->user?->telegram_id ?? 'NULL',
             ]);
 
+            Log::info('Step 4: Building message');
+            
             $message = $this->buildStatusMessage($order);
 
-            Log::info('Message built', [
-                'order_id' => $order->id,
-                'message_length' => strlen($message ?? ''),
-                'message_preview' => substr($message ?? '', 0, 100),
+            Log::info('Step 5: Message built', [
                 'message_is_null' => is_null($message),
+                'message' => $message,
             ]);
 
             if (! $message) {
-                Log::warning('No message to send (message is null or empty)', [
-                    'order_id' => $order->id,
-                    'order_status' => $order->status,
-                ]);
+                Log::warning('No message - RETURNING');
                 return;
             }
 
+            Log::info('Step 6: Getting telegram IDs');
+
             $clientTelegramId = $order->client?->user?->telegram_id;
-            Log::info('Client telegram check', [
-                'client_telegram_id' => $clientTelegramId,
-                'has_client' => isset($order->client),
-                'has_client_user' => isset($order->client->user),
+            $driverTelegramId = $order->driver?->user?->telegram_id;
+
+            Log::info('Step 7: Telegram IDs', [
+                'client_id' => $clientTelegramId,
+                'driver_id' => $driverTelegramId,
             ]);
 
             if ($clientTelegramId) {
-                Log::info('Attempting to send to CLIENT', [
-                    'telegram_id' => $clientTelegramId,
-                    'order_id' => $order->id,
-                    'message' => $message,
-                ]);
-                
-                $result = $this->sendTelegramMessage($clientTelegramId, $message);
-                
-                Log::info('Client message sent result', [
-                    'result' => $result,
-                ]);
-            } else {
-                Log::warning('Client telegram_id is empty/null', [
-                    'order_id' => $order->id,
-                ]);
+                Log::info('Step 8: Sending to client');
+                $this->sendTelegramMessage($clientTelegramId, $message);
+                Log::info('Step 9: Client message sent');
             }
-
-            $driverTelegramId = $order->driver?->user?->telegram_id;
-            Log::info('Driver telegram check', [
-                'driver_telegram_id' => $driverTelegramId,
-                'has_driver' => isset($order->driver),
-                'has_driver_user' => isset($order->driver->user),
-            ]);
 
             if ($driverTelegramId) {
-                Log::info('Attempting to send to DRIVER', [
-                    'telegram_id' => $driverTelegramId,
-                    'order_id' => $order->id,
-                    'message' => $message,
-                ]);
-                
-                $result = $this->sendTelegramMessage($driverTelegramId, $message);
-                
-                Log::info('Driver message sent result', [
-                    'result' => $result,
-                ]);
-            } else {
-                Log::warning('Driver telegram_id is empty/null', [
-                    'order_id' => $order->id,
-                ]);
+                Log::info('Step 10: Sending to driver');
+                $this->sendTelegramMessage($driverTelegramId, $message);
+                Log::info('Step 11: Driver message sent');
             }
 
-            Log::info('=== SendOrderUpdated HANDLE COMPLETED ===');
+            Log::info('=== HANDLE COMPLETED ===');
 
         } catch (\Throwable $e) {
-            Log::error('SendOrderUpdated listener EXCEPTION', [
-                'order_id' => $event->order->id ?? null,
-                'error_message' => $e->getMessage(),
-                'error_file' => $e->getFile(),
-                'error_line' => $e->getLine(),
-                'trace' => $e->getTraceAsString(),
+            Log::error('!!! EXCEPTION CAUGHT !!!', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
             ]);
         }
     }
 
     private function buildStatusMessage($order): ?string
     {
-        Log::info('Building status message', [
-            'order_status' => $order->status,
-            'order_status_type' => gettype($order->status),
+        Log::info('buildStatusMessage called', [
+            'status' => $order->status,
         ]);
 
-        $result = match ($order->status) {
-
+        return match ($order->status) {
             OrderStatus::Accepted->value =>
                 "🚖 <b>Taksi biriktirildi</b>\n\n" .
                 $this->baseInfo($order),
@@ -153,13 +111,6 @@ class SendOrderUpdated
 
             default => null,
         };
-
-        Log::info('Status message match result', [
-            'result_is_null' => is_null($result),
-            'result_preview' => substr($result ?? '', 0, 50),
-        ]);
-
-        return $result;
     }
 
     private function baseInfo($order): string
