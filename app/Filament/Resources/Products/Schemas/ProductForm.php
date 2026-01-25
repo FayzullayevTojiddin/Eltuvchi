@@ -14,11 +14,6 @@ class ProductForm
     {
         return $schema
             ->components([
-                TextInput::make('title')
-                    ->label('Title')
-                    ->required()
-                    ->maxLength(255),
-
                 FileUpload::make('icon_type')
                     ->image()
                     ->directory('products')
@@ -34,10 +29,10 @@ class ProductForm
                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                     ->label('Rasm'),
 
-                Textarea::make('description')
-                    ->label('Description')
-                    ->rows(3)
-                    ->columnSpanFull(),
+                TextInput::make('title')
+                    ->label('Title')
+                    ->required()
+                    ->maxLength(255),
 
                 TextInput::make('points')
                     ->label('Points')
@@ -53,9 +48,10 @@ class ProductForm
                     ->default('active')
                     ->disabled(),
 
-                TextInput::make('icon_type')
-                    ->label('Icon Type')
-                    ->maxLength(255),
+                Textarea::make('description')
+                    ->label('Description')
+                    ->rows(5)
+                    ->columnSpanFull(),
             ]);
     }
 }
