@@ -30,7 +30,7 @@ class DiscountResource extends JsonResource
             'type'   => $this->type,
             'value'  => $this->value,
             'points' => $this->points,
-            'icon'   => $this->product?->icon_type ? url(Storage::url($this->icon)) : null,
+            'icon'   => $this->icon ? url(Storage::url($this->icon)) : null,
         ];
     }
 }
