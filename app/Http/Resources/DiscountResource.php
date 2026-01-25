@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @OA\Schema(
@@ -29,7 +30,7 @@ class DiscountResource extends JsonResource
             'type'   => $this->type,
             'value'  => $this->value,
             'points' => $this->points,
-            'icon'   => $this->icon,
+            'icon'   => $this->product?->icon_type ? url(Storage::url($this->icon)) : null,
         ];
     }
 }
