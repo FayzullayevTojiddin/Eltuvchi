@@ -28,7 +28,7 @@ class ProductResource extends JsonResource
         return [
             'id'          => $this->id,
             'status'      => (bool) $this->status,
-            'icon_type'   => Storage::url($this->product->icon_type),
+            'icon_type' => $this->product?->icon_type ? Storage::url($this->product->icon_type) : null,
             'points'      => $this->points,
             'title'       => $this->title,
             'description' => $this->description,
