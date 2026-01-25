@@ -4,7 +4,6 @@ namespace App\Listeners;
 
 use App\Events\OrderCreated;
 use App\Traits\TelegramBotTrait;
-use Illuminate\Support\Facades\Log;
 
 class SendOrderCreated
 {
@@ -13,7 +12,7 @@ class SendOrderCreated
     public function handle(OrderCreated $event): void
     {
         try {
-            $order = $event->order->fresh([
+            $order = $event->order->load([
                 'client.user',
                 'route',
             ]);
@@ -29,10 +28,7 @@ class SendOrderCreated
             $this->sendTelegramMessage($telegramId, $message);
 
         } catch (\Throwable $e) {
-            Log::error('SendOrderCreated listener error', [
-                'order_id' => $event->order->id ?? null,
-                'error' => $e->getMessage(),
-            ]);
+            //
         }
     }
 
