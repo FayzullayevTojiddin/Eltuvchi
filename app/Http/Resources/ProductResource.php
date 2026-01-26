@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @OA\Schema(
@@ -27,7 +28,7 @@ class ProductResource extends JsonResource
         return [
             'id'          => $this->id,
             'status'      => (bool) $this->status,
-            'icon_type'   => $this->icon_type,
+            'icon_type' => $this->product?->icon_type ? url(Storage::url($this->product->icon_type)) : null,
             'points'      => $this->points,
             'title'       => $this->title,
             'description' => $this->description,

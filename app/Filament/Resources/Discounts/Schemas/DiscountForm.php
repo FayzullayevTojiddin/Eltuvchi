@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Discounts\Schemas;
 
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
@@ -11,6 +12,20 @@ class DiscountForm
     {
         return $schema
             ->components([
+                FileUpload::make('icon')
+                    ->image()
+                    ->directory('products')
+                    ->disk('public')
+                    ->visibility('public')
+                    ->imageEditor()
+                    ->imageEditorAspectRatios([
+                        '16:9',
+                        '4:3',
+                        '1:1',
+                    ])
+                    ->maxSize(2048)
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                    ->label('Rasm'),
                 TextInput::make('type')
                     ->disabled()
                     ->label("Turi")
@@ -24,8 +39,6 @@ class DiscountForm
                     ->numeric(),
                 TextInput::make('title')
                     ->label("Sarlavhasi"),
-                TextInput::make('icon')
-                    ->label("Icon"),
                 TextInput::make('status')
                     ->required()
                     ->default('active')

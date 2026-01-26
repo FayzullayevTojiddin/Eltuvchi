@@ -11,12 +11,12 @@ use App\Http\Controllers\Telegram\ProfileHandler;
 use App\Http\Controllers\Telegram\RequestUnblockHandler;
 use App\Http\Controllers\Telegram\StartHandler;
 use App\Http\Controllers\Telegram\WidthdrawHandler;
-use Illuminate\Http\Request;
-use Telegram\Bot\Api;
-use App\Models\User;
 use App\Models\Client;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Telegram\Bot\Api;
 
 class TelegramBotController extends BaseTelegramController
 {
@@ -74,43 +74,45 @@ class TelegramBotController extends BaseTelegramController
 
                 $user = User::where('telegram_id', $telegramUserId)->first();
 
-                if (!$user && $text === '/start') {
+                if (! $user && $text === '/start') {
                     $user = $this->createNewUser($tgUser, $telegramUserId);
                 }
 
                 if ($user && $user->telegram_state === 'waiting_deposit_amount') {
                     if ($text === '❌ Bekor qilish') {
                         $user->update(['telegram_state' => null]);
-                        $this->sendMessage($chatId, "❌ Bekor qilindi.", $this->getMainKeyboard($user));
+                        $this->sendMessage($chatId, '❌ Bekor qilindi.', $this->getMainKeyboard($user));
+
                         return response()->json(['ok' => true]);
                     }
-                    
-                    $depositHandler = new DepositHandler();
+
+                    $depositHandler = new DepositHandler;
                     $depositHandler->handleAmount($chatId, $user, $text);
+
                     return response()->json(['ok' => true]);
                 }
 
                 switch ($text) {
                     case '/start':
-                        (new StartHandler())->handler($chatId, $user);
+                        (new StartHandler)->handler($chatId, $user);
                         break;
 
                     case '/balance':
                     case 'Balans 💰':
-                        (new BalanceHandler())->handler($chatId, $user);
+                        (new BalanceHandler)->handler($chatId, $user);
                         break;
 
                     case '/my':
                     case 'Hisobim 👤':
-                        (new ProfileHandler())->handler($chatId, $user);
+                        (new ProfileHandler)->handler($chatId, $user);
                         break;
 
                     case 'Faollashtirish ✅':
-                        (new ActivateAccountHandler())->handler($chatId, $user);
+                        (new ActivateAccountHandler)->handler($chatId, $user);
                         break;
 
                     case 'Blokdan chiqish 🔓':
-                        (new RequestUnblockHandler())->handler($chatId, $user);
+                        (new RequestUnblockHandler)->handler($chatId, $user);
                         break;
 
                     default:
@@ -132,11 +134,11 @@ class TelegramBotController extends BaseTelegramController
             return response()->json(['ok' => true]);
 
         } catch (\Throwable $e) {
-            Log::error('Telegram Bot Error: ' . $e->getMessage());
+            Log::error('Telegram Bot Error: '.$e->getMessage());
 
             return response()->json([
                 'ok' => false,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -147,36 +149,37 @@ class TelegramBotController extends BaseTelegramController
             'callback_query_id' => $callbackQueryId,
         ]);
 
-        if (!$user) {
+        if (! $user) {
             $this->sendMessage($chatId, "❌ Siz ro'yxatdan o'tmagansiz!\n\n👉 Iltimos /start buyrug'ini yuboring.");
+
             return;
         }
 
         switch ($data) {
             case 'deposit':
-                $depositHandler = new DepositHandler();
+                $depositHandler = new DepositHandler;
                 $depositHandler->handler($chatId, $user);
                 break;
-            
+
             case 'withdraw':
-                $withdrawalHandler = new WidthdrawHandler();
+                $withdrawalHandler = new WidthdrawHandler;
                 $withdrawalHandler->handler($chatId, $user);
                 break;
-            
+
             case 'confirm_activate':
-                $processActivationHandler = new ProcessActionHandler();
+                $processActivationHandler = new ProcessActionHandler;
                 $processActivationHandler->handler($chatId, $user);
                 break;
-            
+
             case 'cancel_activate':
-                $this->sendMessage($chatId, "❌ Faollashtirish bekor qilindi.", $this->getMainKeyboard($user));
+                $this->sendMessage($chatId, '❌ Faollashtirish bekor qilindi.', $this->getMainKeyboard($user));
                 break;
-            
+
             case 'main_menu':
                 $user->update(['telegram_state' => null]);
-                $this->sendMessage($chatId, "🏠 Bosh menyu", $this->getMainKeyboard($user));
+                $this->sendMessage($chatId, '🏠 Bosh menyu', $this->getMainKeyboard($user));
                 break;
-            
+
             default:
                 $this->sendMessage($chatId, "❓ Noma'lum amal.");
                 break;
@@ -195,7 +198,7 @@ class TelegramBotController extends BaseTelegramController
 
         $settings = [
             'full_name' => trim(
-                ($tgUser->getFirstName() ?? '') . ' ' . ($tgUser->getLastName() ?? '')
+                ($tgUser->getFirstName() ?? '').' '.($tgUser->getLastName() ?? '')
             ),
             'phone_number' => null,
             'notifications' => true,

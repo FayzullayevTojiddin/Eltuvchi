@@ -11,8 +11,7 @@ class OrderUpdated
     use Dispatchable, SerializesModels;
 
     public function __construct(
-        public Order $order,
-        public string $description
+        public Order $order
     ) {
         //
     }

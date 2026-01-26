@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\DriverProductResource;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Models\DriverProduct;
@@ -106,6 +107,6 @@ class DriverMarketController extends Controller
     {
         $user = Auth::user();
         $my_products = $user->driver->products;
-        return $this->response(ProductResource::collection($my_products));
+        return $this->response(DriverProductResource::collection($my_products));
     }
 }

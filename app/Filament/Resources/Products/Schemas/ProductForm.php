@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Products\Schemas;
 
+use Filament\Forms\Components\FileUpload;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -13,15 +14,25 @@ class ProductForm
     {
         return $schema
             ->components([
+                FileUpload::make('icon_type')
+                    ->image()
+                    ->directory('products')
+                    ->disk('public')
+                    ->visibility('public')
+                    ->imageEditor()
+                    ->imageEditorAspectRatios([
+                        '16:9',
+                        '4:3',
+                        '1:1',
+                    ])
+                    ->maxSize(2048)
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                    ->label('Rasm'),
+
                 TextInput::make('title')
                     ->label('Title')
                     ->required()
                     ->maxLength(255),
-
-                Textarea::make('description')
-                    ->label('Description')
-                    ->rows(3)
-                    ->columnSpanFull(),
 
                 TextInput::make('points')
                     ->label('Points')
@@ -37,9 +48,10 @@ class ProductForm
                     ->default('active')
                     ->disabled(),
 
-                TextInput::make('icon_type')
-                    ->label('Icon Type')
-                    ->maxLength(255),
+                Textarea::make('description')
+                    ->label('Description')
+                    ->rows(5)
+                    ->columnSpanFull(),
             ]);
     }
 }
