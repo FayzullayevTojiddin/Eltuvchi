@@ -10,8 +10,6 @@ class ClickService
 {
     private $merchantId;
     private $serviceId;
-    private $secretKey;
-    private $baseUrl;
 
     public function __construct()
     {
