@@ -21,51 +21,19 @@ class ClickService
         $this->baseUrl = env('CLICK_BASE_URL');
     }
 
-    public function createInvoice($userId, $amount, $merchantTransId = null)
+    public function createInvoice(int $userId, int $amount): array
     {
-        $merchantTransId = $merchantTransId = $merchantTransId ?? 'DEP_' . $userId . '_' . Str::uuid();
-        
         $params = [
-            'service_id' => $this->serviceId,
-            'merchant_id' => $this->merchantId,
-            'amount' => $amount,
+            'service_id'        => $this->serviceId,
+            'merchant_id'       => $this->merchantId,
+            'amount'            => $amount,
             'transaction_param' => $userId,
-            'merchant_trans_id' => $merchantTransId,
-            'merchant_prepare_url' => url('/api/click/prepare'),
-            'merchant_complete_url' => url('/api/click/complete'),
         ];
 
-        $url = $this->baseUrl . '?' . http_build_query($params);
-        
+        $url = 'https://my.click.uz/services/pay?' . http_build_query($params);
+
         return [
-            'url' => $url,
-            'merchant_trans_id' => $merchantTransId
+            'url' => $url
         ];
-    }
-
-    public function checkSignature(array $params): bool
-    {
-        if (!isset(
-            $params['click_trans_id'],
-            $params['service_id'],
-            $params['merchant_trans_id'],
-            $params['amount'],
-            $params['action'],
-            $params['sign_time'],
-            $params['sign_string']
-        )) {
-            return false;
-        }
-
-        $signString =
-            $params['click_trans_id'] .
-            $params['service_id'] .
-            $this->secretKey .
-            $params['merchant_trans_id'] .
-            $params['amount'] .
-            $params['action'] .
-            $params['sign_time'];
-
-        return md5($signString) === $params['sign_string'];
     }
 }

@@ -78,7 +78,6 @@ class TelegramBotController extends BaseTelegramController
                     $user = $this->createNewUser($tgUser, $telegramUserId);
                 }
 
-                // ✅ YANGI: Agar foydalanuvchi deposit summasini kutayotgan bo'lsa
                 if ($user && $user->telegram_state === 'waiting_deposit_amount') {
                     if ($text === '❌ Bekor qilish') {
                         $user->update(['telegram_state' => null]);

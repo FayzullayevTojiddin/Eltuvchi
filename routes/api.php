@@ -68,6 +68,3 @@ Route::prefix('/driver')->middleware(['auth:sanctum', 'role_status:driver'])->gr
 });
 
 Route::post('/webhook', [TelegramBotController::class, 'handle']);
-
-Route::post('click/prepare', [ClickCallbackController::class, 'prepare'])->name('click.prepare');
-Route::post('click/complete', [ClickCallbackController::class, 'complete'])->name('click.complete');
