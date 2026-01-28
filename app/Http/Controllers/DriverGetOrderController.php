@@ -37,7 +37,7 @@ class DriverGetOrderController extends Controller
             return $this->error(
                 data: [], 
                 status: 400, 
-                error_message: "Balansingiz yetarli emas. Buyurtmani qabul qilish uchun {$driver_payment} so'm kerak, ammo balansingizda {$driver->balance} so'm bor."
+                error_message: "Balansingiz yetarli emas. Buyurtmani qabul qilish uchun {$driver_payment} so'm kerak."
             );
         }
 
