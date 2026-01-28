@@ -52,10 +52,8 @@ class BalanceHandler extends BaseTelegramController
         }
         
         $inlineKeyboard = [
-            [
-                ['text' => '💳 Pul kiritish', 'callback_data' => 'deposit'],
-                ['text' => '💸 Pul chiqarish', 'callback_data' => 'withdraw']
-            ]
+            [['text' => '💳 Pul kiritish', 'callback_data' => 'deposit']],
+            [['text' => '💸 Pul chiqarish', 'callback_data' => 'withdraw']]
         ];
         
         $this->sendMessage($chatId, $text, $this->getMainKeyboard($user), $inlineKeyboard);

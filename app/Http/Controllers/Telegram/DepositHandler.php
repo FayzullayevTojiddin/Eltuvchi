@@ -52,7 +52,7 @@ class DepositHandler extends BaseTelegramController
                 'status' => 'pending',
             ]);
 
-            $invoice = $this->clickService->createInvoice($user->id, $amount, $merchantTransId);
+            $invoice = $this->clickService->createInvoice($user->id, $amount);
 
             $text = "✅ To'lov havolasi yaratildi!\n\n";
             $text .= "💰 Summa: " . number_format($amount, 0, '.', ' ') . " so'm\n";

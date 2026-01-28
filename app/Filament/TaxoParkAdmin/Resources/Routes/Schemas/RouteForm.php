@@ -49,7 +49,7 @@ class RouteForm
                     ->afterStateUpdated(function (Set $set, $state) {
                         if ($state > 0) {
                             $depositClient = round($state * 0.3);
-                            $feePerClient = round($state * 0.1);
+                            $feePerClient = ceil($state * 0.075);
 
                             $set('deposit_client', $depositClient);
                             $set('fee_per_client', $feePerClient);
@@ -72,7 +72,7 @@ class RouteForm
                     ->dehydrated(true),
 
                 TextInput::make('fee_per_client')
-                    ->label('Fee per Client (10%)')
+                    ->label('Fee per Client (7.5%)')
                     ->numeric()
                     ->disabled()
                     ->dehydrated(true),
