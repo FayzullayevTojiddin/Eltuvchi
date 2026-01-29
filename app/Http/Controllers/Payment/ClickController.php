@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controller\Payment;
+namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
 use App\Services\ClickService;
@@ -16,11 +16,11 @@ class ClickController extends Controller
 
     public function prepare(Request $request)
     {
-        // Keyingi qadamda yozamiz
+        return response()->json($this->clickService->prepare($request));
     }
 
     public function complete(Request $request)
     {
-        // Keyingi qadamda yozamiz
+        return response()->json($this->clickService->complete($request));
     }
 }
