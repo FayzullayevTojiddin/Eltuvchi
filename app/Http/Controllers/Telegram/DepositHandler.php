@@ -32,7 +32,7 @@ class DepositHandler extends BaseTelegramController
     {
         $amount = (int) str_replace([' ', ',', '.'], '', $amount);
         
-        if ($amount < 10000) {
+        if ($amount < 1000) {
             $this->sendMessage($chatId, "❌ Minimal summa 10,000 so'm bo'lishi kerak!");
             return;
         }
