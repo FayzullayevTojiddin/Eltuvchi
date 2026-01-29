@@ -43,15 +43,6 @@ class DepositHandler extends BaseTelegramController
         }
 
         try {
-            $merchantTransId = 'DEP_' . $user->id . '_' . time();
-            
-            $transaction = DepositRequest::create([
-                'user_id' => $user->id,
-                'amount' => $amount,
-                'merchant_trans_id' => $merchantTransId,
-                'status' => 'pending',
-            ]);
-
             $invoice = $this->clickService->createInvoice($user->id, $amount);
 
             $text = "✅ To'lov havolasi yaratildi!\n\n";

@@ -1,37 +1,51 @@
 <?php
-
 namespace App\Services;
 
-use Illuminate\Support\Facades\Http;
+use App\Models\DepositRequest;
 use Illuminate\Support\Facades\Log;
-use Str;
 
 class ClickService
 {
     private $merchantId;
     private $serviceId;
+    private $secretKey;
 
     public function __construct()
     {
         $this->merchantId = env('CLICK_MERCHANT_ID');
         $this->serviceId = env('CLICK_SERVICE_ID');
         $this->secretKey = env('CLICK_SECRET_KEY');
-        $this->baseUrl = env('CLICK_BASE_URL');
     }
 
-    public function createInvoice(int $userId, int $amount): array
+    public function createInvoice(int $userId, float $amount): array
     {
+        $merchantTransId = 'USER_' . $userId . '_' . time();
+
+        DepositRequest::create([
+            'user_id' => $userId,
+            'amount' => $amount,
+            'merchant_trans_id' => $merchantTransId,
+            'status' => 'pending'
+        ]);
+
         $params = [
-            'service_id'        => $this->serviceId,
-            'merchant_id'       => $this->merchantId,
-            'amount'            => $amount,
-            'transaction_param' => $userId,
+            'service_id' => $this->serviceId,
+            'merchant_id' => $this->merchantId,
+            'amount' => $amount,
+            'transaction_param' => $merchantTransId,
         ];
 
         $url = 'https://my.click.uz/services/pay?' . http_build_query($params);
 
+        Log::info('Click Invoice Created', [
+            'user_id' => $userId,
+            'merchant_trans_id' => $merchantTransId,
+            'amount' => $amount
+        ]);
+
         return [
-            'url' => $url
+            'url' => $url,
+            'merchant_trans_id' => $merchantTransId
         ];
     }
 }
