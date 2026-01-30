@@ -7,7 +7,7 @@ use App\Models\User;
 
 class SetDriverHandler extends BaseTelegramController
 {
-    public function handler($chatId, $text)
+    public function handler($text, $chatId)
     {
         $user = User::where('telegram_id', $chatId)->first();
         $region = Region::where('name', $text)->first();

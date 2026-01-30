@@ -97,7 +97,7 @@ class TelegramBotController extends BaseTelegramController
                     return response()->json(['ok' => true]);
                 }
 
-                if($user && $user->telegram_state === 'choosing_taxi_region' and $text !== '⬅️ Orqaga') {
+                if($user && $user->telegram_state === 'choosing_taxi_region' && $text !== '⬅️ Orqaga') {
                     $handler = new SetDriverHandler();
                     $handler->handler($text, $chatId);
                     return response()->json(['ok' => true]);
