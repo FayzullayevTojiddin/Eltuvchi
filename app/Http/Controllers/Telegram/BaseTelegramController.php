@@ -47,6 +47,7 @@ class BaseTelegramController extends Controller
                 } elseif ($user->client->status === 'inactive') {
                     $isBlocked = true;
                 }
+                $keyboard[] = ['TAXI bolish'];
             }
             
             if ($user->driver) {
