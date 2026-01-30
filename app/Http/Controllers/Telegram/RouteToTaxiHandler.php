@@ -21,7 +21,7 @@ class RouteToTaxiHandler extends BaseTelegramController
         foreach ($regions->chunk(2) as $chunk) {
             $row = [];
             foreach ($chunk as $region) {
-                $row[] = '📍 ' . $region->name;
+                $row[] = $region->name;
             }
             $keyboard[] = $row;
         }
@@ -30,12 +30,11 @@ class RouteToTaxiHandler extends BaseTelegramController
 
         $this->sendMessage(
             $chatId,
-            "🚕 *Taxi bo‘lish uchun kerakli regionni tanlang:*",
+            "🚕 Taxi bo‘lish uchun kerakli regionni tanlang:",
             [
                 'keyboard' => $keyboard,
                 'resize_keyboard' => true,
                 'one_time_keyboard' => false,
-                'parse_mode' => "markdown",
             ]
         );
     }

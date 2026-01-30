@@ -14,7 +14,7 @@ class BackToMainHandler extends BaseTelegramController
 
         $this->sendMessage(
             $chatId,
-            "🏠 *Bosh menyu*\n\nKerakli bo‘limni tanlang 👇",
+            "🏠 Bosh menyu\n\nKerakli bo‘limni tanlang 👇",
             $this->getMainKeyboard($user)
         );
     }
