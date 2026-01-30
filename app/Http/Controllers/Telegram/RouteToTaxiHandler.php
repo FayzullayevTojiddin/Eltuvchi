@@ -28,14 +28,14 @@ class RouteToTaxiHandler extends BaseTelegramController
 
         $keyboard[] = ['⬅️ Orqaga'];
 
-        $this->sendMessage($chatId, [
-            'text' => "🚕 *Taxi bo‘lish uchun kerakli regionni tanlang:*",
-            'parse_mode' => 'Markdown',
-            'reply_markup' => json_encode([
+        $this->sendMessage(
+            $chatId,
+            "🚕 *Taxi bo‘lish uchun kerakli regionni tanlang:*",
+            [
                 'keyboard' => $keyboard,
                 'resize_keyboard' => true,
                 'one_time_keyboard' => false
-            ])
-        ]);
+            ]
+        );
     }
 }
