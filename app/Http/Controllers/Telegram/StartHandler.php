@@ -7,17 +7,9 @@ class StartHandler extends BaseTelegramController
     
     public function handler($chatId, $user)
     {
-        $isNewUser = $user && $user->client && $user->client->status === 'new';
+        $isNewUser = $user->connected()->status === 'new';
         
-        $displayName = match(true) {
-            $user?->role === 'client' && $user->client 
-                => $user->client->settings['full_name'] ?? 'Foydalanuvchi',
-            $user?->role === 'driver' && $user->driver 
-                => $user->driver->details['full_name'] ?? 'Foydalanuvchi',
-            default => $user?->name ?? 'Foydalanuvchi',
-        };
-        
-        $text = "🌟 Assalomu alaykum, {$displayName}!\n\n";
+        $text = "🌟 Assalomu alaykum, {$user->displayName}!\n\n";
         
         if ($isNewUser) {
             $text .= "🎊 Xush kelibsiz! Siz muvaffaqiyatli ro'yxatdan o'tdingiz.\n\n";
