@@ -7,10 +7,12 @@ use App\Http\Controllers\Telegram\BackToMainHandler;
 use App\Http\Controllers\Telegram\BalanceHandler;
 use App\Http\Controllers\Telegram\BaseTelegramController;
 use App\Http\Controllers\Telegram\DepositHandler;
+use App\Http\Controllers\Telegram\GettingDatasHandler;
 use App\Http\Controllers\Telegram\ProcessActionHandler;
 use App\Http\Controllers\Telegram\ProfileHandler;
 use App\Http\Controllers\Telegram\RequestUnblockHandler;
 use App\Http\Controllers\Telegram\RouteToTaxiHandler;
+use App\Http\Controllers\Telegram\SelectFromTaxoParkHandler;
 use App\Http\Controllers\Telegram\SetDriverHandler;
 use App\Http\Controllers\Telegram\StartHandler;
 use App\Http\Controllers\Telegram\WidthdrawHandler;
@@ -81,11 +83,6 @@ class TelegramBotController extends BaseTelegramController
                     $user = $this->createNewUser($tgUser, $telegramUserId);
                 }
 
-                if($user && $user->telegram_state === 'choosing_taxi_region') {
-                    $handler = new SetDriverHandler();
-                    return $handler->handler($text, $chatId);
-                }
-
                 if ($user && $user->telegram_state === 'waiting_deposit_amount') {
                     if ($text === '❌ Bekor qilish') {
                         $user->update(['telegram_state' => null]);
@@ -98,6 +95,21 @@ class TelegramBotController extends BaseTelegramController
                     $depositHandler->handleAmount($chatId, $user, $text);
 
                     return response()->json(['ok' => true]);
+                }
+
+                if($user && $user->telegram_state === 'choosing_taxi_region' and !$text === '⬅️ Orqaga') {
+                    $handler = new SetDriverHandler();
+                    $handler->handler($text, $chatId);
+                }
+
+                if($user && $user->telegram_state === 'choosing_taxi_park' and !$text === '⬅️ Orqaga') {
+                    $handler = new SelectFromTaxoParkHandler();
+                    $handler->handler($text, $chatId);
+                }
+
+                if($user && $user->telegram_state === 'getting_datas' and !$text === '⬅️ Orqaga') {
+                    $handler = new GettingDatasHandler();
+                    $handler->handler($text, $chatId);
                 }
 
                 switch ($text) {

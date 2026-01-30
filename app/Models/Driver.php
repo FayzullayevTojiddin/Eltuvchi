@@ -22,7 +22,6 @@ class Driver extends Model
         'details',
         'settings',
         'taxopark_id',
-        'full_name'
     ];
 
     protected $casts = [

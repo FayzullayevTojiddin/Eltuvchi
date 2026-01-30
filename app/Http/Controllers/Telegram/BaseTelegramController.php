@@ -66,7 +66,7 @@ class BaseTelegramController extends Controller
 
         $keyboard[] = ['Balans 💰', 'Hisobim 👤'];
 
-        if($user->role === 'client') {
+        if($user->role === 'client' and !$user->driver) {
             $keyboard[] = ['🚕 Taxi bo‘lish'];
         }
 
