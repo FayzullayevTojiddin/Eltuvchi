@@ -49,13 +49,13 @@ class ClickService
     {
         try {
             if (!$this->checkSignature($request)) {
-                return $this->error(-1, 'Sign check failed');
+                return $this->error(-1, 'SIGN CHECK FAILED!');
             }
 
             $deposit = DepositRequest::where('merchant_trans_id', $request->merchant_trans_id)->first();
 
             if (!$deposit) {
-                return $this->error(-5, 'Transaction not found');
+                return $this->error(-5, 'User does not exist');
             }
 
             if ($deposit->status === 'success') {
@@ -63,7 +63,7 @@ class ClickService
             }
 
             if ($deposit->amount != $request->amount) {
-                return $this->error(-2, 'Incorrect amount');
+                return $this->error(-2, 'Incorrect parameter amount');
             }
 
             if ($deposit->status === 'failed') {
@@ -71,8 +71,8 @@ class ClickService
             }
 
             $user = User::find($deposit->user_id);
-            if (!$user || !$user->connected) {
-                return $this->error(-5, 'User not found');
+            if (!$user || !$user->connected()) {
+                return $this->error(-5, 'User does not exist');
             }
 
             return [
@@ -88,7 +88,7 @@ class ClickService
                 'message' => $e->getMessage(),
                 'request' => $request->all()
             ]);
-            return $this->error(-5, 'System error');
+            return $this->error(-8, 'Error in request from click');
         }
     }
 
@@ -96,13 +96,17 @@ class ClickService
     {
         try {
             if (!$this->checkSignature($request, true)) {
-                return $this->error(-1, 'Sign check failed');
+                return $this->error(-1, 'SIGN CHECK FAILED!');
             }
 
-            $deposit = DepositRequest::where('merchant_trans_id', $request->merchant_trans_id)->first();
+            $deposit = DepositRequest::find($request->merchant_prepare_id);
 
             if (!$deposit) {
-                return $this->error(-5, 'Transaction not found');
+                return $this->error(-6, 'Transaction does not exist');
+            }
+
+            if ($deposit->merchant_trans_id !== $request->merchant_trans_id) {
+                return $this->error(-6, 'Transaction does not exist');
             }
 
             if ($deposit->status === 'failed') {
@@ -128,12 +132,26 @@ class ClickService
 
             $user = User::find($deposit->user_id);
             
-            if ($user && $user->connected) {
+            if (!$user || !$user->connected()) {
+                Log::error('Click Complete - User not found', [
+                    'deposit_id' => $deposit->id,
+                    'user_id' => $deposit->user_id
+                ]);
+                return $this->error(-7, 'Failed to update user');
+            }
+
+            try {
                 $user->connected->addBalance(
                     (int)$deposit->amount,
                     'Click to\'lov. ID: ' . $request->merchant_trans_id,
                     $user->id
                 );
+            } catch (Exception $e) {
+                Log::error('Click Complete - Balance update failed', [
+                    'message' => $e->getMessage(),
+                    'deposit_id' => $deposit->id
+                ]);
+                return $this->error(-7, 'Failed to update user');
             }
 
             return [
@@ -149,7 +167,7 @@ class ClickService
                 'message' => $e->getMessage(),
                 'request' => $request->all()
             ]);
-            return $this->error(-5, 'System error');
+            return $this->error(-8, 'Error in request from click');
         }
     }
 
