@@ -71,7 +71,7 @@ class DriverForm
                     ->options([
                         'active' => 'Faol',
                         'inactive' => 'Bloklangan',
-                        'new' => "Tasdiqlanga",
+                        'new' => "Tasdiqlangan",
                         'verify' => "Tasdiqlanishi kutilmoqda"
                     ])
                     ->default('active'),

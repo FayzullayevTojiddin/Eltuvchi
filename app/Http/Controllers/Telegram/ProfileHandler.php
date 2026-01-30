@@ -6,17 +6,7 @@ class ProfileHandler extends BaseTelegramController
 {
     public function handler($chatId, $user)
     {
-        if (!$user) {
-            $this->sendMessage($chatId, "❌ Siz ro'yxatdan o'tmagansiz!\n\n👉 Iltimos /start buyrug'ini yuboring.");
-            return;
-        }
-
         $connected = $user->connected();
-        
-        if (!$connected) {
-            $this->sendMessage($chatId, "❌ Hisob ma'lumotlari topilmadi.", $this->getMainKeyboard($user));
-            return;
-        }
 
         $status = $connected->status ?? 'new';
         $statusText = '❓ Noma\'lum';
@@ -27,14 +17,11 @@ class ProfileHandler extends BaseTelegramController
             $statusText = '🆕 Yangi (Faollashtirishni kutmoqda)';
         } elseif ($status === 'inactive') {
             $statusText = '🚫 Bloklangan';
+        } elseif ($status === 'verify') {
+            $statusText = "Tasdiqlanishi kutilmoqda⏳";
         }
         
-        $ordersCount = 0;
-        if ($user->role === 'client') {
-            $ordersCount = $user->client->orders()->count();
-        } elseif ($user->role === 'driver') {
-            $ordersCount = $user->driver->orders()->count();
-        }
+        $ordersCount = $user->connected()->orders()->count();
         
         $roleText = $user->role === 'client' ? 'Mijoz' : 'Haydovchi';
         $idText = $user->role === 'client' ? 'Client ID' : 'Driver ID';
