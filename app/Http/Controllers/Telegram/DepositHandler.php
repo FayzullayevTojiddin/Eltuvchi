@@ -22,7 +22,7 @@ class DepositHandler extends BaseTelegramController
         $text = "💳 Pul kiritish\n\n";
         $text .= "💰 To'lamoqchi bo'lgan summangizni kiriting (so'mda):\n\n";
         $text .= "📝 Misol: 50000, 100000, 200000\n\n";
-        $text .= "⚠️ Minimal summa: 10,000 so'm\n";
+        $text .= "⚠️ Minimal summa: 20,000 so'm\n";
         $text .= "⚠️ Maksimal summa: 10,000,000 so'm";
         
         $this->sendMessage($chatId, $text, $this->getCancelKeyboard());
@@ -32,8 +32,8 @@ class DepositHandler extends BaseTelegramController
     {
         $amount = (int) str_replace([' ', ',', '.'], '', $amount);
         
-        if ($amount < 1000) {
-            $this->sendMessage($chatId, "❌ Minimal summa 10,000 so'm bo'lishi kerak!");
+        if ($amount < 20000) {
+            $this->sendMessage($chatId, "❌ Minimal summa 20,000 so'm bo'lishi kerak!");
             return;
         }
 
@@ -79,8 +79,8 @@ class DepositHandler extends BaseTelegramController
     {
         return [
             'keyboard' => [
-                [['text' => "10000"], ['text' => "20000"]],
-                [['text' => "50000"], ['text' => "100000"]],
+                [['text' => "20000"], ['text' => "50000"]],
+                [['text' => "100000"], ['text' => "200000"]],
                 [['text' => '❌ Bekor qilish']],
             ],
             'resize_keyboard' => true,
