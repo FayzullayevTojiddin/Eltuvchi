@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Telegram\ActivateAccountHandler;
+use App\Http\Controllers\Telegram\BackToMainHandler;
 use App\Http\Controllers\Telegram\BalanceHandler;
 use App\Http\Controllers\Telegram\BaseTelegramController;
 use App\Http\Controllers\Telegram\DepositHandler;
@@ -118,6 +119,10 @@ class TelegramBotController extends BaseTelegramController
 
                     case "🚕 Taxi bo‘lish":
                         (new RouteToTaxiHandler)->handler($chatId, $user);
+                        break;
+
+                    case "⬅️ Orqaga":
+                        (new BackToMainHandler)->handler($chatId, $user);
                         break;
 
                     default:

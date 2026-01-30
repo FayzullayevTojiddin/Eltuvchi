@@ -34,7 +34,8 @@ class RouteToTaxiHandler extends BaseTelegramController
             [
                 'keyboard' => $keyboard,
                 'resize_keyboard' => true,
-                'one_time_keyboard' => false
+                'one_time_keyboard' => false,
+                'parse_mode' => "markdown",
             ]
         );
     }
