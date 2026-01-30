@@ -141,7 +141,7 @@ class ClickService
             }
 
             try {
-                $user->connected->addBalance(
+                $user->connected()->addBalance(
                     (int)$deposit->amount,
                     'Click to\'lov. ID: ' . $request->merchant_trans_id,
                     $user->id
