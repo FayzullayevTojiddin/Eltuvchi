@@ -41,18 +41,10 @@ class BaseTelegramController extends Controller
             $needsActivation = false;
             $isBlocked = false;
 
-            if ($user->client) {
-                if ($user->client->status === 'new') {
+            if ($user->connected()) {
+                if ($user->connected->status === 'new') {
                     $needsActivation = true;
-                } elseif ($user->client->status === 'inactive') {
-                    $isBlocked = true;
-                }
-            }
-            
-            if ($user->driver) {
-                if ($user->driver->status === 'new') {
-                    $needsActivation = true;
-                } elseif ($user->driver->status === 'inactive') {
+                } elseif ($user->connected->status === 'inactive') {
                     $isBlocked = true;
                 }
             }
