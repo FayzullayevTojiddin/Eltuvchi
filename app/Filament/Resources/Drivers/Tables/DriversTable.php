@@ -74,7 +74,7 @@ class DriversTable
                         'new'      => 'Yangi',
                         'active'   => 'Faol',
                         'inactive' => 'Bloklangan',
-                        'verify' => "Yangi haydovchilar",
+                        'verify' => "Tasdiqlanishi kutilayotgan",
                     ]),
             ])
             ->recordActions([
