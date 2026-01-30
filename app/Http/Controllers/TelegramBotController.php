@@ -11,6 +11,7 @@ use App\Http\Controllers\Telegram\ProcessActionHandler;
 use App\Http\Controllers\Telegram\ProfileHandler;
 use App\Http\Controllers\Telegram\RequestUnblockHandler;
 use App\Http\Controllers\Telegram\RouteToTaxiHandler;
+use App\Http\Controllers\Telegram\SetDriverHandler;
 use App\Http\Controllers\Telegram\StartHandler;
 use App\Http\Controllers\Telegram\WidthdrawHandler;
 use App\Models\Client;
@@ -78,6 +79,11 @@ class TelegramBotController extends BaseTelegramController
 
                 if (! $user && $text === '/start') {
                     $user = $this->createNewUser($tgUser, $telegramUserId);
+                }
+
+                if($user && $user->telegram_state === 'choosing_taxi_region') {
+                    $handler = new SetDriverHandler();
+                    return $handler->handler($text, $chatId);
                 }
 
                 if ($user && $user->telegram_state === 'waiting_deposit_amount') {
