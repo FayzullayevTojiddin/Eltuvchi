@@ -51,6 +51,7 @@ class GettingDatasHandler extends BaseTelegramController
 
         $user->driver()->create([
             'status' => 'new',
+            'taxopark_id' => $taxoparkId,
             'details' => [
                 'full_name'        => $fullName,
                 'phone_number'     => $phone,
