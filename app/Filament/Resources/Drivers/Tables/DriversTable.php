@@ -30,10 +30,17 @@ class DriversTable
                     ->label('Status')
                     ->searchable()
                     ->sortable()
-                    ->formatStateUsing(fn ($state) => $state === 'active' ? 'Faol' : 'Bloklangan')
+                    ->formatStateUsing(fn ($state) => match ($state) {
+                        'active'   => 'Faol',
+                        'inactive' => 'Bloklangan',
+                        'new'      => 'Kutilmoqda',
+                        'verify' => "Tasdiqlangan",
+                    })
                     ->colors([
-                        'success' => fn($state) => $state === 'active',
-                        'danger'  => fn($state) => $state === 'inactive',
+                        'success' => fn ($state) => $state === 'active',
+                        'danger'  => fn ($state) => $state === 'inactive',
+                        'warning' => fn ($state) => $state === 'new',
+                        'warning' => fn($state) => $state === 'verify'
                     ]),
 
                 TextColumn::make('balance')

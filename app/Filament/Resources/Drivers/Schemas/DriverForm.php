@@ -66,8 +66,9 @@ class DriverForm
                     ->options([
                         'active' => 'Faol',
                         'inactive' => 'Bloklangan',
+                        'new' => "Tasdiqlanga",
+                        'verify' => "Tasdiqlanishi kutilmoqda"
                     ])
-                    ->disabled()
                     ->default('active'),
                 Section::make('Driver Details')
                     ->schema([
