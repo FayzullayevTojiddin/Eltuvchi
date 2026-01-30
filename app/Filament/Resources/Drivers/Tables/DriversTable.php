@@ -8,6 +8,7 @@ use Filament\Actions\ActionGroup;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class DriversTable
@@ -67,7 +68,14 @@ class DriversTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('status')
+                    ->label('Statusga ')
+                    ->options([
+                        'new'      => 'Kutilmoqda',
+                        'active'   => 'Faol',
+                        'inactive' => 'Bloklangan',
+                        'verify' => "Yangi haydovchilar",
+                    ]),
             ])
             ->recordActions([
                 ViewAction::make()->label("Ko'rish")->button(),
