@@ -3,11 +3,14 @@ namespace App\Services;
 
 use App\Models\DepositRequest;
 use App\Models\User;
+use App\Traits\TelegramBotTrait;
 use Illuminate\Support\Facades\Log;
 use Exception;
 
 class ClickService
 {
+    use TelegramBotTrait;
+
     private $merchantId;
     private $serviceId;
     private $secretKey;
@@ -84,10 +87,6 @@ class ClickService
             ];
 
         } catch (Exception $e) {
-            Log::error('Click Prepare Exception', [
-                'message' => $e->getMessage(),
-                'request' => $request->all()
-            ]);
             return $this->error(-8, 'Error in request from click');
         }
     }
@@ -133,10 +132,6 @@ class ClickService
             $user = User::find($deposit->user_id);
             
             if (!$user || !$user->connected()) {
-                Log::error('Click Complete - User not found', [
-                    'deposit_id' => $deposit->id,
-                    'user_id' => $deposit->user_id
-                ]);
                 return $this->error(-7, 'Failed to update user');
             }
 
@@ -147,12 +142,11 @@ class ClickService
                     $user->id
                 );
             } catch (Exception $e) {
-                Log::error('Click Complete - Balance update failed', [
-                    'message' => $e->getMessage(),
-                    'deposit_id' => $deposit->id
-                ]);
                 return $this->error(-7, 'Failed to update user');
             }
+
+            $this->sendTelegramMessage($user->telegram_id, "To'lov muvaffaqiyatli tasdiqlandi. Hisobingizga $deposit->amount so'm pul o'tkazildi. ");
+            
 
             return [
                 'click_trans_id' => $request->click_trans_id,
@@ -163,10 +157,6 @@ class ClickService
             ];
 
         } catch (Exception $e) {
-            Log::error('Click Complete Exception', [
-                'message' => $e->getMessage(),
-                'request' => $request->all()
-            ]);
             return $this->error(-8, 'Error in request from click');
         }
     }
