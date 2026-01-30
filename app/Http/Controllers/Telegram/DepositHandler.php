@@ -32,27 +32,33 @@ class DepositHandler extends BaseTelegramController
     {
         $amount = (int) str_replace([' ', ',', '.'], '', $amount);
         
-        if ($amount < 1000) {
+        if ($amount < 20000) {
             $this->sendMessage($chatId, "❌ Minimal summa 20,000 so'm bo'lishi kerak!");
             return;
         }
-
+        
         if ($amount > 10000000) {
             $this->sendMessage($chatId, "❌ Maksimal summa 10,000,000 so'm!");
             return;
         }
-
+        
+        $processingText = "⏳ Chek yaratilmoqda...\n\nIltimos, kuting...";
+        $removeKeyboard = [
+            'remove_keyboard' => true
+        ];
+        $this->sendMessage($chatId, $processingText, $removeKeyboard);
+        
         try {
             $invoice = $this->clickService->createInvoice($user->id, $amount);
-
+            
             $text = "✅ To'lov havolasi yaratildi!\n\n";
             $text .= "💰 Summa: " . number_format($amount, 0, '.', ' ') . " so'm\n";
             $text .= "🔗 To'lov uchun quyidagi tugmani bosing:\n\n";
             $text .= "⚠️ To'lov amalga oshgandan keyin avtomatik ravishda hisobingizga o'tadi.\n";
             $text .= "⏱ Bu 1-2 daqiqa vaqt olishi mumkin.";
-
+            
             $user->update(['telegram_state' => null]);
-
+            
             $keyboard = [
                 'inline_keyboard' => [
                     [
@@ -63,10 +69,9 @@ class DepositHandler extends BaseTelegramController
                     ]
                 ]
             ];
-
+            
             $this->sendMessage($chatId, $text, $keyboard);
-
-        } catch (\Exception $e) {            
+        } catch (\Exception $e) {
             $this->sendMessage(
                 $chatId,
                 "❌ To'lov havolasini yaratishda xatolik yuz berdi.\n\nIltimos, qayta urinib ko'ring yoki admin bilan bog'laning: @" . env('TELEGRAM_ADMIN_USERNAME', 'admin'),
