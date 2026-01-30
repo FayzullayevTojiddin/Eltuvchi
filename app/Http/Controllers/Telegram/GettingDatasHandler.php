@@ -10,14 +10,15 @@ class GettingDatasHandler extends BaseTelegramController
     {
         $user = User::where('telegram_id', $chatId)->first();
 
-        $pattern = '/
-            Ism:\s*(.+)\n
-            Telefon:\s*(\+998\d{9})\n
-            Litsenziya:\s*([A-Z]{2})\s*(\d+)\n
-            Mashina:\s*([A-Z0-9]+)\n
-            Model:\s*(.+)\n
-            Tajriba:\s*(\d+)
-        /x';
+         $pattern = '/^
+            (.+)\n
+            (\+998\s?\d{2}\s?\d{3}\s?\d{2}\s?\d{2})\n
+            ([A-Z]{2})\s?\d+\s?\d+\s?\d+\n
+            ([A-Z0-9]{5,8})\n
+            (.+)\n
+            (\d+)
+            \s*(yil)?
+        $/x';
 
         if (!preg_match($pattern, trim($text), $matches)) {
             $this->sendMessage($chatId, "❌ Ma’lumotlar noto‘g‘ri formatda kiritildi.\n\nIltimos, barcha ma’lumotlarni to‘liq va to‘g‘ri kiriting.");
