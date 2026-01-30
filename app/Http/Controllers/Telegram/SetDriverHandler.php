@@ -10,12 +10,6 @@ class SetDriverHandler extends BaseTelegramController
     public function handler($chatId, $text)
     {
         $user = User::where('telegram_id', $chatId)->first();
-
-        if (! $user) {
-            $this->sendMessage($chatId, "❌ Foydalanuvchi topilmadi. /start buyrug'ini yuboring.");
-            return;
-        }
-
         $region = Region::where('name', $text)->first();
 
         if (! $region) {

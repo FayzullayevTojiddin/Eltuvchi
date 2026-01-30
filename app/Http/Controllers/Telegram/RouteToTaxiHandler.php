@@ -8,13 +8,9 @@ class RouteToTaxiHandler extends BaseTelegramController
 {
     public function handler($chatId, $user)
     {
-        $user->update([
-            'telegram_state' => 'choosing_taxi_region'
-        ]);
+        $user->update(['telegram_state' => 'choosing_taxi_region']);
 
-        $regions = Region::where('status', 'active')
-            ->orderBy('name')
-            ->get();
+        $regions = Region::where('status', 'active')->orderBy('name')->get();
 
         $keyboard = [];
 
