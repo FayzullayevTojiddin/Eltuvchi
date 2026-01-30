@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Telegram;
 
 use App\Models\TaxoPark;
 use App\Models\User;
+use Illuminate\Support\Facades\Cache;
 
 class SelectFromTaxoParkHandler extends BaseTelegramController
 {
@@ -18,6 +19,9 @@ class SelectFromTaxoParkHandler extends BaseTelegramController
         }
 
         $user->update(['telegram_state' => 'getting_datas']);
+        
+        Cache::put("driver_register:taxopark:{$user->id}", $taxoPark->id, now()->addMinutes(15));
+
         $this->sendMessage(
             $chatId,
             "🚕 Haydovchi bo‘lish uchun quyidagi ma’lumotlaringizni to‘ldiring:\n\n"

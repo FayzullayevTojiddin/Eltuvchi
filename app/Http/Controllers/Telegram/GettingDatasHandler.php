@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Telegram;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Cache;
 
 class GettingDatasHandler extends BaseTelegramController
 {
@@ -10,7 +11,19 @@ class GettingDatasHandler extends BaseTelegramController
     {
         $user = User::where('telegram_id', $chatId)->first();
 
-         $pattern = '/^
+        $taxoparkId = Cache::get("driver_register:taxopark:{$user->id}");
+
+        if (!$taxoparkId) {
+            $this->sendMessage(
+                $chatId,
+                "⏳ Sessiya muddati tugadi.\n\nIltimos, qaytadan Taxi Park tanlang.",
+                $this->getMainKeyboard($user)
+            );
+            $user->update(['telegram_state' => null]);
+            return;
+        }
+        $user = User::where('telegram_id', $chatId)->first();
+            $pattern = '/^
             (.+)\n
             (\+998\s?\d{2}\s?\d{3}\s?\d{2}\s?\d{2})\n
             ([A-Z]{2})\s?\d+\s?\d+\s?\d+\n
