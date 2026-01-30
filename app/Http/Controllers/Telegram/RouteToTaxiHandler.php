@@ -12,7 +12,7 @@ class RouteToTaxiHandler extends BaseTelegramController
             'telegram_state' => 'choosing_taxi_region'
         ]);
 
-        $regions = Region::where('status', true)
+        $regions = Region::where('status', 'active')
             ->orderBy('name')
             ->get();
 
