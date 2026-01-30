@@ -9,6 +9,7 @@ use App\Http\Controllers\Telegram\DepositHandler;
 use App\Http\Controllers\Telegram\ProcessActionHandler;
 use App\Http\Controllers\Telegram\ProfileHandler;
 use App\Http\Controllers\Telegram\RequestUnblockHandler;
+use App\Http\Controllers\Telegram\RouteToTaxiHandler;
 use App\Http\Controllers\Telegram\StartHandler;
 use App\Http\Controllers\Telegram\WidthdrawHandler;
 use App\Models\Client;
@@ -113,6 +114,10 @@ class TelegramBotController extends BaseTelegramController
 
                     case 'Blokdan chiqish 🔓':
                         (new RequestUnblockHandler)->handler($chatId, $user);
+                        break;
+
+                    case "🚕 Taxi bo‘lish":
+                        (new RouteToTaxiHandler)->handler($chatId, $user);
                         break;
 
                     default:
