@@ -71,7 +71,7 @@ class DriversTable
                 SelectFilter::make('status')
                     ->label('Statusga ')
                     ->options([
-                        'new'      => 'Kutilmoqda',
+                        'new'      => 'Yangi',
                         'active'   => 'Faol',
                         'inactive' => 'Bloklangan',
                         'verify' => "Yangi haydovchilar",
