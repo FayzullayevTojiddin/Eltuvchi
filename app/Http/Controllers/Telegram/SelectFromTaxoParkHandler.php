@@ -38,7 +38,7 @@ class SelectFromTaxoParkHandler extends BaseTelegramController
     protected function getDriverRegisterKeyboard()
     {
         return [
-            'keyboard' => [[['text' => '⬅️ Ortga']]],
+            'keyboard' => [[['text' => '⬅️ Orqaga']]],
             'resize_keyboard' => true,
             'one_time_keyboard' => true
         ];
