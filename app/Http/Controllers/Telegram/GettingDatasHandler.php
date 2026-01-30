@@ -50,7 +50,7 @@ class GettingDatasHandler extends BaseTelegramController
         ] = $matches;
 
         $user->driver()->create([
-            'status' => 'new',
+            'status' => 'verifying',
             'taxopark_id' => $taxoparkId,
             'details' => [
                 'full_name'        => $fullName,
@@ -64,7 +64,7 @@ class GettingDatasHandler extends BaseTelegramController
             'settings' => [],
         ]);
 
-        $this->sendMessage($chatId, "✅ Ma’lumotlaringiz muvaffaqiyatli qabul qilindi.\n\n⏳ Profilingiz tekshiruvda.\nStatus: *NEW*", $this->getMainKeyboard($user));
+        $this->sendMessage($chatId, "✅ Ma’lumotlaringiz muvaffaqiyatli qabul qilindi.\n\n⏳ Profilingiz tekshiruvda., $this->getMainKeyboard($user));
         $user->update([ 'telegram_state' => null ]);
     }
 }
