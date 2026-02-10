@@ -22,8 +22,8 @@ class GettingDatasHandler extends BaseTelegramController
             $user->update(['telegram_state' => null]);
             return;
         }
-        $user = User::where('telegram_id', $chatId)->first();
-            $pattern = '/^
+
+        $pattern = '/^
             (.+)\n
             (\+998\s?\d{2}\s?\d{3}\s?\d{2}\s?\d{2})\n
             ([A-Z]{2})\s?\d+\s?\d+\s?\d+\n
@@ -34,7 +34,7 @@ class GettingDatasHandler extends BaseTelegramController
         $/x';
 
         if (!preg_match($pattern, trim($text), $matches)) {
-            $this->sendMessage($chatId, "❌ Ma’lumotlar noto‘g‘ri formatda kiritildi.\n\nIltimos, barcha ma’lumotlarni to‘liq va to‘g‘ri kiriting.");
+            $this->sendMessage($chatId, "❌ Ma'lumotlar noto'g'ri formatda kiritildi.\n\nIltimos, barcha ma'lumotlarni to'liq va to'g'ri kiriting.");
             return;
         }
 
@@ -50,7 +50,7 @@ class GettingDatasHandler extends BaseTelegramController
         ] = $matches;
 
         $user->driver()->create([
-            'status' => 'verify',
+            'status' => 'new',
             'taxopark_id' => $taxoparkId,
             'details' => [
                 'full_name'        => $fullName,
@@ -64,7 +64,7 @@ class GettingDatasHandler extends BaseTelegramController
             'settings' => [],
         ]);
 
-        $this->sendMessage($chatId, "✅ Ma’lumotlaringiz muvaffaqiyatli qabul qilindi.\n\n⏳ Profilingiz tekshiruvda.", $this->getMainKeyboard($user));
-        $user->update([ 'telegram_state' => null ]);
+        $this->sendMessage($chatId, "✅ Ma'lumotlaringiz muvaffaqiyatli qabul qilindi.\n\n⏳ Profilingiz tekshiruvda.", $this->getMainKeyboard($user));
+        $user->update(['telegram_state' => null]);
     }
 }

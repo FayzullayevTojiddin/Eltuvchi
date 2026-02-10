@@ -14,23 +14,27 @@ class SelectFromTaxoParkHandler extends BaseTelegramController
         $taxoPark = TaxoPark::where('name', $text)->first();
         
         if(!$taxoPark) {
-            $this->sendMessage($chatId, "🚫 Taxi Park topilmadi.\n\nIltimos, ro‘yxatdan tanlang 👇");
+            $this->sendMessage($chatId, "🚫 Taxi Park topilmadi.\n\nIltimos, ro'yxatdan tanlang 👇");
             return;
         }
 
-        $user->update(['telegram_state' => 'getting_datas']);
+        $user->update(['telegram_state' => 'awaiting_driver_registration']);
         
         Cache::put("driver_register:taxopark:{$user->id}", $taxoPark->id, now()->addMinutes(15));
 
+        $exampleMessage = "🚕 Haydovchi bo'lish uchun quyidagi ma'lumotlaringizni to'ldiring:\n\n";
+        $exampleMessage .= "📋 <b>Misol uchun:</b>\n\n";
+        $exampleMessage .= "Abdullayev Aziz Akramovich\n";
+        $exampleMessage .= "+998 90 123 45 67\n";
+        $exampleMessage .= "AB 1234567\n";
+        $exampleMessage .= "01A777AA\n";
+        $exampleMessage .= "Chevrolet Lacetti\n";
+        $exampleMessage .= "5 yil\n\n";
+        $exampleMessage .= "✍️ Endi siz o'z ma'lumotlaringizni yuqoridagi formatda yuboring.";
+
         $this->sendMessage(
             $chatId,
-            "🚕 Haydovchi bo‘lish uchun quyidagi ma’lumotlaringizni to‘ldiring:\n\n"
-            . "• To‘liq ism\n"
-            . "• Telefon raqam\n"
-            . "• Haydovchilik guvohnomasi (seriya va raqam)\n"
-            . "• Avtomobil raqami\n"
-            . "• Avtomobil nomi\n"
-            . "• Ish tajribasi (yil)\n\n",
+            $exampleMessage,
             $this->getDriverRegisterKeyboard()
         );
     }
