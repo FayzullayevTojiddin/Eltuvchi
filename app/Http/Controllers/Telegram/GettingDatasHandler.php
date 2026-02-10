@@ -64,7 +64,7 @@ class GettingDatasHandler extends BaseTelegramController
             'settings' => [],
         ]);
 
-        $this->sendMessage($chatId, "✅ Ma'lumotlaringiz muvaffaqiyatli qabul qilindi.\n\n⏳ Profilingiz tekshiruvda.", $this->getMainKeyboard($user));
+        $this->sendMessage($chatId, "✅ Ma'lumotlaringiz muvaffaqiyatli qabul qilindi!\n\n💳 Profilingizni faollashtiring.", $this->getMainKeyboard($user));
         $user->update(['telegram_state' => null]);
     }
 }
