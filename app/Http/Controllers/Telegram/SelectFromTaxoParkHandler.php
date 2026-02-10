@@ -18,7 +18,7 @@ class SelectFromTaxoParkHandler extends BaseTelegramController
             return;
         }
 
-        $user->update(['telegram_state' => 'awaiting_driver_registration']);
+        $user->update(['telegram_state' => 'getting_datas']);
         
         Cache::put("driver_register:taxopark:{$user->id}", $taxoPark->id, now()->addMinutes(15));
 
